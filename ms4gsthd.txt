@@ -1,6 +1,5 @@
 print("test")
 -- thanks @yohan_moon for finding this animator module
--- Forsakation discord server: https://discord.gg/9XHYkWybxR
 -- Reanimation was made by @emperrrr (Discord)
 -- Discord server for empers reanimate: https://discord.gg/UJ7YtqadPJ
 local EmoteGui: ScreenGui = game:GetObjects("rbxassetid://70965231817963")[1]
