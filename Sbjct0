@@ -12,7 +12,7 @@ local Controls: ScreenGui = game:GetObjects("rbxassetid://102160674504380")[1]
 Controls.Parent = game.Players.LocalPlayer.PlayerGui
 Controls.Enabled = true
 Controls.MobileContainer.Visible = false
-Controls.Version.Text = "Cause of death: Pursuering of death"
+Controls.Version.Text = "Subject 0 has escaped containment."
 do
 	local Accessories = {}
 
@@ -1200,7 +1200,7 @@ uis.InputBegan:Connect(function(input)
 		animation = game:GetObjects("rbxassetid://" .. Howl)[1]
 		Anim = AnimHandler.new(char, animation)
 		Anim:Play()
-		wait(1.9)
+		wait(6)
 		hum.WalkSpeed = ws
 		ability = false
 		id = Howl
