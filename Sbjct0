@@ -1200,7 +1200,7 @@ uis.InputBegan:Connect(function(input)
 		animation = game:GetObjects("rbxassetid://" .. Howl)[1]
 		Anim = AnimHandler.new(char, animation)
 		Anim:Play()
-		wait(6)
+		wait(4.89)
 		hum.WalkSpeed = ws
 		ability = false
 		id = Howl
