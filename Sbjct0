@@ -1101,6 +1101,7 @@ local Swing = 125403313786645
 local Stunned = 94090529539057
 local StalkStart = 119211953898567
 local Stalk = 127156732149133
+local Sidle
 local StalkEnd = 116050994905421
 local stalking = false
 local Howl = 138390711856189
@@ -1228,33 +1229,59 @@ uis.InputBegan:Connect(function(input)
 	end
 end)
 uis.InputBegan:Connect(function(input)
-	if input.KeyCode == Enum.KeyCode.R and ability == false and stalking == false then
-		ability = true
-		hum.WalkSpeed = 0.1
-		Anim:Stop()
-		animation = game:GetObjects("rbxassetid://" .. StalkStart)[1]
-		Anim = AnimHandler.new(char, animation)
-		Anim:Play()
-		wait(1.2)
-		ability = false
-		stalking = true
-		id = StalkStart
-		hum.WalkSpeed = 19
-	elseif  input.KeyCode == Enum.KeyCode.R and ability == false and stalking == true then
-		stalking = false
-		ability = true
-		hum.WalkSpeed = 0.1
-		Anim:Stop()
-		animation = game:GetObjects("rbxassetid://" .. StalkEnd)[1]
-		Anim = AnimHandler.new(char, animation)
-		Anim:Play()
-		wait(0)
-		ability = false
-		stalking = false
-		id = StalkEnd
-		hum.WalkSpeed = ws
-	end
-end)
+	-- Inside your InputBegan connection:
+if input.KeyCode == Enum.KeyCode.R and ability == false and stalking == false then
+    ability = true
+    hum.WalkSpeed = 0.1
+    Anim:Stop()
+    animation = game:GetObjects("rbxassetid://" .. StalkStart)[1]
+    Anim = AnimHandler.new(char, animation)
+    Anim:Play()
+    wait(1.2)
+    ability = false
+    stalking = true
+    id = StalkStart
+    hum.WalkSpeed = 19
+
+elseif input.KeyCode == Enum.KeyCode.R and ability == false and stalking == true then
+    stalking = false
+    ability = true
+    hum.WalkSpeed = 0.1
+    Anim:Stop()
+    animation = game:GetObjects("rbxassetid://" .. StalkEnd)[1]
+    Anim = AnimHandler.new(char, animation)
+    Anim:Play()
+    wait(0)
+    ability = false
+    stalking = false
+    id = StalkEnd
+    hum.WalkSpeed = ws
+end
+if stalking == true then
+    if hum.MoveDirection == Vector3.new(0,0,0) then
+        -- Stalk idle animation
+        if id ~= Sidle then
+            Anim:Stop()
+            local animation = game:GetObjects("rbxassetid://" .. Sidle)[1]
+            animation.Parent = char
+            id = Sidle
+            Anim = AnimHandler.new(char, animation)
+            Anim.Looped = true
+            Anim:Play()
+        end
+    else
+        -- Stalk moving animation
+        if id ~= Stalk then
+            Anim:Stop()
+            local animation = game:GetObjects("rbxassetid://" .. Stalk)[1]
+            animation.Parent = char
+            id = Stalk
+            Anim = AnimHandler.new(char, animation)
+            Anim.Looped = true
+            Anim:Play()
+        end
+    end
+end
 uis.InputBegan:Connect(function(input)
 	if input.KeyCode == Enum.KeyCode.G then
 		if EmoteGui.Enabled == false then
