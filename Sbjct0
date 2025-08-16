@@ -1101,7 +1101,7 @@ local Swing = 125403313786645
 local Stunned = 94090529539057
 local StalkStart = 119211953898567
 local Stalk = 127156732149133
-local Sidle
+local Sidle = 111850384063785
 local StalkEnd = 116050994905421
 local stalking = false
 local Howl = 138390711856189
