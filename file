@@ -1,0 +1,127 @@
+-- hi skid
+-- fe bot sus script
+-- 2 bots
+-- DO NOT EXECUTE IT ON THE MAIN ACCOUNT (or p diddy will come)
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local CONTROLLER_NAME = "PVOIDP" -- your own account
+
+-- boughs
+local BOT1_NAME = "PvoidP_A"
+local BOT2_NAME = "PvoidP_B"
+
+-- make this actually work on exploits (i will forget this)
+-- animations (go do it you lazy bum)
+local animIds = {
+    Dance1 = 507771019,
+    Dance2 = 507776043,
+    Dance3 = 507777268,
+    Dance4 = 507777451,
+    Dance5 = 507776720,
+    Dance6 = 507776879,
+    Dance7 = 507776999,
+    Dance8 = 507777268,
+    Dance9 = 507777268,
+    Dance10 = 507777268,
+    WaveDebug = 507770239 -- /e wave
+}
+
+-- make Animation objects
+local animFolder = Instance.new("Folder")
+animFolder.Name = "DanceAnimations"
+animFolder.Parent = LocalPlayer
+
+for name, id in pairs(animIds) do
+    local anim = Instance.new("Animation")
+    anim.Name = name
+    anim.AnimationId = "rbxassetid://" .. tostring(id)
+    anim.Parent = animFolder
+end
+
+-- state
+local myTag
+if LocalPlayer.Name == BOT1_NAME then
+    myTag = "1"
+elseif LocalPlayer.Name == BOT2_NAME then
+    myTag = "2"
+end
+
+local selectedAnim = "Dance1"
+local synced = false
+local currentTrack
+local animator
+
+-- helpers
+local function stopAnim()
+    if currentTrack then
+        pcall(function() currentTrack:Stop() end)
+        pcall(function() currentTrack:Destroy() end)
+        currentTrack = nil
+    end
+end
+
+local function playAnim(animName, looped)
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hum = char:WaitForChild("Humanoid")
+    animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
+
+    stopAnim()
+    local animObj = animFolder:FindFirstChild(animName)
+    if animObj then
+        currentTrack = animator:LoadAnimation(animObj)
+        currentTrack.Looped = looped ~= false
+        currentTrack:Play()
+    end
+end
+
+-- listen to zaddys chat
+local controller
+for _,plr in ipairs(Players:GetPlayers()) do
+    if plr.Name == CONTROLLER_NAME then
+        controller = plr
+    end
+end
+Players.PlayerAdded:Connect(function(plr)
+    if plr.Name == CONTROLLER_NAME then
+        controller = plr
+    end
+end)
+
+if controller and myTag then
+    controller.Chatted:Connect(function(msg)
+        local lower = msg:lower()
+
+        if lower == "sync" then
+            synced = true
+            playAnim(selectedAnim, true)
+        elseif lower == "unsync" or lower == "desync" then
+            synced = false
+            stopAnim()
+        elseif lower:match("^animation%s+(%d+)") then
+            local num = tonumber(lower:match("%d+"))
+            if num and num >= 1 and num <= 10 then
+                selectedAnim = "Dance" .. num
+                if synced then
+                    playAnim(selectedAnim, true)
+                end
+            end
+        elseif lower == "debug" then
+            playAnim("WaveDebug", true)
+        elseif lower:match("^feedback%s+(.+)") then
+            local fb = msg:match("^feedback%s+(.+)")
+            print("[Feedback from controller]:", fb)
+        end
+    end)
+end
+
+-- reset after respawn
+LocalPlayer.CharacterAdded:Connect(function()
+    stopAnim()
+    if synced and myTag then
+        task.wait(1)
+        playAnim(selectedAnim, true)
+    end
+end)
+
+print("you olde bot " .. LocalPlayer.Name .. " started as Tag " .. tostring(myTag))
