@@ -1,0 +1,5976 @@
+
+local _ = game.Players.LocalPlayer.DisplayName
+
+game:GetService('UserInputService')
+
+local _ = game.Players.LocalPlayer.Character
+local u3 = Vector3.new(1, 0, 1)
+local u4 = Vector3.new(0, 25.1, 0)
+
+local function u8(p5)
+local _Magnitude = p5.Magnitude
+
+if 1 < _Magnitude and _Magnitude < 100 then
+local _Unit = p5.Unit
+
+if _Unit.Y > 0.25 or _Unit.Y < -0.75 then
+return p5 * (25.1 / p5.Y)
+end
+
+p5 = _Unit * 100
+end
+
+return p5 * u3 + u4
+end
+
+local v9 = 'shp'
+local v10 = false
+local v11 = true
+local v12 = true
+local v13 = true
+local v14 = true
+local v15 = false
+local v16 = true
+local v17 = false
+local v18 = true
+local u19 = game:GetService("Players").RespawnTime + 0.5
+local v20 = 3
+local u21 = 2
+local v22 = 'HumanoidRootPart'
+local _LocalPlayer = game:GetService('Players').LocalPlayer
+local _RunService = game:GetService('RunService')
+local _Stepped = _RunService.Stepped
+local _Heartbeat = _RunService.Heartbeat
+local _RenderStepped = _RunService.RenderStepped
+local _StarterGui = game:GetService('StarterGui')
+local _Workspace = game:GetService('Workspace')
+local _new = CFrame.new
+local _new2 = Vector3.new
+local _zero = Vector3.zero
+local _huge = math.huge
+local _Character = _LocalPlayer.Character
+
+if not (_Character and _Character.Parent) then
+return
+end
+
+_Character:GetPropertyChangedSignal('Parent'):Connect(function()
+if not (_Character and _Character.Parent) then
+_Character = nil
+end
+end)
+
+local function u42(p35, p36, p37)
+if typeof(p35) == 'Instance' then
+local v38, v39, v40 = pairs(p35:GetChildren())
+
+while true do
+local v41
+
+v40, v41 = v38(v39, v40)
+
+if v40 == nil then
+break
+end
+if v41.Name == p36 and v41:IsA(p37) then
+return v41
+end
+end
+end
+
+return nil
+end
+
+if type(u8) ~= 'function' then
+u8 = nil
+end
+
+local function v55(p43, p44)
+p43.CustomPhysicalProperties = PhysicalProperties.new(0.01, 0.01, 0.01, 0.01, 0.01)
+
+local _Attachment = Instance.new('Attachment')
+
+_Attachment.Orientation = _zero
+_Attachment.Position = _zero
+_Attachment.Name = 'att0_' .. p43.Name
+
+local _Attachment2 = Instance.new('Attachment')
+
+_Attachment2.Orientation = _zero
+_Attachment2.Position = _zero
+_Attachment2.Name = 'att1_' .. p44.Name
+
+if u21 == 1 or u21 == 2 then
+local _AlignPosition = Instance.new('AlignPosition', _Attachment)
+
+_AlignPosition.ApplyAtCenterOfMass = false
+_AlignPosition.MaxForce = _huge
+_AlignPosition.MaxVelocity = _huge
+_AlignPosition.ReactionForceEnabled = false
+_AlignPosition.Responsiveness = 200
+_AlignPosition.Attachment1 = _Attachment2
+_AlignPosition.Attachment0 = _Attachment
+_AlignPosition.Name = 'AlignPositionRtrue'
+_AlignPosition.RigidityEnabled = true
+end
+if u21 == 2 or u21 == 3 then
+local _AlignPosition2 = Instance.new('AlignPosition', _Attachment)
+
+_AlignPosition2.ApplyAtCenterOfMass = false
+_AlignPosition2.MaxForce = _huge
+_AlignPosition2.MaxVelocity = _huge
+_AlignPosition2.ReactionForceEnabled = false
+_AlignPosition2.Responsiveness = 200
+_AlignPosition2.Attachment1 = _Attachment2
+_AlignPosition2.Attachment0 = _Attachment
+_AlignPosition2.Name = 'AlignPositionRfalse'
+_AlignPosition2.RigidityEnabled = false
+end
+
+local _AlignOrientation = Instance.new('AlignOrientation', _Attachment)
+
+_AlignOrientation.MaxAngularVelocity = _huge
+_AlignOrientation.MaxTorque = _huge
+_AlignOrientation.PrimaryAxisOnly = false
+_AlignOrientation.ReactionTorqueEnabled = false
+_AlignOrientation.Responsiveness = 200
+_AlignOrientation.Attachment1 = _Attachment2
+_AlignOrientation.Attachment0 = _Attachment
+_AlignOrientation.RigidityEnabled = false
+
+if u8 then
+local _Velocity = p43.Velocity
+local u51 = p44
+local u52 = _RenderStepped:Connect(function()
+p43.Velocity = _Velocity
+end)
+local u53 = _Heartbeat:Connect(function()
+_Velocity = p43.Velocity
+p43.Velocity = u8(u51.Velocity)
+end)
+local u54 = nil
+
+p43:GetPropertyChangedSignal('Parent'):Connect(function()
+if not (p43 and p43.Parent) then
+u52:Disconnect()
+u53:Disconnect()
+u54:Disconnect()
+end
+end)
+
+u54 = _Attachment2:GetPropertyChangedSignal('Parent'):Connect(function()
+if _Attachment2 and _Attachment2.Parent then
+u51 = _Attachment2.Parent
+
+if not u51:IsA('BasePart') then
+u51 = p43
+end
+else
+u54:Disconnect()
+
+u51 = p43
+end
+end)
+end
+
+_Attachment.Parent = p43
+_Attachment2.Parent = p44
+end
+local function u60()
+local _CFrame = _Workspace.CurrentCamera.CFrame
+local _Character2 = _LocalPlayer.Character
+
+_LocalPlayer.Character = nil
+_LocalPlayer.Character = _Character2
+
+local u58 = nil
+
+u58 = _Workspace.CurrentCamera.Changed:Connect(function(p59)
+if p59 == 'Parent' or p59 == 'CFrame' then
+_Workspace.CurrentCamera.CFrame = _CFrame
+
+u58:Disconnect()
+end
+end)
+end
+
+local u61 = v20 == 4 or v20 == 5
+local v62 = v20 == 0 or v20 == 4
+local u63 = v20 == 0 or (v20 == 2 or v20 == 3)
+
+if v15 then
+v15 = v20 == 0
+end
+if v17 then
+v17 = u42(_LocalPlayer, 'Backpack', 'Backpack')
+end
+
+local v64 = getfenv()
+local u65 = v64.sethiddenproperty or v64.set_hidden_property or (v64.set_hidden_prop or v64.sethiddenprop)
+local u66 = v64.setsimulationradius or v64.set_simulation_radius or (v64.set_sim_radius or v64.setsimradius or (v64.set_simulation_rad or v64.setsimulationrad))
+
+if u65 and v9 == 'shp' then
+spawn(function()
+while _Character and _Heartbeat:Wait() do
+u65(_LocalPlayer, 'SimulationRadius', _huge)
+end
+end)
+elseif u66 and v9 == 'ssr' then
+spawn(function()
+while _Character and _Heartbeat:Wait() do
+u66(_huge)
+end
+end)
+end
+
+local v68 = v11 and function(p67)
+if p67:IsA('HingeConstraint') or p67:IsA('BallSocketConstraint') then
+p67.Parent = nil
+end
+end or v11
+
+if v68 then
+local v69, v70, v71 = pairs(_Character:GetDescendants())
+
+while true do
+local v72
+
+v71, v72 = v69(v70, v71)
+
+if v71 == nil then
+break
+end
+
+v68(v72)
+end
+
+_Character.DescendantAdded:Connect(v68)
+end
+if u63 then
+u60()
+end
+if v20 == 0 then
+wait(u19)
+
+if not _Character then
+return
+end
+end
+if v13 then
+local v73, v74, v75 = pairs(_Character:GetChildren())
+
+while true do
+local v76, v77 = v73(v74, v75)
+
+if v76 == nil then
+break
+end
+
+v75 = v76
+
+if v77:IsA('LocalScript') then
+v77.Disabled = true
+end
+end
+elseif v12 then
+local v78 = u42(_Character, 'Animate', 'LocalScript')
+
+if v78 and not v78.Disabled then
+v78.Disabled = true
+else
+v12 = false
+end
+end
+if v17 then
+local v79, v80, v81 = pairs(v17:GetChildren())
+
+while true do
+local v82, v83 = v79(v80, v81)
+
+if v82 == nil then
+break
+end
+
+v81 = v82
+
+if v83:IsA('Tool') then
+v83.Parent = _Character
+end
+end
+end
+
+pcall(function()
+settings().Physics.AllowSleep = false
+settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Disabled
+end)
+
+local v84 = _Character
+local v85, v86, v87 = pairs(_Character.GetDescendants(v84))
+local v88 = {}
+
+while true do
+local v89
+
+v87, v89 = v85(v86, v87)
+
+if v87 == nil then
+break
+end
+if v89.ClassName == 'Script' then
+table.insert(v88, v89)
+end
+end
+
+local v90, v91, v92 = pairs(_Character:GetDescendants())
+local v93 = {}
+
+while true do
+local v94
+
+v92, v94 = v90(v91, v92)
+
+if v92 == nil then
+break
+end
+if v94:IsA('BasePart') then
+local v95 = tostring(v92)
+local v96 = true
+
+while v96 do
+local v97, v98, v99 = pairs(v88)
+
+v96 = false
+
+while true do
+local v100, v101 = v97(v98, v99)
+
+if v100 == nil then
+break
+end
+
+v99 = v100
+
+if v101.Name == v95 then
+v96 = true
+end
+end
+
+if v96 then
+v95 = v95 .. '_'
+end
+end
+
+table.insert(v93, v95)
+
+Instance.new('Script', v94).Name = v95
+end
+end
+
+_Character.Archivable = true
+
+local _Humanoid = _Character:FindFirstChildOfClass('Humanoid')
+
+if _Humanoid then
+local v103, v104, v105 = pairs(_Humanoid:GetPlayingAnimationTracks())
+
+while true do
+local v106
+
+v105, v106 = v103(v104, v105)
+
+if v105 == nil then
+break
+end
+
+v106:Stop()
+end
+end
+
+local v107 = _Character
+local v108 = _Character.Clone(v107)
+
+if _Humanoid and v16 then
+_Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+
+if u61 then
+wait(1.6)
+end
+end
+if _Humanoid and (_Humanoid.Parent and u61) then
+_Humanoid:Destroy()
+end
+if not _Character then
+return
+end
+
+local v109 = u42(_Character, 'Head', 'BasePart')
+local v110 = u42(_Character, 'Torso', 'BasePart') or u42(_Character, 'UpperTorso', 'BasePart')
+local v111 = u42(_Character, 'HumanoidRootPart', 'BasePart')
+
+if v15 then
+local v112 = _Character
+
+if _Character.FindFirstChildOfClass(v112, 'Accessory') then
+local v113 = _Character
+local v114 = _Character.FindFirstChildOfClass(v113, 'BodyColors') or u42(_Character, 'Health', 'Script')
+
+if not (v110 and (v111 and v114)) then
+return
+end
+
+v110:Destroy()
+v111:Destroy()
+
+if u65 then
+local v115, v116, v117 = pairs(_Character:GetChildren())
+
+while true do
+local v118, v119 = v115(v116, v117)
+
+if v118 == nil then
+break
+end
+
+v117 = v118
+
+if v119:IsA('Accessory') then
+u65(v119, 'BackendAccoutrementState', 0)
+end
+end
+end
+
+v114:Destroy()
+end
+end
+
+local _Model = Instance.new('Model', _Character)
+
+_Model.Name = _Model.ClassName
+
+local v121 = _Model
+
+_Model.GetPropertyChangedSignal(v121, 'Parent'):Connect(function()
+if not (_Model and _Model.Parent) then
+_Model = nil
+end
+end)
+
+local v122 = _Character
+local v123, v124, v125 = pairs(_Character.GetChildren(v122))
+
+while true do
+local v126, v127 = v123(v124, v125)
+
+if v126 == nil then
+break
+end
+
+v125 = v126
+
+if v127 ~= _Model then
+if v17 and v127:IsA('Tool') then
+local v128, v129, v130 = pairs(v127:GetDescendants())
+
+while true do
+local v131, v132 = v128(v129, v130)
+
+if v131 == nil then
+break
+end
+
+v130 = v131
+
+if v132 and (v132.Parent and v132:IsA('BasePart')) then
+local _BodyVelocity = Instance.new('BodyVelocity', v132)
+
+_BodyVelocity.Velocity = _zero
+_BodyVelocity.MaxForce = _new2(1000, 1000, 1000)
+_BodyVelocity.P = 1250
+_BodyVelocity.Name = 'bv_' .. v127.Name
+end
+end
+end
+
+v127.Parent = _Model
+end
+end
+
+if v62 then
+_Model:BreakJoints()
+else
+if v109 and v110 then
+local v134, v135, v136 = pairs(_Model:GetDescendants())
+
+while true do
+local v137, v138 = v134(v135, v136)
+
+if v137 == nil then
+break
+end
+
+v136 = v137
+
+if v138:IsA('Weld') or (v138:IsA('Snap') or (v138:IsA('Glue') or (v138:IsA('Motor') or v138:IsA('Motor6D')))) then
+local v139 = v138.Part0 == v110 and v138.Part1 == v109
+
+if v138.Part0 == v109 and v138.Part1 == v110 and true or v139 then
+if v18 then
+v18 = v138
+end
+else
+v138:Destroy()
+end
+end
+end
+end
+if v20 == 3 then
+spawn(function()
+wait(u19)
+
+if _Model then
+_Model:BreakJoints()
+end
+end)
+end
+end
+
+v108.Parent = _Character
+
+local v140, v141, v142 = pairs(v108:GetChildren())
+
+while true do
+local v143
+
+v142, v143 = v140(v141, v142)
+
+if v142 == nil then
+break
+end
+
+v143.Parent = _Character
+end
+
+v108:Destroy()
+
+local u144 = v10 and _Character and _Character or _Model
+local u145 = nil
+
+local function v151()
+if u144 then
+local v146 = u144
+local v147, v148, v149 = pairs(v146:GetDescendants())
+
+while true do
+local v150
+
+v149, v150 = v147(v148, v149)
+
+if v149 == nil then
+break
+end
+if v150:IsA('BasePart') then
+v150.CanCollide = false
+end
+end
+else
+u145:Disconnect()
+end
+end
+
+u145 = _Stepped:Connect(v151)
+
+v151()
+
+local v152, v153, v154 = pairs(_Model:GetDescendants())
+
+while true do
+local v155, v156 = v152(v153, v154)
+
+if v155 == nil then
+local v157, v158, v159 = pairs(_Character:GetDescendants())
+
+while true do
+local v160, v161 = v157(v158, v159)
+
+if v160 == nil then
+break
+end
+
+v159 = v160
+
+if v161 and (v161.Parent and not v161:IsDescendantOf(_Model)) then
+if v161:IsA('Decal') then
+v161.Transparency = 1
+elseif v161:IsA('BasePart') then
+v161.Transparency = 1
+v161.Anchored = false
+elseif v161:IsA('ForceField') then
+v161.Visible = false
+elseif v161:IsA('Sound') then
+v161.Playing = false
+elseif v161:IsA('BillboardGui') or (v161:IsA('SurfaceGui') or (v161:IsA('ParticleEmitter') or (v161:IsA('Fire') or (v161:IsA('Smoke') or v161:IsA('Sparkles'))))) then
+v161.Enabled = false
+end
+end
+end
+
+local v162 = v12 and u42(_Character, 'Animate', 'LocalScript')
+
+if v162 then
+v162.Disabled = false
+end
+if v17 then
+local v163, v164, v165 = pairs(_Character:GetChildren())
+
+while true do
+local v166, v167 = v163(v164, v165)
+
+if v166 == nil then
+break
+end
+
+v165 = v166
+
+if v167:IsA('Tool') then
+v167.Parent = v17
+end
+end
+end
+
+local v168 = _Model
+local u169 = _Model.FindFirstChildOfClass(v168, 'Humanoid')
+
+if u169 then
+u169:GetPropertyChangedSignal('Parent'):Connect(function()
+if not (u169 and u169.Parent) then
+u169 = nil
+end
+end)
+end
+
+local _Humanoid2 = _Character:FindFirstChildOfClass('Humanoid')
+
+if _Humanoid2 then
+_Humanoid2:GetPropertyChangedSignal('Parent'):Connect(function()
+if not (_Humanoid2 and _Humanoid2.Parent) then
+_Humanoid2 = nil
+end
+end)
+
+_Workspace.CurrentCamera.CameraSubject = _Humanoid2
+
+local u171 = nil
+
+u171 = _RenderStepped:Connect(function()
+u171:Disconnect()
+
+if _Character and _Humanoid2 then
+_Workspace.CurrentCamera.CameraSubject = _Humanoid2
+end
+end)
+
+if u169 then
+u169:GetPropertyChangedSignal('Jump'):Connect(function()
+if _Humanoid2 then
+_Humanoid2.Jump = u169.Jump
+end
+end)
+else
+u60()
+end
+end
+
+local _BindableEvent = Instance.new('BindableEvent', _Character)
+
+_BindableEvent.Event:Connect(function()
+_BindableEvent:Destroy()
+--game.Players:Chat('-re')
+_StarterGui:SetCore('ResetButtonCallback', true)
+
+if u61 then
+_Character:BreakJoints()
+else
+if u169 and u169.Health > 0 then
+_Model:BreakJoints()
+
+u169.Health = 0
+end
+if u63 then
+u60()
+end
+end
+end)
+_StarterGui:SetCore('ResetButtonCallback', _BindableEvent)
+spawn(function()
+while _Character do
+if u169 and _Humanoid2 then
+_Humanoid2.Jump = u169.Jump
+end
+
+wait()
+end
+
+_StarterGui:SetCore('ResetButtonCallback', true)
+end)
+
+if v14 then
+if _Humanoid2 then
+v14 = _Humanoid2.RigType == Enum.HumanoidRigType.R15
+else
+v14 = _Humanoid2
+end
+end
+if v14 then
+local v173 = u42(_Character, 'HumanoidRootPart', 'BasePart') or (u42(_Character, 'UpperTorso', 'BasePart') or u42(_Character, 'LowerTorso', 'BasePart') or (u42(_Character, 'Head', 'BasePart') or _Character:FindFirstChildWhichIsA('BasePart')))
+
+if v173 then
+local _CFrame2 = v173.CFrame
+local v175 = {
+head = {
+Name = 'Head',
+Size = _new2(2, 1, 1),
+R15 = {Head = 0},
+},
+torso = {
+Name = 'Torso',
+Size = _new2(2, 2, 1),
+R15 = {
+UpperTorso = 0.2,
+LowerTorso = -0.8,
+},
+},
+root = {
+Name = 'HumanoidRootPart',
+Size = _new2(2, 2, 1),
+R15 = {HumanoidRootPart = 0},
+},
+leftArm = {
+Name = 'Left Arm',
+Size = _new2(1, 2, 1),
+R15 = {
+LeftHand = -0.849,
+LeftLowerArm = -0.174,
+LeftUpperArm = 0.415,
+},
+},
+rightArm = {
+Name = 'Right Arm',
+Size = _new2(1, 2, 1),
+R15 = {
+RightHand = -0.849,
+RightLowerArm = -0.174,
+RightUpperArm = 0.415,
+},
+},
+leftLeg = {
+Name = 'Left Leg',
+Size = _new2(1, 2, 1),
+R15 = {
+LeftFoot = -0.85,
+LeftLowerLeg = -0.29,
+LeftUpperLeg = 0.49,
+},
+},
+rightLeg = {
+Name = 'Right Leg',
+Size = _new2(1, 2, 1),
+R15 = {
+RightFoot = -0.85,
+RightLowerLeg = -0.29,
+RightUpperLeg = 0.49,
+},
+},
+}
+local v176, v177, v178 = pairs(_Character:GetChildren())
+
+while true do
+local v179, v180 = v176(v177, v178)
+
+if v179 == nil then
+break
+end
+
+v178 = v179
+
+if v180:IsA('BasePart') then
+local v181, v182, v183 = pairs(v180:GetChildren())
+
+while true do
+local v184, v185 = v181(v182, v183)
+
+if v184 == nil then
+break
+end
+
+v183 = v184
+
+if v185:IsA('Motor6D') then
+v185.Part0 = nil
+end
+end
+end
+end
+
+v173.Archivable = true
+
+local v186, v187, v188 = pairs(v175)
+
+while true do
+local v189, v190 = v186(v187, v188)
+
+if v189 == nil then
+break
+end
+
+local v191 = v173:Clone()
+
+v191:ClearAllChildren()
+
+v191.Name = v190.Name
+v191.Size = v190.Size
+v191.CFrame = _CFrame2
+v191.Anchored = false
+v191.Transparency = 1
+v191.CanCollide = false
+
+local v192, v193, v194 = pairs(v190.R15)
+
+v188 = v189
+
+while true do
+local v195, v196 = v192(v193, v194)
+
+if v195 == nil then
+break
+end
+
+v194 = v195
+
+local v197 = u42(_Character, v195, 'BasePart')
+local v198 = u42(v197, 'att1_' .. v195, 'Attachment')
+
+if v197 then
+local _Weld = Instance.new('Weld', v197)
+
+_Weld.Name = 'Weld_' .. v195
+_Weld.Part0 = v191
+_Weld.Part1 = v197
+_Weld.C0 = _new(0, v196, 0)
+_Weld.C1 = _new(0, 0, 0)
+v197.Massless = true
+v197.Name = 'R15_' .. v195
+v197.Parent = v191
+
+if v198 then
+v198.Parent = v191
+v198.Position = _new2(0, v196, 0)
+end
+end
+end
+
+v191.Parent = _Character
+v175[v189] = v191
+end
+
+local v200 = {
+neck = {
+Parent = v175.torso,
+Name = 'Neck',
+Part0 = v175.torso,
+Part1 = v175.head,
+C0 = _new(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 1, 0),
+C1 = _new(0, -0.5, 0, -1, 0, 0, 0, 0, 1, 0, 1, 0),
+},
+rootJoint = {
+Parent = v175.root,
+Name = 'RootJoint',
+Part0 = v175.root,
+Part1 = v175.torso,
+C0 = _new(0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 1, 0),
+C1 = _new(0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 1, 0),
+},
+rightShoulder = {
+Parent = v175.torso,
+Name = 'Right Shoulder',
+Part0 = v175.torso,
+Part1 = v175.rightArm,
+C0 = _new(1, 0.5, 0, 0, 0, 1, 0, 1, 0, -1, 0, 0),
+C1 = _new(-0.5, 0.5, 0, 0, 0, 1, 0, 1, 0, -1, 0, 0),
+},
+leftShoulder = {
+Parent = v175.torso,
+Name = 'Left Shoulder',
+Part0 = v175.torso,
+Part1 = v175.leftArm,
+C0 = _new(-1, 0.5, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+C1 = _new(0.5, 0.5, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+},
+rightHip = {
+Parent = v175.torso,
+Name = 'Right Hip',
+Part0 = v175.torso,
+Part1 = v175.rightLeg,
+C0 = _new(1, -1, 0, 0, 0, 1, 0, 1, 0, -1, 0, 0),
+C1 = _new(0.5, 1, 0, 0, 0, 1, 0, 1, 0, -1, 0, 0),
+},
+leftHip = {
+Parent = v175.torso,
+Name = 'Left Hip',
+Part0 = v175.torso,
+Part1 = v175.leftLeg,
+C0 = _new(-1, -1, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+C1 = _new(-0.5, 1, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+},
+}
+local v201, v202, v203 = pairs(v200)
+
+while true do
+local v204, v205 = v201(v202, v203)
+
+if v204 == nil then
+break
+end
+
+local _Motor6D = Instance.new('Motor6D')
+local v207, v208, v209 = pairs(v205)
+
+v203 = v204
+
+while true do
+local v210
+
+v209, v210 = v207(v208, v209)
+
+if v209 == nil then
+break
+end
+
+_Motor6D[v209] = v210
+end
+
+v200[v204] = _Motor6D
+end
+
+if _Humanoid2 then
+_Humanoid2.RigType = Enum.HumanoidRigType.R6
+_Humanoid2.HipHeight = 0
+end
+end
+end
+
+local v211 = u42(_Character, 'Torso', 'BasePart')
+
+if not v211 then
+if v14 then
+v211 = false
+else
+v211 = u42(_Character, v110.Name, 'BasePart')
+end
+end
+if typeof(v18) == 'Instance' and (v109 and (v211 and v110)) then
+local u212 = nil
+local u213 = nil
+local u214 = {}
+
+local function u219()
+u212:Disconnect()
+u213:Disconnect()
+conTorso1:Disconnect()
+
+local v215, v216, v217 = pairs(u214)
+
+while true do
+local v218
+
+v217, v218 = v215(v216, v217)
+
+if v217 == nil then
+break
+end
+
+v218.Enabled = true
+end
+end
+
+u212 = v18.Changed:Connect(function(p220)
+if table.find({
+'Part0',
+'Part1',
+'Parent',
+}, p220) then
+u219()
+end
+end)
+u213 = v211:GetPropertyChangedSignal('Parent'):Connect(u219)
+conTorso1 = v110:GetPropertyChangedSignal('Parent'):Connect(u219)
+
+local v221, v222, v223 = pairs(v109:GetDescendants())
+local u224 = u214
+
+while true do
+local v225, v226 = v221(v222, v223)
+
+if v225 == nil then
+break
+end
+
+v223 = v225
+
+if v226:IsA('AlignPosition') or v226:IsA('AlignOrientation') then
+local u227 = tostring(v225)
+
+u224[u227] = v226
+
+v226:GetPropertyChangedSignal('Parent'):Connect(function()
+u224[u227] = nil
+end)
+
+v226.Enabled = false
+end
+end
+end
+
+local u228 = u42(_Model, v22, 'BasePart') or u42(u42(_Model, v22, 'Accessory'), 'Handle', 'BasePart')
+local u229 = u42(_Character, v22, 'BasePart') or u42(u42(_Character, v22, 'Accessory'), 'Handle', 'BasePart')
+
+local function u230() end
+
+if u228 and u229 then
+u228:GetPropertyChangedSignal('Parent'):Connect(function()
+if not (u228 and u228.Parent) then
+u228 = nil
+u230 = function() end
+end
+end)
+
+u228.Archivable = true
+
+u229:GetPropertyChangedSignal('Parent'):Connect(function()
+if not (u229 and u229.Parent) then
+u229 = nil
+u230 = function() end
+end
+end)
+
+local u231 = u42(u228, 'att0_' .. u228.Name, 'Attachment')
+local u232 = u42(u229, 'att1_' .. u229.Name, 'Attachment')
+
+if u231 and u232 then
+u231:GetPropertyChangedSignal('Parent'):Connect(function()
+if not (u231 and u231.Parent) then
+u231 = nil
+u230 = function() end
+end
+end)
+u232:GetPropertyChangedSignal('Parent'):Connect(function()
+if not (u232 and u232.Parent) then
+u232 = nil
+u230 = function() end
+end
+end)
+
+local u233 = nil
+local u234 = _LocalPlayer:GetMouse()
+
+local function v260(p235, p236, p237)
+if typeof(p235) ~= 'Instance' then
+if typeof(p235) ~= 'CFrame' then
+if typeof(p235) ~= 'Vector3' then
+local _Hit = u234.Hit
+
+if not _Hit then
+return
+end
+
+p235 = _Hit.Position
+end
+else
+p235 = p235.Position
+end
+elseif p235:IsA('BasePart') then
+p235 = p235.Position
+elseif p235:IsA('Model') then
+local v239 = u42(p235, 'HumanoidRootPart', 'BasePart') or u42(p235, 'Torso', 'BasePart') or (u42(p235, 'UpperTorso', 'BasePart') or p235:FindFirstChildWhichIsA('BasePart'))
+
+if not v239 then
+return
+end
+
+p235 = v239.Position
+else
+if not p235:IsA('Humanoid') then
+return
+end
+
+local _Parent = p235.Parent
+
+if not (_Parent and _Parent:IsA('Model')) then
+return
+end
+
+local v241 = u42(p235, 'HumanoidRootPart', 'BasePart') or u42(p235, 'Torso', 'BasePart') or (u42(p235, 'UpperTorso', 'BasePart') or p235:FindFirstChildWhichIsA('BasePart'))
+
+if not v241 then
+return
+end
+
+p235 = v241.Position
+end
+
+u233 = p235
+
+local v242 = type(p236) ~= 'number' and (tonumber(p236) or 0.5) or p236
+
+if typeof(p237) ~= 'Vector3' then
+p237 = _new2(20000, 20000, 20000)
+end
+if p235 and (u228 and (u229 and (u231 and u232))) then
+local u243 = u228:Clone()
+
+u243.Transparency = 1
+u243.Size = _new2(0.01, 0.01, 0.01)
+u243.CanCollide = false
+u243.Name = 'flingpart_' .. u228.Name
+u243.Anchored = true
+u243.Velocity = _zero
+u243.RotVelocity = _zero
+
+local v244 = u243
+
+u243.GetPropertyChangedSignal(v244, 'Parent'):Connect(function()
+if not (u243 and u243.Parent) then
+u243 = nil
+end
+end)
+
+u243.Parent = u229
+
+if u228.Transparency > 0.5 then
+u228.Transparency = 0.5
+end
+
+u232.Parent = u243
+
+local v245 = u231
+local v246, v247, v248 = pairs(v245:GetChildren())
+local u249 = u243
+
+while true do
+local v250, v251 = v246(v247, v248)
+
+if v250 == nil then
+break
+end
+
+v248 = v250
+
+if v251:IsA('AlignOrientation') then
+v251.Enabled = false
+end
+end
+
+local u252 = nil
+
+u252 = _Heartbeat:Connect(function()
+if p235 and (u233 == p235 and (u249 and (u228 and (u229 and (u231 and u232))))) then
+u228.RotVelocity = p237
+u249.Position = p235
+else
+u252:Disconnect()
+end
+end)
+
+local u253 = _new2(p237.X > 0 and -1 or 1, p237.Y > 0 and -1 or 1, p237.Z > 0 and -1 or 1)
+local u254 = nil
+
+u254 = _RenderStepped:Connect(function()
+if p235 and (u233 == p235 and (u249 and (u228 and (u229 and (u231 and u232))))) then
+u228.RotVelocity = u253
+u249.Position = p235
+else
+u254:Disconnect()
+end
+end)
+
+wait(v242)
+
+if u233 == p235 then
+local _ = nil
+
+if u249 and (u228 and (u229 and (u231 and u232))) then
+u228.RotVelocity = _zero
+u232.Parent = u229
+
+local v255 = u231
+local v256, v257, v258 = pairs(v255:GetChildren())
+
+while true do
+local v259
+
+v258, v259 = v256(v257, v258)
+
+if v258 == nil then
+break
+end
+if v259:IsA('AlignOrientation') then
+v259.Enabled = true
+end
+end
+
+if u249 then
+u249:Destroy()
+end
+end
+else
+if u249 then
+if u232 and u232.Parent == u249 then
+u232.Parent = u229
+end
+
+u249:Destroy()
+end
+
+return
+end
+else
+return
+end
+end
+
+u230 = v260
+end
+end
+
+local _TweenService = game:GetService('TweenService')
+local _LocalPlayer2 = game:GetService('Players').LocalPlayer
+local u263 = _LocalPlayer2
+
+ZTfade = false
+ZT = false
+
+function getTorso(p264)
+local v265 = p264 or u263.Character
+
+return v265:FindFirstChild('Torso') or v265:FindFirstChild('UpperTorso') or (v265:FindFirstChild('LowerTorso') or v265:FindFirstChild('HumanoidRootPart'))
+end
+
+
+
+
+
+function LoadLibrary(a)
+local t = {}
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------JSON Functions Begin----------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+--JSON Encoder and Parser for Lua 5.1
+--
+--Copyright 2007 Shaun Brown (http://www.chipmunkav.com)
+--All Rights Reserved.
+
+--Permission is hereby granted, free of charge, to any person
+--obtaining a copy of this software to deal in the Software without
+--restriction, including without limitation the rights to use,
+--copy, modify, merge, publish, distribute, sublicense, and/or
+--sell copies of the Software, and to permit persons to whom the
+--Software is furnished to do so, subject to the following conditions:
+
+--The above copyright notice and this permission notice shall be
+--included in all copies or substantial portions of the Software.
+--If you find this software useful please give www.chipmunkav.com a mention.
+
+--THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+--EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+--OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+--IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+--ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+--CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+--CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+local string = string
+local math = math
+local table = table
+local error = error
+local tonumber = tonumber
+local tostring = tostring
+local type = type
+local setmetatable = setmetatable
+local pairs = pairs
+local ipairs = ipairs
+local assert = assert
+
+
+local StringBuilder = {
+buffer = {}
+}
+
+function StringBuilder:New()
+local o = {}
+setmetatable(o, self)
+self.__index = self
+o.buffer = {}
+return o
+end
+
+function StringBuilder:Append(s)
+self.buffer[#self.buffer+1] = s
+end
+
+function StringBuilder:ToString()
+return table.concat(self.buffer)
+end
+
+local JsonWriter = {
+backslashes = {
+['\b'] = "\\b",
+['\t'] = "\\t",
+['\n'] = "\\n",
+['\f'] = "\\f",
+['\r'] = "\\r",
+['"'] = "\\\"",
+['\\'] = "\\\\",
+['/'] = "\\/"
+}
+}
+
+function JsonWriter:New()
+local o = {}
+o.writer = StringBuilder:New()
+setmetatable(o, self)
+self.__index = self
+return o
+end
+
+function JsonWriter:Append(s)
+self.writer:Append(s)
+end
+
+function JsonWriter:ToString()
+return self.writer:ToString()
+end
+
+function JsonWriter:Write(o)
+local t = type(o)
+if t == "nil" then
+self:WriteNil()
+elseif t == "boolean" then
+self:WriteString(o)
+elseif t == "number" then
+self:WriteString(o)
+elseif t == "string" then
+self:ParseString(o)
+elseif t == "table" then
+self:WriteTable(o)
+elseif t == "function" then
+self:WriteFunction(o)
+elseif t == "thread" then
+self:WriteError(o)
+elseif t == "userdata" then
+self:WriteError(o)
+end
+end
+
+function JsonWriter:WriteNil()
+self:Append("null")
+end
+
+function JsonWriter:WriteString(o)
+self:Append(tostring(o))
+end
+
+function JsonWriter:ParseString(s)
+self:Append('"')
+self:Append(string.gsub(s, "[%z%c\\\"/]", function(n)
+local c = self.backslashes[n]
+if c then return c end
+return string.format("\\u%.4X", string.byte(n))
+end))
+self:Append('"')
+end
+
+function JsonWriter:IsArray(t)
+local count = 0
+local isindex = function(k)
+if type(k) == "number" and k > 0 then
+if math.floor(k) == k then
+return true
+end
+end
+return false
+end
+for k,v in pairs(t) do
+if not isindex(k) then
+return false, '{', '}'
+else
+count = math.max(count, k)
+end
+end
+return true, '[', ']', count
+end
+
+function JsonWriter:WriteTable(t)
+local ba, st, et, n = self:IsArray(t)
+self:Append(st)
+if ba then
+for i = 1, n do
+self:Write(t[i])
+if i < n then
+self:Append(',')
+end
+end
+else
+local first = true;
+for k, v in pairs(t) do
+if not first then
+self:Append(',')
+end
+first = false;
+self:ParseString(k)
+self:Append(':')
+self:Write(v)
+end
+end
+self:Append(et)
+end
+
+function JsonWriter:WriteError(o)
+error(string.format(
+"Encoding of %s unsupported",
+tostring(o)))
+end
+
+function JsonWriter:WriteFunction(o)
+if o == Null then
+self:WriteNil()
+else
+self:WriteError(o)
+end
+end
+
+local StringReader = {
+s = "",
+i = 0
+}
+
+function StringReader:New(s)
+local o = {}
+setmetatable(o, self)
+self.__index = self
+o.s = s or o.s
+return o
+end
+
+function StringReader:Peek()
+local i = self.i + 1
+if i <= #self.s then
+return string.sub(self.s, i, i)
+end
+return nil
+end
+
+function StringReader:Next()
+self.i = self.i+1
+if self.i <= #self.s then
+return string.sub(self.s, self.i, self.i)
+end
+return nil
+end
+
+function StringReader:All()
+return self.s
+end
+
+local JsonReader = {
+escapes = {
+['t'] = '\t',
+['n'] = '\n',
+['f'] = '\f',
+['r'] = '\r',
+['b'] = '\b',
+}
+}
+
+function JsonReader:New(s)
+local o = {}
+o.reader = StringReader:New(s)
+setmetatable(o, self)
+self.__index = self
+return o;
+end
+
+function JsonReader:Read()
+self:SkipWhiteSpace()
+local peek = self:Peek()
+if peek == nil then
+error(string.format(
+"Nil string: '%s'",
+self:All()))
+elseif peek == '{' then
+return self:ReadObject()
+elseif peek == '[' then
+return self:ReadArray()
+elseif peek == '"' then
+return self:ReadString()
+elseif string.find(peek, "[%+%-%d]") then
+return self:ReadNumber()
+elseif peek == 't' then
+return self:ReadTrue()
+elseif peek == 'f' then
+return self:ReadFalse()
+elseif peek == 'n' then
+return self:ReadNull()
+elseif peek == '/' then
+self:ReadComment()
+return self:Read()
+else
+return nil
+end
+end
+
+function JsonReader:ReadTrue()
+self:TestReservedWord{'t','r','u','e'}
+return true
+end
+
+function JsonReader:ReadFalse()
+self:TestReservedWord{'f','a','l','s','e'}
+return false
+end
+
+function JsonReader:ReadNull()
+self:TestReservedWord{'n','u','l','l'}
+return nil
+end
+
+function JsonReader:TestReservedWord(t)
+for i, v in ipairs(t) do
+if self:Next() ~= v then
+error(string.format(
+"Error reading '%s': %s",
+table.concat(t),
+self:All()))
+end
+end
+end
+
+function JsonReader:ReadNumber()
+local result = self:Next()
+local peek = self:Peek()
+while peek ~= nil and string.find(
+peek,
+"[%+%-%d%.eE]") do
+result = result .. self:Next()
+peek = self:Peek()
+end
+result = tonumber(result)
+if result == nil then
+error(string.format(
+"Invalid number: '%s'",
+result))
+else
+return result
+end
+end
+
+function JsonReader:ReadString()
+local result = ""
+assert(self:Next() == '"')
+while self:Peek() ~= '"' do
+local ch = self:Next()
+if ch == '\\' then
+ch = self:Next()
+if self.escapes[ch] then
+ch = self.escapes[ch]
+end
+end
+result = result .. ch
+end
+assert(self:Next() == '"')
+local fromunicode = function(m)
+return string.char(tonumber(m, 16))
+end
+return string.gsub(
+result,
+"u%x%x(%x%x)",
+fromunicode)
+end
+
+function JsonReader:ReadComment()
+assert(self:Next() == '/')
+local second = self:Next()
+if second == '/' then
+self:ReadSingleLineComment()
+elseif second == '*' then
+self:ReadBlockComment()
+else
+error(string.format(
+"Invalid comment: %s",
+self:All()))
+end
+end
+
+function JsonReader:ReadBlockComment()
+local done = false
+while not done do
+local ch = self:Next()
+if ch == '*' and self:Peek() == '/' then
+done = true
+end
+if not done and
+ch == '/' and
+self:Peek() == "*" then
+error(string.format(
+"Invalid comment: %s, '/*' illegal.",
+self:All()))
+end
+end
+self:Next()
+end
+
+function JsonReader:ReadSingleLineComment()
+local ch = self:Next()
+while ch ~= '\r' and ch ~= '\n' do
+ch = self:Next()
+end
+end
+
+function JsonReader:ReadArray()
+local result = {}
+assert(self:Next() == '[')
+local done = false
+if self:Peek() == ']' then
+done = true;
+end
+while not done do
+local item = self:Read()
+result[#result+1] = item
+self:SkipWhiteSpace()
+if self:Peek() == ']' then
+done = true
+end
+if not done then
+local ch = self:Next()
+if ch ~= ',' then
+error(string.format(
+"Invalid array: '%s' due to: '%s'",
+self:All(), ch))
+end
+end
+end
+assert(']' == self:Next())
+return result
+end
+
+function JsonReader:ReadObject()
+local result = {}
+assert(self:Next() == '{')
+local done = false
+if self:Peek() == '}' then
+done = true
+end
+while not done do
+local key = self:Read()
+if type(key) ~= "string" then
+error(string.format(
+"Invalid non-string object key: %s",
+key))
+end
+self:SkipWhiteSpace()
+local ch = self:Next()
+if ch ~= ':' then
+error(string.format(
+"Invalid object: '%s' due to: '%s'",
+self:All(),
+ch))
+end
+self:SkipWhiteSpace()
+local val = self:Read()
+result[key] = val
+self:SkipWhiteSpace()
+if self:Peek() == '}' then
+done = true
+end
+if not done then
+ch = self:Next()
+if ch ~= ',' then
+error(string.format(
+"Invalid array: '%s' near: '%s'",
+self:All(),
+ch))
+end
+end
+end
+assert(self:Next() == "}")
+return result
+end
+
+function JsonReader:SkipWhiteSpace()
+local p = self:Peek()
+while p ~= nil and string.find(p, "[%s/]") do
+if p == '/' then
+self:ReadComment()
+else
+self:Next()
+end
+p = self:Peek()
+end
+end
+
+function JsonReader:Peek()
+return self.reader:Peek()
+end
+
+function JsonReader:Next()
+return self.reader:Next()
+end
+
+function JsonReader:All()
+return self.reader:All()
+end
+
+function Encode(o)
+local writer = JsonWriter:New()
+writer:Write(o)
+return writer:ToString()
+end
+
+function Decode(s)
+local reader = JsonReader:New(s)
+return reader:Read()
+end
+
+function Null()
+return Null
+end
+-------------------- End JSON Parser ------------------------
+
+t.DecodeJSON = function(jsonString)
+pcall(function() warn("RbxUtility.DecodeJSON is deprecated, please use Game:GetService('HttpService'):JSONDecode() instead.") end)
+
+if type(jsonString) == "string" then
+return Decode(jsonString)
+end
+print("RbxUtil.DecodeJSON expects string argument!")
+return nil
+end
+
+t.EncodeJSON = function(jsonTable)
+pcall(function() warn("RbxUtility.EncodeJSON is deprecated, please use Game:GetService('HttpService'):JSONEncode() instead.") end)
+return Encode(jsonTable)
+end
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------Terrain Utilities Begin-----------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--makes a wedge at location x, y, z
+--sets cell x, y, z to default material if parameter is provided, if not sets cell x, y, z to be whatever material it previously w
+--returns true if made a wedge, false if the cell remains a block
+t.MakeWedge = function(x, y, z, defaultmaterial)
+return game:GetService("Terrain"):AutoWedgeCell(x,y,z)
+end
+
+t.SelectTerrainRegion = function(regionToSelect, color, selectEmptyCells, selectionParent)
+local terrain = game:GetService("Workspace"):FindFirstChild("Terrain")
+if not terrain then return end
+
+assert(regionToSelect)
+assert(color)
+
+if not type(regionToSelect) == "Region3" then
+error("regionToSelect (first arg), should be of type Region3, but is type",type(regionToSelect))
+end
+if not type(color) == "BrickColor" then
+error("color (second arg), should be of type BrickColor, but is type",type(color))
+end
+
+-- frequently used terrain calls (speeds up call, no lookup necessary)
+local GetCell = terrain.GetCell
+local WorldToCellPreferSolid = terrain.WorldToCellPreferSolid
+local CellCenterToWorld = terrain.CellCenterToWorld
+local emptyMaterial = Enum.CellMaterial.Empty
+
+-- container for all adornments, passed back to user
+local selectionContainer = Instance.new("Model")
+selectionContainer.Name = "SelectionContainer"
+selectionContainer.Archivable = false
+if selectionParent then
+selectionContainer.Parent = selectionParent
+else
+selectionContainer.Parent = game:GetService("Workspace")
+end
+
+local updateSelection = nil -- function we return to allow user to update selection
+local currentKeepAliveTag = nil -- a tag that determines whether adorns should be destroyed
+local aliveCounter = 0 -- helper for currentKeepAliveTag
+local lastRegion = nil -- used to stop updates that do nothing
+local adornments = {} -- contains all adornments
+local reusableAdorns = {}
+
+local selectionPart = Instance.new("Part")
+selectionPart.Name = "SelectionPart"
+selectionPart.Transparency = 1
+selectionPart.Anchored = true
+selectionPart.Locked = true
+selectionPart.CanCollide = false
+selectionPart.Size = Vector3.new(4.2,4.2,4.2)
+
+local selectionBox = Instance.new("SelectionBox")
+
+-- srs translation from region3 to region3int16
+local function Region3ToRegion3int16(region3)
+local theLowVec = region3.CFrame.p - (region3.Size/2) + Vector3.new(2,2,2)
+local lowCell = WorldToCellPreferSolid(terrain,theLowVec)
+
+local theHighVec = region3.CFrame.p + (region3.Size/2) - Vector3.new(2,2,2)
+local highCell = WorldToCellPreferSolid(terrain, theHighVec)
+
+local highIntVec = Vector3int16.new(highCell.x,highCell.y,highCell.z)
+local lowIntVec = Vector3int16.new(lowCell.x,lowCell.y,lowCell.z)
+
+return Region3int16.new(lowIntVec,highIntVec)
+end
+
+-- helper function that creates the basis for a selection box
+function createAdornment(theColor)
+local selectionPartClone = nil
+local selectionBoxClone = nil
+
+if #reusableAdorns > 0 then
+selectionPartClone = reusableAdorns[1]["part"]
+selectionBoxClone = reusableAdorns[1]["box"]
+table.remove(reusableAdorns,1)
+
+selectionBoxClone.Visible = true
+else
+selectionPartClone = selectionPart:Clone()
+selectionPartClone.Archivable = false
+
+selectionBoxClone = selectionBox:Clone()
+selectionBoxClone.Archivable = false
+
+selectionBoxClone.Adornee = selectionPartClone
+selectionBoxClone.Parent = selectionContainer
+
+selectionBoxClone.Adornee = selectionPartClone
+
+selectionBoxClone.Parent = selectionContainer
+end
+
+if theColor then
+selectionBoxClone.Color = theColor
+end
+
+return selectionPartClone, selectionBoxClone
+end
+
+-- iterates through all current adornments and deletes any that don't have latest tag
+function cleanUpAdornments()
+for cellPos, adornTable in pairs(adornments) do
+
+if adornTable.KeepAlive ~= currentKeepAliveTag then -- old news, we should get rid of this
+adornTable.SelectionBox.Visible = false
+table.insert(reusableAdorns,{part = adornTable.SelectionPart, box = adornTable.SelectionBox})
+adornments[cellPos] = nil
+end
+end
+end
+
+-- helper function to update tag
+function incrementAliveCounter()
+aliveCounter = aliveCounter + 1
+if aliveCounter > 1000000 then
+aliveCounter = 0
+end
+return aliveCounter
+end
+
+-- finds full cells in region and adorns each cell with a box, with the argument color
+function adornFullCellsInRegion(region, color)
+local regionBegin = region.CFrame.p - (region.Size/2) + Vector3.new(2,2,2)
+local regionEnd = region.CFrame.p + (region.Size/2) - Vector3.new(2,2,2)
+
+local cellPosBegin = WorldToCellPreferSolid(terrain, regionBegin)
+local cellPosEnd = WorldToCellPreferSolid(terrain, regionEnd)
+
+currentKeepAliveTag = incrementAliveCounter()
+for y = cellPosBegin.y, cellPosEnd.y do
+for z = cellPosBegin.z, cellPosEnd.z do
+for x = cellPosBegin.x, cellPosEnd.x do
+local cellMaterial = GetCell(terrain, x, y, z)
+
+if cellMaterial ~= emptyMaterial then
+local cframePos = CellCenterToWorld(terrain, x, y, z)
+local cellPos = Vector3int16.new(x,y,z)
+
+local updated = false
+for cellPosAdorn, adornTable in pairs(adornments) do
+if cellPosAdorn == cellPos then
+adornTable.KeepAlive = currentKeepAliveTag
+if color then
+adornTable.SelectionBox.Color = color
+end
+updated = true
+break
+end
+end
+
+if not updated then
+local selectionPart, selectionBox = createAdornment(color)
+selectionPart.Size = Vector3.new(4,4,4)
+selectionPart.CFrame = CFrame.new(cframePos)
+local adornTable = {SelectionPart = selectionPart, SelectionBox = selectionBox, KeepAlive = currentKeepAliveTag}
+adornments[cellPos] = adornTable
+end
+end
+end
+end
+end
+cleanUpAdornments()
+end
+
+
+------------------------------------- setup code ------------------------------
+lastRegion = regionToSelect
+
+if selectEmptyCells then -- use one big selection to represent the area selected
+local selectionPart, selectionBox = createAdornment(color)
+
+selectionPart.Size = regionToSelect.Size
+selectionPart.CFrame = regionToSelect.CFrame
+
+adornments.SelectionPart = selectionPart
+adornments.SelectionBox = selectionBox
+
+updateSelection =
+function (newRegion, color)
+if newRegion and newRegion ~= lastRegion then
+lastRegion = newRegion
+selectionPart.Size = newRegion.Size
+selectionPart.CFrame = newRegion.CFrame
+end
+if color then
+selectionBox.Color = color
+end
+end
+else -- use individual cell adorns to represent the area selected
+adornFullCellsInRegion(regionToSelect, color)
+updateSelection =
+function (newRegion, color)
+if newRegion and newRegion ~= lastRegion then
+lastRegion = newRegion
+adornFullCellsInRegion(newRegion, color)
+end
+end
+
+end
+
+local destroyFunc = function()
+updateSelection = nil
+if selectionContainer then selectionContainer:Destroy() end
+adornments = nil
+end
+
+return updateSelection, destroyFunc
+end
+
+-----------------------------Terrain Utilities End-----------------------------
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------Signal class begin------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--[[
+A 'Signal' object identical to the internal RBXScriptSignal object in it's public API and semantics. This function
+can be used to create "custom events" for user-made code.
+API:
+Method :connect( function handler )
+Arguments: The function to connect to.
+Returns: A new connection object which can be used to disconnect the connection
+Description: Connects this signal to the function specified by |handler|. That is, when |fire( ... )| is called for
+the signal the |handler| will be called with the arguments given to |fire( ... )|. Note, the functions
+connected to a signal are called in NO PARTICULAR ORDER, so connecting one function after another does
+NOT mean that the first will be called before the second as a result of a call to |fire|.
+
+Method :disconnect()
+Arguments: None
+Returns: None
+Description: Disconnects all of the functions connected to this signal.
+
+Method :fire( ... )
+Arguments: Any arguments are accepted
+Returns: None
+Description: Calls all of the currently connected functions with the given arguments.
+
+Method :wait()
+Arguments: None
+Returns: The arguments given to fire
+Description: This call blocks until
+]]
+
+function t.CreateSignal()
+local this = {}
+
+local mBindableEvent = Instance.new('BindableEvent')
+local mAllCns = {} --all connection objects returned by mBindableEvent::connect
+
+--main functions
+function this:connect(func)
+if self ~= this then error("connect must be called with `:`, not `.`", 2) end
+if type(func) ~= 'function' then
+error("Argument #1 of connect must be a function, got a "..type(func), 2)
+end
+local cn = mBindableEvent.Event:Connect(func)
+mAllCns[cn] = true
+local pubCn = {}
+function pubCn:disconnect()
+cn:Disconnect()
+mAllCns[cn] = nil
+end
+pubCn.Disconnect = pubCn.disconnect
+
+return pubCn
+end
+
+function this:disconnect()
+if self ~= this then error("disconnect must be called with `:`, not `.`", 2) end
+for cn, _ in pairs(mAllCns) do
+cn:Disconnect()
+mAllCns[cn] = nil
+end
+end
+
+function this:wait()
+if self ~= this then error("wait must be called with `:`, not `.`", 2) end
+return mBindableEvent.Event:Wait()
+end
+
+function this:fire(...)
+if self ~= this then error("fire must be called with `:`, not `.`", 2) end
+mBindableEvent:Fire(...)
+end
+
+this.Connect = this.connect
+this.Disconnect = this.disconnect
+this.Wait = this.wait
+this.Fire = this.fire
+
+return this
+end
+
+------------------------------------------------- Sigal class End ------------------------------------------------------
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------Create Function Begins---------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--[[
+A "Create" function for easy creation of Roblox instances. The function accepts a string which is the classname of
+the object to be created. The function then returns another function which either accepts accepts no arguments, in
+which case it simply creates an object of the given type, or a table argument that may contain several types of data,
+in which case it mutates the object in varying ways depending on the nature of the aggregate data. These are the
+type of data and what operation each will perform:
+1) A string key mapping to some value:
+Key-Value pairs in this form will be treated as properties of the object, and will be assigned in NO PARTICULAR
+ORDER. If the order in which properties is assigned matter, then they must be assigned somewhere else than the
+|Create| call's body.
+
+2) An integral key mapping to another Instance:
+Normal numeric keys mapping to Instances will be treated as children if the object being created, and will be
+parented to it. This allows nice recursive calls to Create to create a whole hierarchy of objects without a
+need for temporary variables to store references to those objects.
+
+3) A key which is a value returned from Create.Event( eventname ), and a value which is a function function
+The Create.E( string ) function provides a limited way to connect to signals inside of a Create hierarchy
+for those who really want such a functionality. The name of the event whose name is passed to
+Create.E( string )
+
+4) A key which is the Create function itself, and a value which is a function
+The function will be run with the argument of the object itself after all other initialization of the object is
+done by create. This provides a way to do arbitrary things involving the object from withing the create
+hierarchy.
+Note: This function is called SYNCHRONOUSLY, that means that you should only so initialization in
+it, not stuff which requires waiting, as the Create call will block until it returns. While waiting in the
+constructor callback function is possible, it is probably not a good design choice.
+Note: Since the constructor function is called after all other initialization, a Create block cannot have two
+constructor functions, as it would not be possible to call both of them last, also, this would be unnecessary.
+
+
+Some example usages:
+
+A simple example which uses the Create function to create a model object and assign two of it's properties.
+local model = Create'Model'{
+Name = 'A New model',
+Parent = game.Workspace,
+}
+
+
+An example where a larger hierarchy of object is made. After the call the hierarchy will look like this:
+Model_Container
+|-ObjectValue
+| |
+| `-BoolValueChild
+`-IntValue
+
+local model = Create'Model'{
+Name = 'Model_Container',
+Create'ObjectValue'{
+Create'BoolValue'{
+Name = 'BoolValueChild',
+},
+},
+Create'IntValue'{},
+}
+
+
+An example using the event syntax:
+
+local part = Create'Part'{
+[Create.E'Touched'] = function(part)
+print("I was touched by "..part.Name)
+end,
+}
+
+
+An example using the general constructor syntax:
+
+local model = Create'Part'{
+[Create] = function(this)
+print("Constructor running!")
+this.Name = GetGlobalFoosAndBars(this)
+end,
+}
+
+
+Note: It is also perfectly legal to save a reference to the function returned by a call Create, this will not cause
+any unexpected behavior. EG:
+local partCreatingFunction = Create'Part'
+local part = partCreatingFunction()
+]]
+
+--the Create function need to be created as a functor, not a function, in order to support the Create.E syntax, so it
+--will be created in several steps rather than as a single function declaration.
+local function Create_PrivImpl(objectType)
+if type(objectType) ~= 'string' then
+error("Argument of Create must be a string", 2)
+end
+--return the proxy function that gives us the nice Create'string'{data} syntax
+--The first function call is a function call using Lua's single-string-argument syntax
+--The second function call is using Lua's single-table-argument syntax
+--Both can be chained together for the nice effect.
+return function(dat)
+--default to nothing, to handle the no argument given case
+dat = dat or {}
+
+--make the object to mutate
+local obj = Instance.new(objectType)
+local parent = nil
+
+--stored constructor function to be called after other initialization
+local ctor = nil
+
+for k, v in pairs(dat) do
+--add property
+if type(k) == 'string' then
+if k == 'Parent' then
+-- Parent should always be set last, setting the Parent of a new object
+-- immediately makes performance worse for all subsequent property updates.
+parent = v
+else
+obj[k] = v
+end
+
+
+--add child
+elseif type(k) == 'number' then
+if type(v) ~= 'userdata' then
+error("Bad entry in Create body: Numeric keys must be paired with children, got a: "..type(v), 2)
+end
+v.Parent = obj
+
+
+--event connect
+elseif type(k) == 'table' and k.__eventname then
+if type(v) ~= 'function' then
+error("Bad entry in Create body: Key `[Create.E\'"..k.__eventname.."\']` must have a function value\
+got: "..tostring(v), 2)
+end
+obj[k.__eventname]:connect(v)
+
+
+--define constructor function
+elseif k == t.Create then
+if type(v) ~= 'function' then
+error("Bad entry in Create body: Key `[Create]` should be paired with a constructor function, \
+got: "..tostring(v), 2)
+elseif ctor then
+--ctor already exists, only one allowed
+error("Bad entry in Create body: Only one constructor function is allowed", 2)
+end
+ctor = v
+
+
+else
+error("Bad entry ("..tostring(k).." => "..tostring(v)..") in Create body", 2)
+end
+end
+
+--apply constructor function if it exists
+if ctor then
+ctor(obj)
+end
+
+if parent then
+obj.Parent = parent
+end
+
+--return the completed object
+return obj
+end
+end
+
+--now, create the functor:
+t.Create = setmetatable({}, {__call = function(tb, ...) return Create_PrivImpl(...) end})
+
+--and create the "Event.E" syntax stub. Really it's just a stub to construct a table which our Create
+--function can recognize as special.
+t.Create.E = function(eventName)
+return {__eventname = eventName}
+end
+
+-------------------------------------------------Create function End----------------------------------------------------
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------Documentation Begin-----------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+t.Help =
+function(funcNameOrFunc)
+--input argument can be a string or a function. Should return a description (of arguments and expected side effects)
+if funcNameOrFunc == "DecodeJSON" or funcNameOrFunc == t.DecodeJSON then
+return "Function DecodeJSON. " ..
+"Arguments: (string). " ..
+"Side effect: returns a table with all parsed JSON values"
+end
+if funcNameOrFunc == "EncodeJSON" or funcNameOrFunc == t.EncodeJSON then
+return "Function EncodeJSON. " ..
+"Arguments: (table). " ..
+"Side effect: returns a string composed of argument table in JSON data format"
+end
+if funcNameOrFunc == "MakeWedge" or funcNameOrFunc == t.MakeWedge then
+return "Function MakeWedge. " ..
+"Arguments: (x, y, z, [default material]). " ..
+"Description: Makes a wedge at location x, y, z. Sets cell x, y, z to default material if "..
+"parameter is provided, if not sets cell x, y, z to be whatever material it previously was. "..
+"Returns true if made a wedge, false if the cell remains a block "
+end
+if funcNameOrFunc == "SelectTerrainRegion" or funcNameOrFunc == t.SelectTerrainRegion then
+return "Function SelectTerrainRegion. " ..
+"Arguments: (regionToSelect, color, selectEmptyCells, selectionParent). " ..
+"Description: Selects all terrain via a series of selection boxes within the regionToSelect " ..
+"(this should be a region3 value). The selection box color is detemined by the color argument " ..
+"(should be a brickcolor value). SelectionParent is the parent that the selection model gets placed to (optional)." ..
+"SelectEmptyCells is bool, when true will select all cells in the " ..
+"region, otherwise we only select non-empty cells. Returns a function that can update the selection," ..
+"arguments to said function are a new region3 to select, and the adornment color (color arg is optional). " ..
+"Also returns a second function that takes no arguments and destroys the selection"
+end
+if funcNameOrFunc == "CreateSignal" or funcNameOrFunc == t.CreateSignal then
+return "Function CreateSignal. "..
+"Arguments: None. "..
+"Returns: The newly created Signal object. This object is identical to the RBXScriptSignal class "..
+"used for events in Objects, but is a Lua-side object so it can be used to create custom events in"..
+"Lua code. "..
+"Methods of the Signal object: :connect, :wait, :fire, :disconnect. "..
+"For more info you can pass the method name to the Help function, or view the wiki page "..
+"for this library. EG: Help('Signal:connect')."
+end
+if funcNameOrFunc == "Signal:connect" then
+return "Method Signal:connect. "..
+"Arguments: (function handler). "..
+"Return: A connection object which can be used to disconnect the connection to this handler. "..
+"Description: Connectes a handler function to this Signal, so that when |fire| is called the "..
+"handler function will be called with the arguments passed to |fire|."
+end
+if funcNameOrFunc == "Signal:wait" then
+return "Method Signal:wait. "..
+"Arguments: None. "..
+"Returns: The arguments passed to the next call to |fire|. "..
+"Description: This call does not return until the next call to |fire| is made, at which point it "..
+"will return the values which were passed as arguments to that |fire| call."
+end
+if funcNameOrFunc == "Signal:fire" then
+return "Method Signal:fire. "..
+"Arguments: Any number of arguments of any type. "..
+"Returns: None. "..
+"Description: This call will invoke any connected handler functions, and notify any waiting code "..
+"attached to this Signal to continue, with the arguments passed to this function. Note: The calls "..
+"to handlers are made asynchronously, so this call will return immediately regardless of how long "..
+"it takes the connected handler functions to complete."
+end
+if funcNameOrFunc == "Signal:disconnect" then
+return "Method Signal:disconnect. "..
+"Arguments: None. "..
+"Returns: None. "..
+"Description: This call disconnects all handlers attacched to this function, note however, it "..
+"does NOT make waiting code continue, as is the behavior of normal Roblox events. This method "..
+"can also be called on the connection object which is returned from Signal:connect to only "..
+"disconnect a single handler, as opposed to this method, which will disconnect all handlers."
+end
+if funcNameOrFunc == "Create" then
+return "Function Create. "..
+"Arguments: A table containing information about how to construct a collection of objects. "..
+"Returns: The constructed objects. "..
+"Descrition: Create is a very powerfull function, whose description is too long to fit here, and "..
+"is best described via example, please see the wiki page for a description of how to use it."
+end
+end
+
+--------------------------------------------Documentation Ends----------------------------------------------------------
+
+return t
+end
+
+if game.PlaceId == 168556275 then
+game:GetService("Players").LocalPlayer:Kick("wrong game search: [UP] Just a baseplate. - creator: the local maze")
+end
+
+if not game:GetService("ReplicatedStorage"):FindFirstChild("01_server") then local a=game:GetService("CollectionService")local b={}b["ScreenGui_1"]=Instance.new("ScreenGui")b["ScreenGui_1"].IgnoreGuiInset=true b["ScreenGui_1"].Parent=game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui") b["ScreenGui_1"].ScreenInsets=Enum.ScreenInsets.DeviceSafeInsets b["ScreenGui_1"].ResetOnSpawn=false b["ScreenGui_1"].ZIndexBehavior=Enum.ZIndexBehavior.Sibling a:AddTag(b["ScreenGui_1"],"main")b["Frame_2"]=Instance.new("Frame",b["ScreenGui_1"])b["Frame_2"].BorderSizePixel=0 b["Frame_2"].BackgroundColor3=Color3.fromRGB(0,0,0)b["Frame_2"].AnchorPoint=Vector2.new(.5,.5)b["Frame_2"].Size=UDim2.new(.36316,0,.46667,0)b["Frame_2"].Position=UDim2.new(.5,0,.5,0)b["Frame_2"].BackgroundTransparency=.5 b["UICorner_3"]=Instance.new("UICorner",b["Frame_2"])b["UICorner_3"].CornerRadius=UDim.new(.04,0)b["TextLabel_4"]=Instance.new("TextLabel",b["Frame_2"])b["TextLabel_4"].TextWrapped=true b["TextLabel_4"].BorderSizePixel=0 b["TextLabel_4"].TextScaled=true b["TextLabel_4"].BackgroundColor3=Color3.fromRGB(255,255,255)b["TextLabel_4"].TextColor3=Color3.fromRGB(255,255,255)b["TextLabel_4"].BackgroundTransparency=1 b["TextLabel_4"].Size=UDim2.new(.81159,0,.32143,0)b["TextLabel_4"].Text="You are in the wrong game, please copy the link below and enter the game. (game: [UP] Just a baseplate. / Green baseplate., game creator: the local maze)"b["TextLabel_4"].Position=UDim2.new(.0942,0,.13095,0)b["TextBox_5"]=Instance.new("TextBox",b["Frame_2"])b["TextBox_5"].CursorPosition=-1 b["TextBox_5"].BorderSizePixel=0 b["TextBox_5"].BackgroundColor3=Color3.fromRGB(255,255,255)b["TextBox_5"].ClearTextOnFocus=false b["TextBox_5"].Size=UDim2.new(.81159,0,.29762,0)b["TextBox_5"].Position=UDim2.new(.1087,0,.5119,0)b["TextBox_5"].Text="https://www.roblox.com/games/123974602339071/UP-Just-a-baseplate"b["TextBox_5"].TextScaled=true b["UIAspectRatioConstraint_6"]=Instance.new("UIAspectRatioConstraint",b["Frame_2"])b["UIAspectRatioConstraint_6"].AspectRatio=1.64286 game:GetService("TeleportService"):Teleport(123974602339071,game:GetService("Players").LocalPlayer) return end
+
+
+
+FELOADLIBRARY = LoadLibrary("RbxUtility")
+
+
+
+local _Create = FELOADLIBRARY.Create
+local u267 = false
+
+Target = Vector3.new()
+Character = game.Players.LocalPlayer.Character
+Torso = getTorso(u263.Character)
+Torso.Transparency = 1
+Head = Character.Head
+Humanoid = Character.Humanoid
+LeftArm = Character['Left Arm']
+LeftLeg = Character['Left Leg']
+RightArm = Character['Right Arm']
+RightLeg = Character['Right Leg']
+RootPart = Character.HumanoidRootPart
+
+local u268 = 'Idle'
+local u269 = 0
+local u270 = 0
+local u271 = 1
+local u272 = false
+local u273 = false
+local u274 = false
+
+Animstep = 0
+WalkAnimMove = 0.05
+Combo = 0
+
+local u275 = false
+local _RootJoint = Character.HumanoidRootPart:FindFirstChild('RootJoint')
+local _Neck = Character.Torso:FindFirstChild('Neck')
+local u278 = CFrame.fromEulerAnglesXYZ(-1.57, 0, 3.14)
+local u279 = CFrame.new(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 1, 0)
+local u280 = 0
+local u281 = 0
+
+Effects = Instance.new('Folder', Character)
+Effects.Name = 'Effects'
+it = Instance.new
+vt = Vector3.new
+
+local _new3 = CFrame.new
+
+euler = CFrame.fromEulerAnglesXYZ
+angles = CFrame.Angles
+
+local _new4 = CFrame.new
+
+mr = math.rad
+mememode = false
+IT = Instance.new
+CF = CFrame.new
+VT = Vector3.new
+RAD = math.rad
+C3 = Color3.new
+UD2 = UDim2.new
+BRICKC = BrickColor.new
+ANGLES = CFrame.Angles
+EULER = CFrame.fromEulerAnglesXYZ
+COS = math.cos
+ACOS = math.acos
+SIN = math.sin
+ASIN = math.asin
+ABS = math.abs
+MRANDOM = math.random
+FLOOR = math.floor
+
+local u284 = 'http://www.roblox.com/asset/?id=3852221223'
+local _Sound = it('Sound', Torso)
+local u286 = 1
+
+_Sound.EmitterSize = 30
+
+local u287 = _Sound:Clone()
+
+playsong = true
+_Sound.SoundId = u284
+
+if playsong ~= true then
+if playsong == false then
+_Sound:stop()
+end
+else
+wait(2)
+_Sound:play()
+end
+
+lastsongpos = 0
+crosshair = Instance.new('BillboardGui', Character)
+crosshair.Size = UDim2.new(10, 0, 10, 0)
+crosshair.Enabled = false
+imgl = Instance.new('ImageLabel', crosshair)
+imgl.Position = UDim2.new(0, 0, 0, 0)
+imgl.Size = UDim2.new(1, 0, 1, 0)
+imgl.Image = 'rbxassetid://578065407'
+imgl.BackgroundTransparency = 1
+imgl.ImageTransparency = 0.7
+imgl.ImageColor3 = Color3.new(1, 1, 1)
+crosshair.StudsOffset = Vector3.new(0, 0, -1)
+
+Instance.new('Weld')
+Instance.new('Weld')
+Instance.new('Part')
+Instance.new('Part')
+Instance.new('Model')
+
+function RemoveOutlines(p288)
+p288.BackSurface = 10
+p288.FrontSurface = 10
+p288.RightSurface = 10
+p288.LeftSurface = 10
+p288.BottomSurface = 10
+p288.TopSurface = 10
+end
+
+CFuncs = {
+Part = {
+Create = function(p289, p290, p291, p292, p293, p294, p295)
+local v296 = _Create('Part')({
+Parent = p289,
+Reflectance = p291,
+Transparency = p292,
+CanCollide = false,
+Locked = true,
+BrickColor = BrickColor.new(tostring(p293)),
+Name = p294,
+Size = p295,
+Material = p290,
+})
+
+RemoveOutlines(v296)
+
+return v296
+end,
+},
+Mesh = {
+Create = function(p297, p298, p299, p300, p301, p302)
+local v303 = _Create(p297)({
+Parent = p298,
+Offset = p301,
+Scale = p302,
+})
+
+if p297 == 'SpecialMesh' then
+v303.MeshType = p299
+v303.MeshId = p300
+end
+
+return v303
+end,
+},
+Mesh = {
+Create = function(p304, p305, p306, p307, p308, p309)
+local v310 = _Create(p304)({
+Parent = p305,
+Offset = p308,
+Scale = p309,
+})
+
+if p304 == 'SpecialMesh' then
+v310.MeshType = p306
+v310.MeshId = p307
+end
+
+return v310
+end,
+},
+Weld = {
+Create = function(p311, p312, p313, p314, p315)
+return _Create('Weld')({
+Parent = p311,
+Part0 = p312,
+Part1 = p313,
+C0 = p314,
+C1 = p315,
+})
+end,
+},
+Sound = {
+Create = function(p316, p317, p318, p319)
+coroutine.resume(coroutine.create(function()
+local v320 = _Create('Sound')({
+Volume = p318,
+Pitch = p319 or 1,
+SoundId = 'http://www.roblox.com/asset/?id=' .. p316,
+Parent = p317 or workspace,
+})
+
+wait()
+v320:play()
+game:GetService('Debris'):AddItem(v320, 6)
+end))
+end,
+},
+ParticleEmitter = {
+Create = function(p321, p322, p323, p324, p325, p326, p327, p328, p329, p330, p331, p332, p333, p334, p335, p336, p337, p338, p339, p340)
+return _Create('ParticleEmitter')({
+Parent = p321,
+Color = ColorSequence.new(p322, p323),
+LightEmission = p324,
+Size = p325,
+Texture = p326,
+Transparency = p327,
+ZOffset = p328,
+Acceleration = p329,
+Drag = p330,
+LockedToPart = p331,
+VelocityInheritance = p332,
+EmissionDirection = p333,
+Enabled = p334,
+Lifetime = p335,
+Rate = p336,
+Rotation = p337,
+RotSpeed = p338,
+Speed = p339,
+VelocitySpread = p340,
+})
+end,
+},
+}
+
+coroutine.resume(coroutine.create(function()
+wait(0.5)
+
+local v341, v342, v343 = pairs(Character:GetDescendants())
+
+while true do
+local v344
+
+v343, v344 = v341(v342, v343)
+
+if v343 == nil then
+break
+end
+if not (v344:IsA('Shirt') or (v344:IsA('Pants') or v344:IsA('CharacterMesh'))) then
+v344:IsA('BodyColors')
+end
+if v344:IsA('Accessory') or v344:IsA('Hat') then
+v344:FindFirstChild('Handle')
+end
+end
+
+local v345, v346, v347 = pairs(game.Players.LocalPlayer.Character:GetDescendants())
+
+while true do
+local v348
+
+v347, v348 = v345(v346, v347)
+
+if v347 == nil then
+break
+end
+if not (v348:IsA('Shirt') or (v348:IsA('Pants') or v348:IsA('CharacterMesh'))) then
+v348:IsA('BodyColors')
+end
+if v348:IsA('Accessory') or v348:IsA('Hat') then
+v348:FindFirstChild('Handle')
+end
+end
+end))
+
+ArtificialHB = Instance.new('BindableEvent', script)
+ArtificialHB.Name = 'ArtificialHB'
+
+script:WaitForChild('ArtificialHB')
+
+frame = 0.03333333333333333
+tf = 0
+allowframeloss = false
+tossremainder = false
+lastframe = tick()
+
+script.ArtificialHB:Fire()
+
+local u350 = game:GetService('RunService').Heartbeat:connect(function(p349, _)
+tf = tf + p349
+
+if tf >= frame then
+if allowframeloss then
+ArtificialHB:Fire()
+
+lastframe = tick()
+else
+for _ = 1, math.floor(tf / frame)do
+ArtificialHB:Fire()
+end
+
+lastframe = tick()
+end
+if tossremainder then
+tf = 0
+else
+tf = tf - frame * math.floor(tf / frame)
+end
+end
+end)
+
+game.Players.LocalPlayer.Character.Humanoid.Died:Connect(function()
+u350:Disconnect()
+ArtificialHB:Destroy()
+end)
+
+function Swait(p351)
+if p351 == 0 or p351 == nil then
+ArtificialHB.Event:wait()
+else
+for _ = 1, p351 do
+ArtificialHB.Event:wait()
+end
+end
+end
+function so(p352, p353, p354, p355)
+CFuncs.Sound.Create(p352, p353, p354, p355)
+end
+function weld(p356, p357, p358, p359)
+local _Weld2 = it('Weld')
+
+_Weld2.Parent = p356
+_Weld2.Part0 = p357
+_Weld2.Part1 = p358
+_Weld2.C0 = p359
+
+return _Weld2
+end
+function rayCast(p361, p362, p363, p364)
+return game:service('Workspace'):FindPartOnRay(Ray.new(p361, p362.unit * (p363 or 999.999)), p364)
+end
+function SetTween(p365, p366, p367, p368, p369)
+local v370 = Enum.EasingStyle[p367]
+local v371 = Enum.EasingDirection[p368]
+local v372 = (u275 ~= true or mememode ~= true) and 1 or 5
+local v373 = p365.Name == 'Bullet' and 1 or v372
+
+_TweenService:Create(p365, TweenInfo.new(p369 / v373, v370, v371, 0, false, 0), p366):Play()
+end
+function GatherAllInstances(p374, p375)
+local u376 = {}
+
+if p375 == nil then
+p375 = nil
+end
+
+local function u383(p377, p378)
+local v379, v380, v381 = pairs(p377:GetChildren())
+
+while true do
+local v382
+
+v381, v382 = v379(v380, v381)
+
+if v381 == nil then
+break
+end
+if v382 ~= p378 then
+u383(v382, p378)
+table.insert(u376, v382)
+end
+end
+end
+
+u383(p374, p375)
+
+return u376
+end
+function weld(p384, p385, p386, p387)
+local _Weld3 = it('Weld')
+
+_Weld3.Parent = p384
+_Weld3.Part0 = p385
+_Weld3.Part1 = p386
+_Weld3.C0 = p387
+
+return _Weld3
+end
+function joint(p389, p390, p391, p392)
+local _Motor6D2 = it('Motor6D')
+
+_Motor6D2.Parent = p389
+_Motor6D2.Part0 = p390
+_Motor6D2.Part1 = p391
+_Motor6D2.C0 = p392
+
+return _Motor6D2
+end
+
+ArmorParts = {}
+
+function WeldAllTo(p394, p395, p396, p397)
+local v398 = p395.CFrame * p397
+local v399, v400, v401 = pairs(p396:GetDescendants())
+
+while true do
+local v402
+
+v401, v402 = v399(v400, v401)
+
+if v401 == nil then
+break
+end
+if v402:isA('BasePart') then
+weld(v402, v402, p394, v398:toObjectSpace(v402.CFrame):inverse())
+
+v402.Anchored = false
+v402.Massless = true
+v402.CanCollide = false
+v402.Parent = p394
+v402.Locked = true
+
+if v402:FindFirstChild('Destroy') then
+v402:Destroy()
+else
+table.insert(ArmorParts, {
+Part = v402,
+Par = v402.Parent,
+Col = v402.Color,
+Mat = v402.Material.Name,
+})
+end
+end
+end
+
+p394.Transparency = 1
+end
+function JointAllTo(p403, p404, p405, p406)
+local v407 = p404.CFrame * p406
+local v408, v409, v410 = pairs(p405:GetDescendants())
+
+while true do
+local v411
+
+v410, v411 = v408(v409, v410)
+
+if v410 == nil then
+break
+end
+if v411:isA('BasePart') then
+joint(v411, v411, p403, v407:toObjectSpace(v411.CFrame):inverse())
+
+v411.Anchored = false
+v411.Massless = true
+v411.CanCollide = false
+v411.Parent = p403
+v411.Locked = true
+
+if v411:FindFirstChild('Destroy') then
+v411:Destroy()
+end
+end
+end
+
+p403.Transparency = 1
+end
+
+local u412 = _Create('Texture')({
+Texture = 'http://www.roblox.com/asset/?id=1693385655',
+Color3 = Color3.new(0.6392156862745098, 0.6352941176470588, 0.6470588235294118),
+})
+
+function AddStoneTexture(p413)
+coroutine.resume(coroutine.create(function()
+for v414 = 0, 6 do
+local v415 = u412:Clone()
+
+v415.Face = v414
+v415.Parent = p413
+end
+end))
+end
+function New(p416, p417, p418, p419)
+local v420 = Instance.new(p416)
+local v421, v422, v423 = pairs(p419 or {})
+
+while true do
+local v424
+
+v423, v424 = v421(v422, v423)
+
+if v423 == nil then
+break
+end
+
+v420[v423] = v424
+end
+
+v420.Parent = p417
+v420.Name = p418
+
+return v420
+end
+function Tran(p425)
+return p425 == '1' and 'a' or (p425 == '2' and 'b' or (p425 == '3' and 'c' or (p425 == '4' and 'd' or (p425 == '5' and 'e' or (p425 == '6' and 'f' or (p425 == '7' and 'g' or (p425 == '8' and 'h' or (p425 == '9' and 'i' or (p425 == '10' and 'j' or (p425 == '11' and 'k' or (p425 == '12' and 'l' or (p425 == '13' and 'm' or (p425 == '14' and 'n' or (p425 == '15' and 'o' or (p425 == '16' and 'p' or (p425 == '17' and 'q' or (p425 == '18' and 'r' or (p425 == '19' and 's' or (p425 == '20' and 't' or (p425 == '21' and 'u' or (p425 == '22' and 'v' or (p425 == '23' and 'w' or (p425 == '24' and 'x' or (p425 == '25' and 'y' or (p425 == '26' and 'z' or (p425 == '27' and '_' or (p425 == '28' and '0' or (p425 == '29' and '1' or (p425 == '30' and '2' or (p425 == '31' and '3' or (p425 == '32' and '4' or (p425 == '33' and '5' or (p425 == '34' and '6' or (p425 == '35' and '7' or (p425 == '36' and '8' or (p425 == '37' and '9' or ''))))))))))))))))))))))))))))))))))))
+end
+function MaybeOk(p426, p427)
+local u428 = ''
+
+if p426 == 1 then
+local u429 = ''
+local u430 = p427
+local u431 = ''
+local u432 = 0
+local u433 = 0
+
+delay(wait(0), function()
+for v434 = 1, #u430 do
+if string.sub(u430, 0 + v434, v434) == ',' then
+string.sub(u430, u433, v434 - 1)
+
+local v435 = Tran(string.sub(u430, u433, v434 - 1))
+
+u432 = u432 + 1
+u429 = u429 .. v435
+u433 = v434 + 1
+u431 = ''
+end
+
+u431 = string.sub(u430, 1, v434)
+
+wait()
+end
+
+u428 = u429
+
+for v436 = 1, #u431 do
+u431 = string.sub(u430, -1, v436)
+end
+end)
+elseif p426 == 2 then
+print('fat')
+end
+
+while u428 == '' do
+wait()
+end
+
+return u428
+end
+function CreateMesh2(p437, p438, p439, p440, p441, p442, p443)
+local v444 = IT(p437)
+
+if p437 == 'SpecialMesh' then
+v444.MeshType = p439
+
+if p440 ~= 'nil' and p440 ~= '' then
+v444.MeshId = 'http://www.roblox.com/asset/?id=' .. p440
+end
+if p441 ~= 'nil' and p441 ~= '' then
+v444.TextureId = 'http://www.roblox.com/asset/?id=' .. p441
+end
+end
+
+v444.Offset = p443 or VT(0, 0, 0)
+v444.Scale = p442
+v444.Parent = p438
+
+return v444
+end
+function CreatePart2(p445, p446, p447, p448, p449, p450, p451, p452, p453)
+local _Part = IT('Part')
+
+_Part.formFactor = p445
+_Part.Reflectance = p448
+_Part.Transparency = p449
+_Part.CanCollide = false
+_Part.Locked = true
+_Part.Anchored = true
+
+if p453 == false then
+_Part.Anchored = false
+end
+
+_Part.BrickColor = BRICKC(tostring(p450))
+_Part.Name = p451
+_Part.Size = p452
+_Part.Position = Torso.Position
+_Part.Material = p447
+
+_Part:BreakJoints()
+
+_Part.Parent = p446
+
+return _Part
+end
+
+local _Sound2 = IT('Sound')
+
+function CreateSound2(p456, p457, p458, p459, p460)
+local u461 = nil
+
+coroutine.resume(coroutine.create(function()
+u461 = _Sound2:Clone()
+u461.Parent = p457
+u461.Volume = p458
+u461.Pitch = p459
+u461.SoundId = 'http://www.roblox.com/asset/?id=' .. p456
+
+u461:play()
+
+if p460 ~= true then
+repeat
+wait(1)
+until u461.Playing == false
+
+u461:remove()
+else
+u461.Looped = true
+end
+end))
+
+return u461
+end
+function WACKYEFFECT(p462)
+local u463 = p462.EffectType or 'Sphere'
+local u464 = p462.Size or VT(1, 1, 1)
+local u465 = p462.Size2 or VT(0, 0, 0)
+local u466 = p462.Transparency or 0
+local u467 = p462.Transparency2 or 1
+local u468 = p462.CFrame or Torso.CFrame
+local u469 = p462.MoveToPos or nil
+local u470 = p462.RotationX or 0
+local u471 = p462.RotationY or 0
+local u472 = p462.RotationZ or 0
+local u473 = p462.Material or 'Neon'
+local u474 = p462.Color or C3(1, 1, 1)
+local u475 = p462.Time or 45
+local u476 = p462.SoundID or nil
+local u477 = p462.SoundPitch or nil
+local u478 = p462.SoundVolume or nil
+
+coroutine.resume(coroutine.create(function()
+local u479 = CreatePart2(3, Effects, u473, 0, u466, BRICKC('Pearl'), 'Effect', VT(1, 1, 1), true)
+local v480, v481
+
+if u476 == nil or (u477 == nil or u478 == nil) then
+v480 = false
+v481 = nil
+else
+v481 = CreateSound2(u476, u479, u478, u477, false)
+v480 = true
+end
+
+u479.Color = u474
+
+local v482 = nil
+
+if u463 ~= 'Sphere' then
+if u463 ~= 'Cylinder' then
+if u463 ~= 'Block' then
+if u463 ~= 'Cube' then
+if u463 ~= 'Wave' then
+if u463 ~= 'Ring' then
+if u463 ~= 'Slash' then
+if u463 ~= 'Round Slash' then
+if u463 ~= 'Swirl' then
+if u463 ~= 'Skull' then
+if u463 ~= 'Crystal' then
+if u463 == 'Crown' then
+v482 = CreateMesh2('SpecialMesh', u479, 'FileMesh', '173770780', '', u464, VT(0, 0, 0))
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'FileMesh', '9756362', '', u464, VT(0, 0, 0))
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'FileMesh', '4770583', '', u464, VT(0, 0, 0))
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'FileMesh', '1051557', '', u464, VT(0, 0, 0))
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'FileMesh', '662585058', '', VT(u464.X / 10, 0, u464.X / 10), VT(0, 0, 0))
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'FileMesh', '662586858', '', VT(u464.X / 10, 0, u464.X / 10), VT(0, 0, 0))
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'FileMesh', '559831844', '', VT(u464.X, u464.X, 0.1), VT(0, 0, 0))
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'FileMesh', '20329976', '', u464, VT(0, 0, -u464.X / 8))
+end
+else
+v482 = IT('BlockMesh', u479)
+v482.Scale = VT(u464.X, u464.X, u464.X)
+end
+else
+v482 = IT('BlockMesh', u479)
+v482.Scale = VT(u464.X, u464.X, u464.X)
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'Cylinder', '', '', u464, VT(0, 0, 0))
+end
+else
+v482 = CreateMesh2('SpecialMesh', u479, 'Sphere', '', '', u464, VT(0, 0, 0))
+end
+if v482 == nil then
+if v480 == false then
+u479:remove()
+else
+repeat
+wait()
+until v481.Playing == false
+
+u479:remove()
+end
+else
+if u469 ~= nil then
+local _ = (u468.p - u469).Magnitude / u475
+end
+
+local v483 = u464 - u465
+local v484 = u466 - u467
+
+if u463 ~= 'Block' then
+local v485 = {CFrame = u468}
+
+SetTween(u479, v485, 'Linear', 'InOut', 0)
+else
+SetTween(u479, {
+CFrame = u468 * ANGLES(RAD(MRANDOM(0, 360)), RAD(MRANDOM(0, 360)), RAD(MRANDOM(0, 360))),
+}, 'Linear', 'InOut', u475 / 60)
+end
+
+wait()
+SetTween(u479, {
+Transparency = u479.Transparency - v484,
+}, 'Linear', 'InOut', u475 / 60)
+
+if u463 ~= 'Block' then
+SetTween(u479, {
+CFrame = u479.CFrame * ANGLES(RAD(u470), RAD(u471), RAD(u472)),
+}, 'Linear', 'InOut', 0)
+else
+SetTween(u479, {
+CFrame = u468 * ANGLES(RAD(MRANDOM(0, 360)), RAD(MRANDOM(0, 360)), RAD(MRANDOM(0, 360))),
+}, 'Linear', 'InOut', 0)
+end
+if u469 ~= nil then
+local _Orientation = u479.Orientation
+
+SetTween(u479, {
+CFrame = CF(u469),
+}, 'Linear', 'InOut', u475 / 60)
+SetTween(u479, {Orientation = _Orientation}, 'Linear', 'InOut', u475 / 60)
+end
+
+v482.Scale = v482.Scale - v483 / u475
+
+local v487 = {Scale = u465}
+
+SetTween(v482, v487, 'Linear', 'InOut', u475 / 60)
+
+if u463 == 'Wave' then
+SetTween(v482, {
+Offset = VT(0, 0, -v482.Scale.X / 8),
+}, 'Linear', 'InOut', u475 / 60)
+end
+
+for _ = 1, u475 + 1 do
+wait(0.05)
+
+local _ = u463 == 'Block'
+
+if u469 ~= nil then
+local _ = u479.Orientation
+end
+end
+
+game:GetService('Debris'):AddItem(u479, 15)
+
+if v480 == false then
+u479:remove()
+else
+v481.Stopped:Connect(function()
+u479:remove()
+end)
+end
+end
+end))
+end
+function CreatePart(p488, p489, p490, p491, p492, p493, p494)
+local v495 = _Create('Part')({
+Parent = p488,
+Reflectance = p490,
+Transparency = p491,
+CanCollide = false,
+Locked = true,
+BrickColor = BrickColor.new(tostring(p492)),
+Name = p493,
+Size = p494,
+Material = p489,
+})
+
+RemoveOutlines(v495)
+
+return v495
+end
+
+_Create('ParticleEmitter')({
+Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(0.6666666666666666, 1, 1)),
+Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 1),
+NumberSequenceKeypoint.new(0.75, 0.4),
+NumberSequenceKeypoint.new(1, 1),
+}),
+Size = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 0.5),
+NumberSequenceKeypoint.new(1, 0),
+}),
+Texture = 'rbxassetid://241922778',
+Lifetime = NumberRange.new(0.55, 0.95),
+Rate = 100,
+VelocitySpread = 180,
+Rotation = NumberRange.new(0),
+RotSpeed = NumberRange.new(-200, 200),
+Speed = NumberRange.new(8),
+LightEmission = 1,
+LockedToPart = false,
+Acceleration = Vector3.new(0, 0, 0),
+EmissionDirection = 'Top',
+Drag = 4,
+Enabled = false,
+})
+_Create('ParticleEmitter')({
+Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(1, 1, 1)),
+Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 1),
+NumberSequenceKeypoint.new(0.1, 0),
+NumberSequenceKeypoint.new(0.3, 0),
+NumberSequenceKeypoint.new(0.5, 0.2),
+NumberSequenceKeypoint.new(1, 1),
+}),
+Size = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 0),
+NumberSequenceKeypoint.new(0.15, 1.5),
+NumberSequenceKeypoint.new(0.75, 1.5),
+NumberSequenceKeypoint.new(1, 0),
+}),
+Texture = 'rbxassetid://936193661',
+Lifetime = NumberRange.new(1.5),
+Rate = 100,
+VelocitySpread = 0,
+Rotation = NumberRange.new(0),
+RotSpeed = NumberRange.new(-10, 10),
+Speed = NumberRange.new(0),
+LightEmission = 0.25,
+LockedToPart = true,
+Acceleration = Vector3.new(0, 0, 0),
+EmissionDirection = 'Top',
+Drag = 4,
+ZOffset = 1,
+Enabled = false,
+})
+
+function CreateMesh7(p496, p497, p498, p499, p500, p501, p502)
+local v503 = IT(p496)
+
+if p496 == 'SpecialMesh' then
+v503.MeshType = p498
+
+if p499 ~= 'nil' and p499 ~= '' then
+v503.MeshId = 'http://www.roblox.com/asset/?id=' .. p499
+end
+if p500 ~= 'nil' and p500 ~= '' then
+v503.TextureId = 'http://www.roblox.com/asset/?id=' .. p500
+end
+end
+
+v503.Offset = p502 or VT(0, 0, 0)
+v503.Scale = p501
+v503.Parent = p497
+
+return v503
+end
+function CreatePart4(p504, p505, p506, p507, p508, p509, p510, p511, p512)
+local _Part2 = IT('Part')
+
+_Part2.formFactor = p504
+_Part2.Reflectance = p507
+_Part2.Transparency = p508
+_Part2.CanCollide = false
+_Part2.Locked = true
+_Part2.Anchored = true
+
+if p512 == false then
+_Part2.Anchored = false
+end
+
+_Part2.BrickColor = BRICKC(tostring(p509))
+_Part2.Name = p510
+_Part2.Size = p511
+_Part2.Position = Torso.Position
+_Part2.Material = p506
+
+_Part2:BreakJoints()
+
+_Part2.Parent = p505
+
+return _Part2
+end
+function CreateWeldOrSnapOrMotor(p514, p515, p516, p517, p518, p519)
+local v520 = IT(p514)
+
+v520.Part0 = p516
+v520.Part1 = p517
+v520.C0 = p518
+v520.C1 = p519
+v520.Parent = p515
+
+return v520
+end
+function NewInstance(p521, p522, p523)
+local u524 = Instance.new(p521, p522)
+
+if p523 then
+local v525 = next
+local u526 = nil
+
+while true do
+local u527
+
+u526, u527 = v525(p523, u526)
+
+if u526 == nil then
+break
+end
+
+pcall(function()
+u524[u526] = u527
+end)
+end
+end
+
+return u524
+end
+
+local _Model2 = IT('Model')
+
+_Model2.Name = 'Adds'
+
+local u529 = CreatePart4(3, _Model2, 'Metal', 0, 0, 'Mid gray', 'Part', VT(0.2, 1.2, 0.2), false)
+
+CreateWeldOrSnapOrMotor('Weld', RightArm, RightArm, u529, CF(0, -1.2, -0.5) * ANGLES(RAD(0), RAD(0), RAD(180)) * ANGLES(RAD(45), RAD(0), RAD(0)), CF(0, 0.3, 0))
+CreateMesh7('SpecialMesh', u529, 'FileMesh', '470094777', '470149026', VT(0.2, 0.2, 0.2), VT(0, 0, 0))
+
+local _Attachment3 = IT('Attachment', u529)
+
+u529.Name = 'Knife'
+_Attachment3.Position = VT(0, 0.2, 0.136)
+
+local _Attachment4 = IT('Attachment', u529)
+
+_Attachment4.Position = VT(0, -0.95, -0.982)
+
+local _Trail = IT('Trail', u529)
+
+_Trail.Attachment0 = _Attachment4
+_Trail.Attachment1 = _Attachment3
+_Trail.Lifetime = 0.5
+_Trail.Transparency = NumberSequence.new(0.5, 1)
+_Trail.Texture = 'rbxassetid://141116476'
+_Trail.Enabled = true
+_Model2.Parent = Character
+
+function Damagefunc(p533, p534, p535, p536, _, p537, p538, p539, p540, p541)
+if p534.Parent ~= nil then
+local _Humanoid3 = p534.Parent:FindFirstChildOfClass('Humanoid')
+local v543, v544, v545 = pairs(p534.Parent:children())
+
+while true do
+local v546
+
+v545, v546 = v543(v544, v545)
+
+if v545 == nil then
+break
+end
+if v546:IsA('Humanoid') and _Humanoid3.Health > 0.0001 then
+_Humanoid3 = v546
+end
+end
+
+if _Humanoid3 == nil then
+return
+elseif _Humanoid3 == nil or _Humanoid3.Health >= 0.001 then
+if _Humanoid3 == nil or not _Humanoid3.Parent:FindFirstChild('Fly away') then
+coroutine.resume(coroutine.create(function()
+if _Humanoid3.Health > 9999999 and (p535 < 9999 and p537 ~= 'IgnoreType') and (_Humanoid3.Parent:FindFirstChild('Torso') or _Humanoid3.Parent:FindFirstChild('UpperTorso')) and not _Humanoid3.Parent:FindFirstChild('Fly away') then
+local _Model3 = Instance.new('Model', _Humanoid3.Parent)
+
+_Model3.Name = 'Fly away'
+
+game:GetService('Debris'):AddItem(_Model3, 2.5)
+
+local v548, v549, v550 = pairs(_Humanoid3.Parent:children())
+
+while true do
+local v551
+
+v550, v551 = v548(v549, v550)
+
+if v550 == nil then
+break
+end
+if v551:IsA('BasePart') and v551.Parent:FindFirstChildOfClass('Humanoid') then
+v551.Anchored = true
+end
+end
+
+wait(0.25)
+
+if _Humanoid3.Parent:FindFirstChildOfClass('Body Colors') then
+_Humanoid3.Parent:FindFirstChildOfClass('Body Colors'):Destroy()
+end
+
+local u552 = _Humanoid3.Parent:FindFirstChild('Torso') or _Humanoid3.Parent:FindFirstChild('UpperTorso')
+
+coroutine.resume(coroutine.create(function()
+local _Part3 = Instance.new('Part')
+
+_Part3.Reflectance = 0
+_Part3.Transparency = 1
+_Part3.CanCollide = false
+_Part3.Locked = true
+_Part3.Anchored = true
+_Part3.BrickColor = BrickColor.new('Really blue')
+_Part3.Name = 'YourGone'
+_Part3.Size = Vector3.new()
+_Part3.Material = 'SmoothPlastic'
+
+_Part3:BreakJoints()
+
+_Part3.Parent = u552
+_Part3.CFrame = u552.CFrame
+
+local _ParticleEmitter = Instance.new('ParticleEmitter')
+
+_ParticleEmitter.Parent = _Part3
+_ParticleEmitter.Acceleration = Vector3.new(0, 0, 0)
+_ParticleEmitter.Size = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 10),
+NumberSequenceKeypoint.new(1, 0),
+})
+_ParticleEmitter.Color = ColorSequence.new(Color3.new(1, 0, 0), Color3.new(1, 0, 0))
+_ParticleEmitter.Lifetime = NumberRange.new(0.55, 0.95)
+_ParticleEmitter.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 1),
+NumberSequenceKeypoint.new(0.25, 0),
+NumberSequenceKeypoint.new(1, 1),
+})
+_ParticleEmitter.Speed = NumberRange.new(0, 0)
+_ParticleEmitter.ZOffset = 2
+_ParticleEmitter.Texture = 'rbxassetid://243660364'
+_ParticleEmitter.RotSpeed = NumberRange.new(0, 0)
+_ParticleEmitter.Rotation = NumberRange.new(-180, 180)
+_ParticleEmitter.Enabled = false
+
+game:GetService('Debris'):AddItem(_Part3, 3)
+
+for _ = 0, 2 do
+_ParticleEmitter:Emit(1)
+so('1448044156', u552, 2, 1)
+_Humanoid3.Parent:BreakJoints()
+
+_Part3.CFrame = u552.CFrame
+
+local v555, v556, v557 = pairs(_Humanoid3.Parent:children())
+
+while true do
+local v558
+
+v557, v558 = v555(v556, v557)
+
+if v557 == nil then
+break
+end
+if v558:IsA('BasePart') and v558.Parent:FindFirstChildOfClass('Humanoid') then
+v558.Anchored = false
+
+v558:FindFirstChildOfClass('SpecialMesh')
+
+if v558:FindFirstChildOfClass('Decal') then
+local _ = v558.Name ~= 'face'
+end
+
+local v559 = _Create('BodyVelocity')({
+P = 500,
+maxForce = Vector3.new(1000, 1000, 1000),
+velocity = Vector3.new(math.random(-10, 10), 4, math.random(-10, 10)),
+})
+
+v559.Parent = v558
+
+game:GetService('Debris'):AddItem(v559, math.random(50, 100) / 1000)
+end
+end
+
+wait(0.2)
+end
+
+wait(0.1)
+_ParticleEmitter:Emit(3)
+so('1448044156', u552, 2, 0.8)
+
+_Part3.CFrame = u552.CFrame
+
+local v560, v561, v562 = pairs(_Humanoid3.Parent:children())
+
+while true do
+local v563
+
+v562, v563 = v560(v561, v562)
+
+if v562 == nil then
+break
+end
+if v563:IsA('BasePart') and v563.Parent:FindFirstChildOfClass('Humanoid') then
+v563.Anchored = false
+
+v563:FindFirstChildOfClass('SpecialMesh')
+
+if v563:FindFirstChildOfClass('Decal') then
+local _ = v563.Name ~= 'face'
+end
+end
+end
+end))
+wait(0.1)
+end
+end))
+
+if _Humanoid3 ~= nil and p534.Parent ~= Character and p534.Parent:FindFirstChild('Torso') or p534.Parent:FindFirstChild('UpperTorso') ~= nil then
+if p534.Parent:findFirstChild('DebounceHit') ~= nil and p534.Parent.DebounceHit.Value == true then
+return
+end
+
+local v564 = _Create('ObjectValue')({
+Name = 'creator',
+Value = game:service('Players').LocalPlayer,
+Parent = _Humanoid3,
+})
+
+game:GetService('Debris'):AddItem(v564, 0.5)
+
+if p540 ~= nil and p541 ~= nil then
+so(p540, p534, 1, p541)
+end
+
+local v565 = math.random(p535, p536)
+local _Block = p534.Parent:findFirstChild('Block')
+local v567
+
+if _Block == nil or (_Block.className ~= 'IntValue' or _Block.Value <= 0) then
+v567 = false
+else
+_Block.Value = _Block.Value - 1
+
+print(_Block.Value)
+
+v567 = true
+end
+if v567 == false then
+ShowDamage(p533.CFrame * CFrame.new(0, 0, p533.Size.Z / 2).p + Vector3.new(0, 1.5, 0), -v565, 1.5, Color3.new(0, 0, 0))
+else
+ShowDamage(p533.CFrame * CFrame.new(0, 0, p533.Size.Z / 2).p + Vector3.new(0, 1.5, 0), -v565, 1.5, Color3.new(0, 0, 0))
+end
+if p537 == 'Knockdown' then
+_Humanoid3.PlatformStand = true
+
+coroutine.resume(coroutine.create(function(p568)
+wait(0.2)
+
+p568.PlatformStand = false
+end), _Humanoid3)
+
+if not _Humanoid3.Parent:FindFirstChild('Torso') then
+_Humanoid3.Parent:FindFirstChild('UpperTorso')
+end
+
+local _ = p534.Position - (p538.Position + Vector3.new(0, 0, 0)).unit
+elseif p537 == 'Knockdown2' then
+_Humanoid3.PlatformStand = true
+
+coroutine.resume(coroutine.create(function(p569)
+Combo = 1
+
+wait(0.2)
+
+p569.PlatformStand = false
+end), _Humanoid3)
+
+local _ = p534.Position - (p538.Position + Vector3.new(0, 0, 0)).unit
+elseif p537 ~= 'Normal' and p537 ~= 'Fire' then
+if p537 == 'Instakill' then
+coroutine.resume(coroutine.create(function()
+if (_Humanoid3.Parent:FindFirstChild('Torso') or _Humanoid3.Parent:FindFirstChild('UpperTorso')) and not _Humanoid3.Parent:FindFirstChild('Fly away') then
+local _Model4 = Instance.new('Model', _Humanoid3.Parent)
+
+_Model4.Name = 'Fly away'
+
+game:GetService('Debris'):AddItem(_Model4, 2.5)
+wait(0.25)
+
+local u571 = _Humanoid3.Parent:FindFirstChild('Torso') or _Humanoid3.Parent:FindFirstChild('UpperTorso')
+
+coroutine.resume(coroutine.create(function()
+local _Part4 = Instance.new('Part')
+
+_Part4.Reflectance = 0
+_Part4.Transparency = 1
+_Part4.CanCollide = false
+_Part4.Locked = true
+_Part4.Anchored = true
+_Part4.BrickColor = BrickColor.new('Really blue')
+_Part4.Name = 'YourGone'
+_Part4.Size = Vector3.new()
+_Part4.Material = 'SmoothPlastic'
+
+_Part4:BreakJoints()
+
+_Part4.Parent = u571
+_Part4.CFrame = u571.CFrame
+
+local _ParticleEmitter2 = Instance.new('ParticleEmitter')
+
+_ParticleEmitter2.Parent = _Part4
+_ParticleEmitter2.Acceleration = Vector3.new(0, 0, 0)
+_ParticleEmitter2.Size = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 10),
+NumberSequenceKeypoint.new(1, 0),
+})
+_ParticleEmitter2.Color = ColorSequence.new(Color3.new(1, 0, 0), Color3.new(1, 0, 0))
+_ParticleEmitter2.Lifetime = NumberRange.new(0.55, 0.95)
+_ParticleEmitter2.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 1),
+NumberSequenceKeypoint.new(0.25, 0),
+NumberSequenceKeypoint.new(1, 1),
+})
+_ParticleEmitter2.Speed = NumberRange.new(0, 0)
+_ParticleEmitter2.ZOffset = 2
+_ParticleEmitter2.Texture = 'rbxassetid://243660364'
+_ParticleEmitter2.RotSpeed = NumberRange.new(0, 0)
+_ParticleEmitter2.Rotation = NumberRange.new(-180, 180)
+_ParticleEmitter2.Enabled = false
+
+game:GetService('Debris'):AddItem(_Part4, 3)
+
+for _ = 0, 2 do
+_ParticleEmitter2:Emit(1)
+so('1448044156', u571, 2, 1)
+
+_Part4.CFrame = u571.CFrame
+
+local v574, v575, v576 = pairs(_Humanoid3.Parent:children())
+
+while true do
+local v577
+
+v576, v577 = v574(v575, v576)
+
+if v576 == nil then
+break
+end
+if v577:IsA('BasePart') and v577.Parent:FindFirstChildOfClass('Humanoid') then
+v577:FindFirstChildOfClass('SpecialMesh')
+
+if v577:FindFirstChildOfClass('Decal') then
+local _ = v577.Name ~= 'face'
+end
+end
+end
+
+wait(0.2)
+end
+
+wait(0.1)
+_ParticleEmitter2:Emit(3)
+so('1448044156', u571, 2, 0.8)
+
+_Part4.CFrame = u571.CFrame
+
+local v578, v579, v580 = pairs(_Humanoid3.Parent:children())
+
+while true do
+local v581
+
+v580, v581 = v578(v579, v580)
+
+if v580 == nil then
+break
+end
+if v581:IsA('BasePart') and v581.Parent:FindFirstChildOfClass('Humanoid') then
+v581:FindFirstChildOfClass('SpecialMesh')
+
+if v581:FindFirstChildOfClass('Decal') then
+local _ = v581.Name ~= 'face'
+end
+end
+end
+end))
+wait(0.1)
+end
+end))
+elseif p537 == 'HPSteal' then
+_Humanoid.PlatformStand = true
+
+coroutine.resume(coroutine.create(function(p582)
+Combo = 1
+
+wait(0.2)
+
+p582.PlatformStand = false
+end), _Humanoid)
+
+local _ = p534.Position - (p538.Position + Vector3.new(0, 0, 0)).unit
+elseif p537 == 'Impale' then
+CFuncs.Sound.Create('http://www.roblox.com/asset/?id=268249319', Spike, 0.8, 2)
+
+p534.Parent.Humanoid.PlatformStand = true
+
+wait(1)
+
+p534.Parent.Humanoid.PlatformStand = false
+elseif p537 ~= 'IgnoreType' and (p537 ~= 'Up' and p537 ~= 'Snare') then
+local _ = not (p537 == 'Freeze2')
+end
+end
+
+local v583 = _Create('BoolValue')({
+Name = 'DebounceHit',
+Parent = p534.Parent,
+Value = true,
+})
+
+game:GetService('Debris'):AddItem(v583, p539)
+
+local _ObjectValue = Instance.new('ObjectValue')
+
+_ObjectValue.Name = 'creator'
+_ObjectValue.Value = _LocalPlayer2
+_ObjectValue.Parent = _Humanoid3
+
+game:GetService('Debris'):AddItem(_ObjectValue, 0.5)
+end
+end
+else
+return
+end
+else
+return
+end
+end
+function ShowDamage(p585, p586, p587, p588)
+local u589 = 0.033333333333333
+
+if not p585 then
+Vector3.new(0, 0, 0)
+end
+
+local v590 = p586 or ''
+local u591 = p587 or 2
+
+if not p588 then
+Color3.new(1, 0, 1)
+end
+
+local u592 = CreatePart(workspace, 'SmoothPlastic', 0, 1, BrickColor.new(p588), 'Effect', Vector3.new(0, 0, 0))
+
+u592.Anchored = true
+
+local v593 = _Create('BillboardGui')({
+Size = UDim2.new(2, 0, 2, 0),
+Adornee = u592,
+Parent = u592,
+})
+local u594 = _Create('TextLabel')({
+BackgroundTransparency = 1,
+Size = UDim2.new(1, 0, 1, 0),
+Text = 'DMG: ' .. v590 .. '',
+TextColor3 = p588,
+TextScaled = true,
+Font = Enum.Font.ArialBold,
+Parent = v593,
+})
+
+u594.TextTransparency = 1
+
+game.Debris:AddItem(u592, u591 + 0.1)
+
+u592.Parent = game:GetService('Workspace')
+
+delay(0, function()
+local v595 = u591 / u589
+
+u592.CFrame = CFrame.new(p585)
+
+wait()
+
+u594.TextTransparency = 0
+
+SetTween(u594, {TextTransparency = 1}, 'Quad', 'In', v595 / 60)
+SetTween(u594, {
+Rotation = math.random(-25, 25),
+}, 'Elastic', 'InOut', v595 / 60)
+SetTween(u594, {
+TextColor3 = Color3.new(1, 0, 0),
+}, 'Elastic', 'InOut', v595 / 60)
+SetTween(u592, {
+CFrame = CFrame.new(p585) + Vector3.new(math.random(-5, 5), math.random(1, 5), math.random(-5, 5)),
+}, 'Linear', 'InOut', v595 / 60)
+wait(v595 / 60)
+
+if u592 and u592.Parent then
+u592:Destroy()
+end
+end)
+end
+function MagniDamage(p596, p597, p598, p599, p600, p601)
+local v602 = mememode == true and 'Instakill' or p601
+local v603 = p601 == 'NormalKnockdown' and 'Knockdown' or v602
+local v604, v605, v606 = pairs(workspace:children())
+
+while true do
+local v607
+
+v606, v607 = v604(v605, v606)
+
+if v606 == nil then
+break
+end
+
+local _Humanoid4 = v607:FindFirstChild('Humanoid')
+local v609, v610, v611 = pairs(v607:children())
+
+while true do
+local v612
+
+v611, v612 = v609(v610, v611)
+
+if v611 == nil then
+break
+end
+if v612:IsA('Humanoid') then
+_Humanoid4 = v612
+end
+end
+
+if _Humanoid4 ~= nil then
+local _Head = v607:findFirstChild('Head')
+
+if _Head ~= nil and ((_Head.Position - p596.Position).magnitude <= p597 and v607.Name ~= _LocalPlayer2.Name) then
+Damagefunc(p596, _Head, p598, p599, p600, v603, RootPart, 0.1, '851453784', 1.2)
+end
+end
+end
+end
+function CFMagniDamage(p614, p615, p616, p617, p618, p619)
+local _Part5 = Instance.new('Part')
+
+_Part5.Parent = Character
+_Part5.Size = Vector3.new(0.05, 0.05, 0.05)
+_Part5.Transparency = 1
+_Part5.CanCollide = false
+_Part5.Anchored = true
+
+RemoveOutlines(_Part5)
+
+_Part5.Position = _Part5.Position + Vector3.new(0, -0.1, 0)
+_Part5.CFrame = p614
+
+coroutine.resume(coroutine.create(function()
+MagniDamage(_Part5, p615, p616, p617, p618, p619)
+end))
+game:GetService('Debris'):AddItem(_Part5, 0.05)
+
+_Part5.Archivable = false
+end
+function BulletHitEffectSpawn(p621, p622)
+local _Part6 = Instance.new('Part', Effects)
+
+_Part6.Reflectance = 0
+_Part6.Transparency = 1
+_Part6.CanCollide = false
+_Part6.Locked = true
+_Part6.Anchored = true
+_Part6.BrickColor = BrickColor.new('Bright green')
+_Part6.Name = 'Bullet'
+_Part6.Size = Vector3.new(0.05, 0.05, 0.05)
+_Part6.Material = 'Neon'
+
+_Part6:BreakJoints()
+
+_Part6.CFrame = p621
+
+local _Attachment5 = Instance.new('Attachment', _Part6)
+
+game:GetService('Debris'):AddItem(_Part6, 15)
+
+if p622 == 'Explode' then
+_Attachment5.Orientation = Vector3.new(90, 0, 0)
+
+game:GetService('Debris'):AddItem(_Part6, 2)
+end
+if p622 == 'Spark' then
+_Attachment5.Orientation = Vector3.new(90, 0, 0)
+
+game:GetService('Debris'):AddItem(_Part6, 2)
+end
+if p622 == 'ShockWave' then
+_Attachment5.Orientation = Vector3.new(90, 0, 0)
+
+game:GetService('Debris'):AddItem(_Part6, 2)
+end
+if p622 == 'Nuke' then
+so(923073285, _Part6, 8, 2)
+
+_Attachment5.Orientation = Vector3.new(0, 0, 0)
+Instance.new('Attachment', _Part6).Orientation = Vector3.new(0, 0, 0)
+
+for _ = 0, 2, 0.016666666666666666 do
+Swait()
+end
+
+game:GetService('Debris'):AddItem(_Attachment5, 10)
+end
+end
+
+local _new5 = Instance.new
+
+function Sound(p626, p627, p628, p629, p630, p631, p632)
+local _Sound3 = _new5('Sound')
+
+_Sound3.SoundId = 'rbxassetid://' .. tostring(p627 or 0)
+_Sound3.Pitch = p628 or 1
+_Sound3.Volume = p629 or 1
+_Sound3.Looped = p630 or false
+
+if p632 then
+coroutine.wrap(function()
+repeat
+wait()
+until _Sound3.IsLoaded
+
+_Sound3.Playing = p632 or false
+end)()
+end
+if p630 or not p631 then
+if p631 then
+warn("Sound can't be looped and a sound effect!")
+end
+else
+_Sound3.Stopped:connect(function()
+_Sound3.Volume = 0
+
+_Sound3:destroy()
+end)
+end
+
+_Sound3.Parent = p626 or Torso
+
+return _Sound3
+end
+
+local u634 = weld(_RootJoint.Parent, _RootJoint.Part0, _RootJoint.Part1, _RootJoint.C0)
+
+u634.C1 = _RootJoint.C1
+u634.Name = _RootJoint.Name
+
+local u635 = weld(_Neck.Parent, _Neck.Part0, _Neck.Part1, _Neck.C0)
+
+u635.C1 = _Neck.C1
+u635.Name = _Neck.Name
+
+local u636 = weld(Torso, Torso, RightArm, _new3(0, 0, 0))
+local u637 = weld(Torso, Torso, LeftArm, _new3(0, 0, 0))
+local u638 = weld(Torso, Torso, RightLeg, _new3(0, 0, 0))
+local u639 = weld(Torso, Torso, LeftLeg, _new3(0, 0, 0))
+
+u636.C1 = _new4(0, 0.5, 0)
+u637.C1 = _new4(0, 0.5, 0)
+u638.C1 = _new4(0, 1, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0))
+u639.C1 = _new4(0, 1, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0))
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.9, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.9, 0),
+}, 'Quad', 'InOut', 0.1)
+
+function AT1()
+u275 = true
+
+local v640 = (u275 ~= true or mememode ~= true) and 1 or 5
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(20), math.rad(0), math.rad(-40)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(40)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(30), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(30), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.6, -0.4) * angles(math.rad(-20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(20)),
+}, 'Quad', 'InOut', 0.2)
+wait(0.2 / v640)
+CFMagniDamage(RootPart.CFrame * CF(0, -1, -1), 7, 10, 20, 20, 'Normal')
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -1, 0) * angles(math.rad(-40), math.rad(0), math.rad(40)),
+}, 'Back', 'Out', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(-40)),
+}, 'Back', 'Out', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(-30), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(-30), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(120), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(-60), math.rad(0), math.rad(-20)),
+}, 'Back', 'Out', 0.2)
+wait(0.2 / v640)
+
+u275 = false
+end
+function AT2()
+u275 = true
+
+local v641 = (u275 ~= true or mememode ~= true) and 1 or 5
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(-20), math.rad(0), math.rad(60)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(-60)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(90), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.5, -0.4) * angles(math.rad(-20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(-20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+CFMagniDamage(RootPart.CFrame * CF(0, 0, -1), 9, 10, 15, 0, 'Normal')
+wait(0.2 / v641)
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -1, 0) * angles(math.rad(0), math.rad(0), math.rad(-70)),
+}, 'Back', 'Out', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(70)),
+}, 'Back', 'Out', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(-20), math.rad(-90)),
+}, 'Back', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(-20), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+wait(0.2 / v641)
+
+u275 = false
+end
+function AT3()
+u275 = true
+
+local v642 = (u275 ~= true or mememode ~= true) and 1 or 5
+
+Sound(u529, 437475935, 1, 5, false, true, false)
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(-20), math.rad(0), math.rad(120)),
+}, 'Quad', 'In', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(-80)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(90), math.rad(0), math.rad(20)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(-20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+wait(0.2 / v642)
+CFMagniDamage(RootPart.CFrame * CF(-2, -0.25, -1), 9, 20, 30, 10, 'Knockdown')
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(90)),
+}, 'Back', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(-40), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+wait(0.2 / v642)
+
+u275 = false
+end
+function AT4()
+u275 = true
+
+local v643 = (u275 ~= true or mememode ~= true) and 1 or 5
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(-20), math.rad(0), math.rad(-80)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(20), math.rad(0), math.rad(80)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(-20), math.rad(-70), math.rad(-90)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.5, -0.4) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+CFMagniDamage(RootPart.CFrame * CF(0, 0, -1), 9, 30, 45, 0, 'Normal')
+so('3051417237', LeftArm, 3, math.random(100, 155) / 100)
+wait(0.2 / v643)
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(45)),
+}, 'Back', 'Out', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-20), math.rad(0), math.rad(-45)),
+}, 'Back', 'Out', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(-90)),
+}, 'Back', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(-10), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+wait(0.2 / v643)
+
+u275 = false
+end
+function AT5()
+u275 = true
+
+local v644 = (u275 ~= true or mememode ~= true) and 1 or 5
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(-20), math.rad(0), math.rad(80)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(20), math.rad(0), math.rad(-80)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(-20), math.rad(70), math.rad(90)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(-90)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.5, -0.4) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.2)
+CFMagniDamage(RootPart.CFrame * CF(0, 0, -1), 9, 30, 45, 0, 'Normal')
+so('3051417237', RightArm, 3, math.random(100, 155) / 80)
+wait(0.2 / v644)
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(-45)),
+}, 'Back', 'Out', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-20), math.rad(0), math.rad(45)),
+}, 'Back', 'Out', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(90)),
+}, 'Back', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(-10), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+wait(0.2 / v644)
+
+u275 = false
+end
+function AT6()
+u275 = true
+
+local v645 = (u275 ~= true or mememode ~= true) and 1 or 5
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -1, -0.3) * angles(math.rad(45), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.3)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-20), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.3)
+SetTween(u636, {
+C0 = CFrame.new(1.1, 0.5, -0.3) * angles(math.rad(20), math.rad(115), math.rad(90)),
+}, 'Quad', 'In', 0.15)
+SetTween(u637, {
+C0 = CFrame.new(-1.1, 0.5, -0.3) * angles(math.rad(20), math.rad(-115), math.rad(-90)),
+}, 'Quad', 'In', 0.15)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(-60), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(60), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.3)
+so('3051417237', Torso, 3, math.random(140, 185) / 80)
+CFMagniDamage(RootPart.CFrame * CF(-1.4, 0, -1), 9, 40, 55, 10, 'Knockdown')
+CFMagniDamage(RootPart.CFrame * CF(1.4, 0, -1), 9, 40, 55, 10, 'Knockdown')
+wait(0.175 / v645)
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -1.7, -0.4) * angles(math.rad(45), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(90)),
+}, 'Back', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(-90)),
+}, 'Back', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(65), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+wait(0.2 / v645)
+
+u275 = false
+end
+function AT7()
+u275 = true
+
+local _ = u275 ~= true or mememode ~= true
+
+so('3051417237', Torso, 3, 0.8)
+coroutine.resume(coroutine.create(function()
+for _ = 1, 2 do
+Swait(3)
+so('3051417087', RightArm, 3, math.random(100, 155) / 100)
+end
+end))
+
+for v646 = 1, 10 do
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -1.7 + 0.17 * v646, -0.4) * angles(math.rad(25 - 5 * v646), math.rad(0), math.rad(36 * v646)),
+}, 'Quad', 'Out', 0.1)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(180), math.rad(0), math.rad(90)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(-90)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(-25), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(25), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.2)
+CFMagniDamage(RootPart.CFrame * CF(1.4, 0, -1 + 0.17 * v646), 9, 10, 15, 10, 'Knockdown')
+Swait()
+end
+
+u275 = false
+end
+function joke() end
+function Attack1()
+u275 = true
+Humanoid.JumpPower = 0
+Humanoid.WalkSpeed = 0.1
+
+so('299058146', RightArm, 2, 2.5)
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(20), math.rad(0), math.rad(-20)),
+}, 'Back', 'Out', 0.6)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(20)),
+}, 'Back', 'Out', 0.6)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(-10), math.rad(0), math.rad(20)),
+}, 'Back', 'Out', 0.6)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(-20)),
+}, 'Back', 'Out', 0.6)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(-20), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.6)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(20), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.6)
+Swait(6)
+coroutine.resume(coroutine.create(function()
+local _Attachment6 = Instance.new('Attachment', RightArm)
+
+_Attachment6.Orientation = Vector3.new(0, 0, 0)
+_Attachment6.Position = Vector3.new(0, -1, 0)
+
+game:GetService('Debris'):AddItem(_Attachment6, 2)
+end))
+
+local _Part7 = Instance.new('Part')
+
+_Part7.Reflectance = 0
+_Part7.Transparency = 1
+_Part7.CanCollide = false
+_Part7.Locked = true
+_Part7.Anchored = false
+_Part7.BrickColor = BrickColor.new('Really blue')
+_Part7.Name = 'BHandle'
+_Part7.Size = Vector3.new(2.5, 1, 2.5)
+_Part7.Material = 'SmoothPlastic'
+
+local v649 = _Part7
+
+_Part7.BreakJoints(v649)
+
+_Part7.Parent = Effects
+_Part7.CFrame = RootPart.CFrame
+_Part7.Massless = false
+
+weld(_Part7, RootPart, _Part7, _new3(0, 0, -3) * angles(math.rad(0), math.rad(0), math.rad(0)))
+
+local u650 = false
+
+local function v670(p651)
+if u650 == false then
+local _Parent2 = p651.Parent
+local _Humanoid5 = p651.Parent:FindFirstChild('Humanoid')
+local v654, v655, v656 = pairs(p651.Parent:children())
+
+while true do
+local v657
+
+v656, v657 = v654(v655, v656)
+
+if v656 == nil then
+break
+end
+if v657:IsA('Humanoid') then
+_Humanoid5 = v657
+end
+end
+
+local v658 = _Parent2:FindFirstChild('Torso') or _Parent2:FindFirstChild('UpperTorso')
+local _Head2 = _Parent2:FindFirstChild('Head')
+
+if _Humanoid5 ~= nil and (v658 ~= nil and _Head2 ~= nil) then
+u650 = true
+
+coroutine.resume(coroutine.create(function()
+_Part7:Destroy()
+end))
+
+local _Part8 = Instance.new('Part')
+
+_Part8.Reflectance = 0
+_Part8.Transparency = 1
+_Part8.CanCollide = false
+_Part8.Locked = true
+_Part8.Anchored = true
+_Part8.BrickColor = BrickColor.new('Really blue')
+_Part8.Name = 'FHandle'
+_Part8.Size = Vector3.new(1, 1, 1)
+_Part8.Material = 'SmoothPlastic'
+
+_Part8:BreakJoints()
+
+_Part8.Parent = Effects
+_Part8.CFrame = RootPart.CFrame
+_Part8.Massless = false
+
+local v661 = joint(_Part8, RootPart, _Part8, _new3())
+local _Attachment7 = Instance.new('Attachment', RightArm)
+
+_Attachment7.Orientation = Vector3.new(0, 0, 0)
+_Attachment7.Position = Vector3.new(0, -1, 0)
+
+game:GetService('Debris'):AddItem(_Attachment7, 5)
+so('231917750', Torso, 2, 0.9)
+
+local v663 = 20.5
+
+for v664 = 1, 10, 0.4 do
+SetTween(u634, {
+C0 = u278 * CFrame.new(-0.5 * math.sin(v664), 0.5 * math.cos(v664), 0) * angles(math.rad(25 - 4.5 * v664), math.rad(0), math.rad(36 * v664 * 2)),
+}, 'Quad', 'InOut', 0.05)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(20), math.rad(0), math.rad(-80)),
+}, 'Quad', 'InOut', 0.15)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.65, 0) * angles(math.rad(160 + 2 * v664), math.rad(0), math.rad(30 - 3 * v664)),
+}, 'Quad', 'Out', 0.15)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.15)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(0 + 6.5 * v664), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.15)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(0 - 6.5 * v664), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.15)
+SetTween(v661, {
+C0 = CFrame.new(0, -v664 * 2, v664 / 2),
+}, 'Quad', 'InOut', 0.05)
+
+v663 = v663 + 75
+
+if v663 > 180 then
+print(1)
+
+v663 = -180
+end
+if -45 < v663 and v663 < 45 then
+BulletHitEffectSpawn(v658.CFrame, 'ShockWave')
+so('471882019', v658, 3, 2.5)
+end
+
+Swait()
+end
+
+SpawnedParticle1.Enabled = false
+
+coroutine.resume(coroutine.create(function()
+local _Attachment8 = Instance.new('Attachment', RightArm)
+
+_Attachment8.Orientation = Vector3.new(0, 0, 0)
+_Attachment8.Position = Vector3.new(0, -1, 0)
+
+game:GetService('Debris'):AddItem(_Attachment8, 2)
+end))
+coroutine.resume(coroutine.create(function()
+local _Attachment9 = Instance.new('Attachment', LeftArm)
+
+_Attachment9.Orientation = Vector3.new(0, 0, 0)
+_Attachment9.Position = Vector3.new(0, -1, 0)
+
+game:GetService('Debris'):AddItem(_Attachment9, 2)
+end))
+so('782353117', Torso, 2, 0.9)
+so('588738949', RightArm, 3, math.random(90, 110) / 100)
+so('588738949', LeftArm, 3, math.random(90, 110) / 100)
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(-65), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.3)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(65), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.3)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(90), math.rad(0), math.rad(90)),
+}, 'Back', 'Out', 0.3)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(90), math.rad(0), math.rad(-90)),
+}, 'Back', 'Out', 0.3)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.7, -0.2) * angles(math.rad(-40), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.3)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(-30), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.3)
+SetTween(v661, {
+C0 = CFrame.new(0, -30, 5),
+}, 'Back', 'Out', 0.6)
+
+for _ = 1, 3 do
+Swait(3)
+end
+for v667 = 1, 2.5, 0.225 do
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 2 + -0.75 * v667, 20 - 1.8 * v667) * angles(math.rad(15 + 30 * v667 * 2), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-25), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.3)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(170), math.rad(0), math.rad(90 - 45 * v667)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(170), math.rad(0), math.rad(-90 + 45 * v667)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(40), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.3)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(40), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.3)
+Swait()
+SetTween(v661, {
+C0 = CFrame.new(0, -(20 - 1.8 * v667), 13 - 1.2 * v667),
+}, 'Quad', 'Out', 0.2)
+end
+
+so('231917750', Torso, 5, 0.9)
+
+local _Attachment10 = Instance.new('Attachment', Torso)
+
+_Attachment10.Orientation = Vector3.new(0, 0, 0)
+_Attachment10.Position = Vector3.new(0, 0, 0)
+
+game:GetService('Debris'):AddItem(_Attachment10, 7)
+coroutine.resume(coroutine.create(function()
+local _Parent3 = _Parent2.Parent
+
+_Parent2.Parent = Effects
+
+local _, _, _ = rayCast(Torso.Position, CFrame.new(Torso.Position, (RootPart.CFrame * CF(0, -4, -10)).p).lookVector, 54, Character)
+
+_Parent2.Parent = _Parent3
+end))
+coroutine.resume(coroutine.create(function()
+Swait(9)
+end))
+SetTween(v661, {
+C0 = CFrame.new(0, 0, 27),
+}, 'Quad', 'In', 0.3)
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, -0.5) * angles(math.rad(85), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.2)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-65), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(130), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(130), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(-25), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(-25), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.2)
+Swait(9)
+
+SpawnedParticle2.Enabled = false
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.25)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(35), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.25)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(30), math.rad(0), math.rad(30)),
+}, 'Back', 'Out', 0.25)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(30), math.rad(0), math.rad(-30)),
+}, 'Back', 'Out', 0.25)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(10), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.25)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(-10), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.25)
+Swait(7.5)
+_Part8:Destroy()
+
+u275 = false
+end
+end
+end
+
+local v671 = _Part7.Touched:connect(v670)
+
+Swait(15)
+
+if _Part7.Parent == Effects then
+v671:disconnect()
+
+local v672 = _Part7
+
+_Part7.Destroy(v672)
+
+u275 = false
+end
+
+repeat
+Swait()
+until u275 == false
+
+print('aaaaaaaaaaaaaaaaaa')
+v671:disconnect()
+
+Humanoid.JumpPower = 60
+Humanoid.WalkSpeed = 16
+end
+function Attack6()
+local v673, v674, v675 = pairs(GatherAllInstances(Effects))
+
+while true do
+local v676
+
+v675, v676 = v673(v674, v675)
+
+if v675 == nil then
+break
+end
+if v676.Name == 'Zombie' then
+v676.Parent:Destroy()
+end
+end
+end
+function ClickCombo()
+if u268 ~= 'Fall' and u268 ~= 'Jump' or Combo ~= 0 then
+if u267 ~= false then
+if Combo ~= 0 then
+if Combo ~= 1 then
+if Combo ~= 2 then
+if Combo == 3 then
+AT7()
+
+Combo = 0
+end
+else
+AT6()
+
+Combo = 3
+end
+else
+AT5()
+
+Combo = 2
+end
+else
+AT4()
+
+Combo = 1
+end
+elseif Combo ~= 0 then
+if Combo ~= 1 then
+if Combo ~= 2 then
+if Combo == 3 then
+Combo = 0
+
+ClickCombo()
+end
+else
+AT3()
+
+Combo = 0
+end
+else
+AT2()
+
+Combo = 2
+end
+else
+AT1()
+
+Combo = 1
+end
+end
+end
+
+local u677 = false
+local u678 = true
+
+
+
+task.spawn(function()
+while game:GetService("RunService").Heartbeat:Wait() do
+if u677 then
+v260(game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Model").HumanoidRootPart.Position, 0.1)
+end
+end
+end)
+
+function Button1DownF()
+if u678 then
+u677 = true
+
+while u677 == true do
+if u275 == false then
+u230(LeftArm.CFrame, 0.2)
+ClickCombo()
+end
+
+Swait()
+end
+end
+end
+
+local u679 = _LocalPlayer2:GetMouse().Button1Down:Connect(Button1DownF)
+
+function Button1UpF()
+if u677 == true then
+u677 = false
+end
+end
+
+local u680 = _LocalPlayer2:GetMouse().Button1Up:Connect(Button1UpF)
+local _BindableEvent2 = Instance.new('BindableEvent')
+
+coroutine.resume(coroutine.create(function()
+while true do
+_BindableEvent2.Event:Connect(function() end)
+
+u270 = u270 + u271
+hitfloor = rayCast(RootPart.Position, CFrame.new(RootPart.Position, RootPart.Position - Vector3.new(0, 1, 0)).lookVector, 4, Character)
+
+if Character:FindFirstChild('Sound') then
+Character:FindFirstChild('Sound'):Destroy()
+end
+
+local _magnitude = (game.Players.LocalPlayer.Character.Humanoid.MoveDirection * Vector3.new(1, 0, 1)).magnitude
+local _ = RootPart.Velocity.y
+
+if RootPart.Velocity.y <= 1 or hitfloor ~= nil then
+if RootPart.Velocity.y >= -1 or hitfloor ~= nil then
+if Humanoid.Sit ~= true then
+if _magnitude < 0.5 and hitfloor ~= nil then
+u268 = 'Idle'
+elseif 0.5 < _magnitude and hitfloor ~= nil then
+u268 = 'Walk'
+else
+u268 = ''
+end
+else
+u268 = 'Sit'
+end
+else
+u268 = 'Fall'
+end
+else
+u268 = 'Jump'
+end
+
+local _CFrame3 = RootPart.CFrame
+local v684 = Humanoid.MoveDirection * _CFrame3.LookVector
+local v685 = Humanoid.MoveDirection * _CFrame3.RightVector
+
+u280 = v684.X + v684.Z
+u281 = v685.X + v685.Z
+
+coroutine.resume(coroutine.create(function()
+if _Sound.Parent == nil or _Sound == nil then
+_Sound = u287:Clone()
+_Sound.Parent = Torso
+_Sound.Name = 'BGMusic'
+_Sound.Pitch = 1
+_Sound.Volume = 1.5
+_Sound.Looped = true
+_Sound.archivable = false
+_Sound.TimePosition = lastsongpos
+
+if playsong ~= true then
+if playsong == false then
+_Sound:stop()
+end
+else
+_Sound:play()
+end
+else
+lastsongpos = _Sound.TimePosition
+_Sound.Pitch = 1
+_Sound.Volume = 1.5
+_Sound.Looped = true
+_Sound.SoundId = u284
+_Sound.EmitterSize = 30
+end
+end))
+
+u269 = _magnitude * 1
+
+if u269 > 30 then
+u269 = 30
+end
+
+u269 = u269 / 50 * 2
+
+if u275 == false then
+if u268 ~= 'Jump' then
+if u268 ~= 'Fall' then
+if u268 ~= 'Idle' then
+if u268 ~= 'Walk' then
+if u268 == 'Sit' then
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(90), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(90), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+end
+elseif u267 ~= false then
+local v686 = mememode ~= true and 1.6 or 4
+
+u271 = 2.5 * v686
+Humanoid.JumpPower = 60 * v686
+Humanoid.WalkSpeed = 22 * v686
+
+local v687 = _new3(-u281 / 7 * math.cos(u270 / 8), 0, u280 / 7 * math.cos(u270 / 8)) * angles(math.rad(u280 * 89) * math.cos(u270 / 8), mr(-u281 * 55 / 2 * math.cos(u270 / 8)), math.rad(u281 * 55 / 1 * math.cos(u270 / 8)))
+local v688 = _new3(u281 / 7 * math.sin(u270 / 8), 0, -u280 / 7 * math.cos(u270 / 8)) * angles(math.rad(u280 * 89) * math.cos(u270 / 8), mr(u281 * 55 / 2 * math.sin(u270 / 8)), math.rad(-u281 * 55 / 1 * math.sin(u270 / 8)))
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(u281 * 1 * math.sin(u270 / 8), u280 * 1 * math.sin(u270 / 8), -0.5 - 0.255 * math.cos(u270 / 8) + -math.sin(u270 / 8) / 8) * angles(math.rad(85 + u280 * math.cos(u270 / 8) * 20), math.rad(-u281 * math.cos(u270 / 4) * 1), math.rad(-u281 * math.cos(u270 / 8) * 10)),
+}, 'Linear', 'InOut', WalkAnimMove / v686)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0 + 0.025 * math.cos(u270 / 4)) * angles(math.rad(-20 + (-u280 * 1 - -u280 * math.cos(u270 / 4)) * 5), math.rad((u281 * 2 - u281 * math.cos(u270 / 4)) * 3.5), math.rad(-u281 * 45 + -8 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', WalkAnimMove / v686)
+SetTween(u636, {
+C0 = _new3(1 + 0 * math.cos(u270 / 8), 0.5 - u280 * 0.5 * math.sin(u270 / 8), -0.4) * angles(math.rad(95 - u280 * 75 * math.sin(u270 / 8)), math.rad(0), math.rad(-8 + -u281 * 55 * math.sin(u270 / 8) + 10 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', WalkAnimMove / v686)
+SetTween(u637, {
+C0 = _new3(-1 + 0 * math.cos(u270 / 8), 0.5 - u280 * 0.5 * math.sin(u270 / 8), -0.4) * angles(math.rad(95 - u280 * 75 * math.sin(u270 / 8)), math.rad(0), math.rad(8 + u281 * 55 * math.cos(u270 / 8) - 10 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', WalkAnimMove / v686)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.85 - 0.25 * math.sin(u270 / 8), -0.15 - 0.25 * math.sin(u270 / 8)) * v687 * CFrame.Angles(math.rad(60 - 5 * math.cos(u270 / 8)), math.rad(0), math.rad(-2.5 - 0 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', WalkAnimMove / v686)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.85 - 0.25 * math.sin(u270 / 8), -0.15 - 0.25 * math.sin(u270 / 8)) * v688 * CFrame.Angles(math.rad(60 - 5 * math.sin(u270 / 8)), math.rad(0), math.rad(2.5 - 0 * math.sin(u270 / 8))),
+}, 'Linear', 'InOut', WalkAnimMove / v686)
+else
+local v689 = mememode ~= true and 1 or 4
+
+u271 = 2.4 * v689
+Humanoid.JumpPower = 60 * v689
+Humanoid.WalkSpeed = 16 * v689
+
+local v690 = _new3(-u281 / 7 * math.cos(u270 / 8), 0, u280 / 7 * math.cos(u270 / 8)) * angles(math.rad(-u280 * 30) * math.cos(u270 / 8), 0, math.rad(-u281 * 30) * math.cos(u270 / 8))
+local v691 = _new3(u281 / 7 * math.cos(u270 / 8), 0, -u280 / 7 * math.cos(u270 / 8)) * angles(math.rad(u280 * 30) * math.cos(u270 / 8), 0, math.rad(u281 * 30) * math.cos(u270 / 8))
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, -0.05 + 0.055 * math.cos(u270 / 4) + -math.sin(u270 / 4) / 8) * angles(math.rad((u280 * 2 - u280 * math.cos(u270 / 4)) * 7), math.rad((-u281 * 2 - -u281 * math.cos(u270 / 4)) * 5), math.rad(8 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', WalkAnimMove / v689)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0 + 0.025 * math.cos(u270 / 4)) * angles(math.rad((-u280 * 1 - -u280 * math.cos(u270 / 4)) * 7), math.rad((u281 * 2 - u281 * math.cos(u270 / 4)) * 3.5), math.rad(-u281 * 45 + -8 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', WalkAnimMove / v689)
+SetTween(u636, {
+C0 = _new3(1.45 + 0 * math.cos(u270 / 8), 0.5 + u281 / 50 * math.cos(u270 / 8), 0) * angles(math.rad(0 + u280 * 15 * math.cos(u270 / 8)), math.rad(0), math.rad(8 + u281 * 5 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', WalkAnimMove / v689)
+SetTween(u637, {
+C0 = _new3(-1.45 + 0 * math.cos(u270 / 8), 0.5 + u281 / 50 * math.cos(u270 / 8), 0) * angles(math.rad(0 - u280 * 15 * math.cos(u270 / 8)), math.rad(0), math.rad(-8 - u281 * 5 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', WalkAnimMove / v689)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.85 + 0.15 * math.sin(u270 / 8), -0.15 + 0.15 * math.cos(u270 / 8)) * v690 * CFrame.Angles(math.rad(0 - 5 * math.cos(u270 / 8)), math.rad(0), math.rad(2.5 - 0 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', WalkAnimMove / v689)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.85 - 0.15 * math.sin(u270 / 8), -0.15 - 0.15 * math.cos(u270 / 8)) * v691 * CFrame.Angles(math.rad(0 + 5 * math.cos(u270 / 8)), math.rad(0), math.rad(-2.5 - 0 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', WalkAnimMove / v689)
+end
+else
+local v692 = (u275 ~= true or mememode ~= true) and 1 or 5
+
+if u267 ~= false then
+u271 = 1.05 * v692
+Humanoid.JumpPower = 60
+Humanoid.WalkSpeed = 16
+
+local v693 = 0
+
+SetTween(u634, {
+C0 = u278 * _new4(0, 0, -0.1 + 0.0395 * math.cos(u270 / 8 + v693 * math.cos(u270 / 8 * 2))) * angles(math.rad(10.5 - 1 * math.cos(u270 / 8)), math.rad(0 + 0 * math.cos(u270 / 8) / 20), math.rad(-5)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u635, {
+C0 = u279 * angles(math.rad(-6.5 - 3.5 * math.sin(u270 / 8 + v693 * math.cos(u270 / 8 * 2))), math.rad(2.5 - 5.5 * math.cos(u270 / 16)), math.rad(5 - 6.5 * math.cos(u270 / 15 + 0.4 * math.cos(u270 / 10)))),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = _new3(1.45 + 0 * math.cos(u270 / 8), 0.5 + 0.05 * math.cos(u270 / 8), 0) * angles(math.rad(10 + 3 * math.sin(u270 / 8)), math.rad(25), math.rad(40 + 4 * math.cos(u270 / 8))),
+}, 'Quad', 'Out', 0.2)
+SetTween(u637, {
+C0 = _new3(-1.45 + 0 * math.cos(u270 / 8), 0.5 + 0.05 * math.cos(u270 / 8), 0) * angles(math.rad(10 + 3 * math.sin(u270 / 8)), math.rad(-25), math.rad(-40 - 4 * math.cos(u270 / 8))),
+}, 'Quad', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.95 - 0.04 * math.cos(u270 / 8 + v693 * math.cos(u270 / 8 * 2)), 0) * CFrame.Angles(math.rad(20.5 - 1 * math.cos(u270 / 8)), math.rad(0), math.rad(2.5 - 0 * math.cos(u270 / 8))),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.95 - 0.04 * math.cos(u270 / 8 + v693 * math.cos(u270 / 8 * 2)), 0) * CFrame.Angles(math.rad(1.5 - 1 * math.cos(u270 / 8)), math.rad(20), math.rad(-2.5 - 0 * math.cos(u270 / 8))),
+}, 'Quad', 'InOut', 0.1)
+else
+u271 = 1.05 * v692
+Humanoid.JumpPower = 60
+Humanoid.WalkSpeed = 16
+
+local v694 = 0
+
+SetTween(u634, {
+C0 = u278 * _new4(0, 0, -0.1 + 0.0395 * math.cos(u270 / 8 + v694 * math.cos(u270 / 8 * 2))) * angles(math.rad(1.5 - 1 * math.cos(u270 / 8)), math.rad(0 + 0 * math.cos(u270 / 8) / 20), math.rad(-20)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u635, {
+C0 = u279 * angles(math.rad(6.5 - 3.5 * math.sin(u270 / 8 + v694 * math.cos(u270 / 8 * 2))), math.rad(2.5 - 5.5 * math.cos(u270 / 16)), math.rad(20 - 6.5 * math.cos(u270 / 15 + 0.4 * math.cos(u270 / 10)))),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = _new3(1 + 0 * math.cos(u270 / 8), 0.5 + 0.05 * math.cos(u270 / 8), 0.5) * angles(math.rad(0 + 3 * math.sin(u270 / 8)), math.rad(-25), math.rad(-15 + 4 * math.cos(u270 / 8))),
+}, 'Quad', 'Out', 0.2)
+SetTween(u637, {
+C0 = _new3(-1 + 0 * math.cos(u270 / 8), 0.5 + 0.05 * math.cos(u270 / 8), 0.5) * angles(math.rad(0 + 3 * math.sin(u270 / 8)), math.rad(5), math.rad(15 - 4 * math.cos(u270 / 8))),
+}, 'Quad', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.95 - 0.04 * math.cos(u270 / 8 + v694 * math.cos(u270 / 8 * 2)), 0) * CFrame.Angles(math.rad(0 - 1 * math.cos(u270 / 8)), math.rad(0), math.rad(-9 - 0 * math.cos(u270 / 8))),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.95 - 0.04 * math.cos(u270 / 8 + v694 * math.cos(u270 / 8 * 2)), 0) * CFrame.Angles(math.rad(0 - 1 * math.cos(u270 / 8)), math.rad(20), math.rad(9 - 0 * math.cos(u270 / 8))),
+}, 'Quad', 'InOut', 0.1)
+end
+end
+else
+u271 = 1.2
+
+SetTween(u634, {
+C0 = u278 * _new4(0, 0 + 0.01975 * math.cos(u270 / 8), -0.5 + 0.0395 * math.cos(u270 / 8)) * angles(math.rad(5.5 - 1.5 * math.cos(u270 / 8)) - u269 * u280 / 2, math.rad(0) + u269 * u281 / 2, math.rad(0)),
+}, 'Quad', 'Out', 0.35)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(26.5 + 2.5 * math.cos(u270 / 8)), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.25)
+SetTween(u636, {
+C0 = _new3(1.4 + 0.05 * math.cos(u270 / 8), 0.5 + 0.05 * math.cos(u270 / 8), 0) * angles(math.rad(105 - 2 * math.cos(u270 / 8)), math.rad(-15), math.rad(80 + 4 * math.cos(u270 / 8))),
+}, 'Quad', 'Out', 0.2)
+SetTween(u637, {
+C0 = _new3(-1.4 + 0.05 * math.cos(u270 / 8), 0.5 + 0.05 * math.cos(u270 / 8), 0) * angles(math.rad(105 - 2 * math.cos(u270 / 8)), math.rad(15), math.rad(-80 - 4 * math.cos(u270 / 8))),
+}, 'Quad', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.15 + 0.05 * math.cos(u270 / 15), -0.4) * CFrame.Angles(math.rad(-15 - 1 * math.cos(u270 / 10)), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.55 + 0.05 * math.cos(u270 / 15), -0.4) * CFrame.Angles(math.rad(0 + 1 * math.cos(u270 / 10)), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+end
+else
+u271 = 1.2
+
+SetTween(u634, {
+C0 = u278 * _new4(0, 0 + 0.01975 * math.cos(u270 / 8), -0.1 + 0.0395 * math.cos(u270 / 8)) * angles(math.rad(-6.5 - 1.5 * math.cos(u270 / 8)) + u269 * u280 / 2, math.rad(0) - u269 * u281 / 2, math.rad(0)),
+}, 'Quad', 'Out', 0.25)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-26.5 + 2.5 * math.cos(u270 / 8)), math.rad(0), math.rad(0)),
+}, 'Quad', 'Out', 0.25)
+SetTween(u636, {
+C0 = _new3(1.4 + 0.05 * math.cos(u270 / 8), 0.5 + 0.05 * math.cos(u270 / 8), 0) * angles(math.rad(140 - 2 * math.cos(u270 / 8)), math.rad(-5), math.rad(8 + 4 * math.cos(u270 / 8))),
+}, 'Quad', 'Out', 0.2)
+SetTween(u637, {
+C0 = _new3(-1.4 + 0.05 * math.cos(u270 / 8), 0.5 + 0.05 * math.cos(u270 / 8), 0) * angles(math.rad(140 - 2 * math.cos(u270 / 8)), math.rad(5), math.rad(-8 - 4 * math.cos(u270 / 8))),
+}, 'Quad', 'Out', 0.2)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.85 + 0.05 * math.cos(u270 / 15), -0.2) * CFrame.Angles(math.rad(-15 - 1 * math.cos(u270 / 10)), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.075)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.35 + 0.05 * math.cos(u270 / 15), -0.4) * CFrame.Angles(math.rad(-25 + 1 * math.cos(u270 / 10)), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.075)
+end
+end
+if u275 == false and u267 == true then
+local _ = u268 == 'Walk'
+end
+
+Swait(Animstep * 30)
+end
+end))
+
+laying = false
+
+function keys(v697)
+if v697 == 'f' and (u275 == false and u272 == false) then
+if u267 ~= false then
+u267 = false
+
+so('3051417791', RightArm, 1.5, 0.8)
+so('3051417791', LeftArm, 1.5, 0.8)
+else
+u267 = true
+
+so('3051417649', RightArm, 1.5, 0.8)
+so('3051417649', LeftArm, 1.5, 0.8)
+end
+end
+if v697 == 'f' and (u275 == false and u272 == true) then
+if u267 ~= false then
+u267 = false
+
+so('3051417791', RightArm, 1.5, 0.8)
+so('3051417791', LeftArm, 1.5, 0.8)
+else
+u267 = true
+
+so('3051417649', RightArm, 1.5, 0.8)
+so('3051417649', LeftArm, 1.5, 0.8)
+end
+end
+if v697 == 'r' and u272 == false then
+laying = not laying
+u275 = true
+
+while laying == true do
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, -2.2) * angles(math.rad(75), math.rad(5 * math.cos(u270 / 8)), math.rad(5 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.1)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-40), math.rad(15 * math.sin(u270 / 8)), math.rad(0)),
+}, 'Linear', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1, 0.5, -0.4) * angles(math.rad(160), math.rad(5 * math.cos(u270 / 8)), math.rad(-50 + 5 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1, 0.5, -0.4) * angles(math.rad(160), math.rad(5 * math.cos(u270 / 8)), math.rad(40 + 5 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.9 - 0.1 * math.cos(u270 / 8), -0.4 + 0.4 * math.cos(u270 / 8)) * angles(math.rad(-50 + 35 * math.cos(u270 / 8)), math.rad(5 * math.cos(u270 / 8)), math.rad(-15 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.9 + 0.1 * math.cos(u270 / 8), -0.4 - 0.4 * math.cos(u270 / 8)) * angles(math.rad(-50 - 35 * math.cos(u270 / 8)), math.rad(5 * math.cos(u270 / 8)), math.rad(-15 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.1)
+Swait()
+
+if (Humanoid.MoveDirection * Vector3.new(1, 0, 1)).magnitude > 0.5 then
+laying = false
+end
+end
+
+u275 = false
+end
+if v697 == 'r' and u272 == true then
+laying = not laying
+u275 = true
+
+while laying == true do
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, -1.8) * angles(math.rad(140), math.rad(5 * math.cos(u270 / 8)), math.rad(5 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.1)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-100), math.rad(15 * math.sin(u270 / 8)), math.rad(0)),
+}, 'Linear', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1, 1, 0) * angles(math.rad(210), math.rad(5 * math.cos(u270 / 8)), math.rad(40 + 5 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1, 1, 0) * angles(math.rad(210), math.rad(5 * math.cos(u270 / 8)), math.rad(-40 + 5 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.7, 0) * angles(math.rad(130 + 5 * math.cos(u270 / 8)), math.rad(15 * math.sin(u270 / 8)), math.rad(-15 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.7, 0) * angles(math.rad(130 - 5 * math.cos(u270 / 8)), math.rad(-15 * math.sin(u270 / 8)), math.rad(-15 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.1)
+Swait()
+
+if (Humanoid.MoveDirection * Vector3.new(1, 0, 1)).magnitude > 0.5 then
+laying = false
+end
+end
+
+u275 = false
+end
+if v697 == 'z' and u275 == false then
+Attack1()
+end
+if v697 == 'x' and u275 == false then
+u275 = true
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, -1.8) * angles(math.rad(20), math.rad(5 * math.cos(u270 / 8)), math.rad(5 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-20), math.rad(15 * math.sin(u270 / 8)), math.rad(0)),
+}, 'Linear', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1, 1, 0) * angles(math.rad(80), math.rad(5 * math.cos(u270 / 8)), math.rad(23 - 1 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.3)
+SetTween(u637, {
+C0 = CFrame.new(-1, 1, 0) * angles(math.rad(80), math.rad(5 * math.cos(u270 / 8)), math.rad(12 + 1 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.3)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.7, 0) * angles(math.rad(50 * math.cos(u270 / 8)), math.rad(15 * math.sin(u270 / 8)), math.rad(-15 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.7, 0) * angles(math.rad(-50 - 5 * math.cos(u270 / 8)), math.rad(-15 * math.sin(u270 / 8)), math.rad(-15 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+Swait(9)
+
+u271 = 4.3
+
+for _ = 1, 7, 0.1 do
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, -1.8) * angles(math.rad(30), math.rad(5 * math.cos(u270 / 8)), math.rad(5 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(-30), math.rad(15 * math.sin(u270 / 8)), math.rad(0)),
+}, 'Linear', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1, 1, 0) * angles(math.rad(90), math.rad(5 * math.cos(u270 / 8)), math.rad(30 + 1 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.3)
+SetTween(u637, {
+C0 = CFrame.new(-1, 1, 0) * angles(math.rad(80), math.rad(5 * math.cos(u270 / 8)), math.rad(-30 - 1 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.3)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.7, 0) * angles(math.rad(110 + 5 * math.cos(u270 / 8)), math.rad(15 * math.sin(u270 / 8)), math.rad(-15 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.7, 0) * angles(math.rad(-60 - 5 * math.cos(u270 / 8)), math.rad(-15 * math.sin(u270 / 8)), math.rad(-15 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+Swait()
+end
+
+u275 = false
+end
+if v697 == 'c' and u275 == false then
+laying = not laying
+u275 = true
+
+while laying == true do
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -0.6, -1.8) * angles(math.rad(20), math.rad(5 * math.cos(u270 / 8)), math.rad(5 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(30), math.rad(15 * math.sin(u270 / 8)), math.rad(0)),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u636, {
+C0 = CFrame.new(1, 0.5, 0) * angles(math.rad(20), math.rad(5 * math.cos(u270 / 8)), math.rad(20 + 5 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.3)
+SetTween(u637, {
+C0 = CFrame.new(-1, 0.5, 0) * angles(math.rad(20), math.rad(5 * math.cos(u270 / 8)), math.rad(-20 + 5 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.3)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.7, 0) * angles(math.rad(110 + 1 * math.cos(u270 / 8)), math.rad(15 * math.sin(u270 / 8)), math.rad(20 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.7, 0) * angles(math.rad(110 - 1 * math.cos(u270 / 8)), math.rad(-15 * math.sin(u270 / 8)), math.rad(-17 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+Swait()
+
+if (Humanoid.MoveDirection * Vector3.new(1, 0, 1)).magnitude > 0.5 then
+laying = false
+end
+end
+
+u275 = false
+end
+if v697 == 'v' and u275 == false then
+laying = not laying
+u275 = true
+
+while laying == true do
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, -0.6, -1.8) * angles(math.rad(-50), math.rad(5 * math.cos(u270 / 8)), math.rad(5 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(30), math.rad(15 * math.sin(u270 / 8)), math.rad(0)),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u636, {
+C0 = CFrame.new(1.1, 0.5, 0) * angles(math.rad(-60), math.rad(5 * math.cos(u270 / 8)), math.rad(20 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.3)
+SetTween(u637, {
+C0 = CFrame.new(-1.1, 0.5, 0) * angles(math.rad(-60), math.rad(5 * math.cos(u270 / 8)), math.rad(-20 * math.cos(u270 / 8))),
+}, 'Linear', 'Out', 0.3)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.7, 0) * angles(math.rad(35 + 0.1 * math.cos(u270 / 8)), math.rad(15 * math.sin(u270 / 8)), math.rad(14 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.7, 0) * angles(math.rad(35 - 0.1 * math.cos(u270 / 8)), math.rad(-15 * math.sin(u270 / 8)), math.rad(-17 * math.cos(u270 / 8))),
+}, 'Linear', 'InOut', 0.3)
+Swait()
+
+if (Humanoid.MoveDirection * Vector3.new(1, 0, 1)).magnitude > 0.5 then
+laying = false
+end
+end
+
+u275 = false
+end
+if v697 == 'f' then
+local _ = u275 ~= false
+end
+if v697 == 'y' and u275 == false then
+joke()
+end
+if v697 == 't' and u275 == false then
+u275 = true
+
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(30)),
+}, 'Back', 'Out', 0.3)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(-30)),
+}, 'Back', 'Out', 0.3)
+SetTween(u636, {
+C0 = CFrame.new(1.3, 0.5, 0) * angles(math.rad(120), math.rad(0), math.rad(-40)),
+}, 'Back', 'Out', 0.3)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.3)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -1, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.3)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -1, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Back', 'Out', 0.3)
+Swait(9)
+so('875978120', Torso, 4, 0.9)
+
+u271 = 4.3
+
+for _ = 1, 4, 0.1 do
+SetTween(u634, {
+C0 = u278 * CFrame.new(0, 0, -0.1 - 0.05 * math.cos(u270 / 8)) * angles(math.rad(1 + 1 * math.cos(u270 / 8)), math.rad(0), math.rad(30 + 1 * math.cos(u270 / 8))),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u635, {
+C0 = u279 * CFrame.new(0, 0, 0) * angles(math.rad(0), math.rad(0), math.rad(-30 + 1 * math.cos(u270 / 8))),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.3, 0.5, 0) * angles(math.rad(120), math.rad(0), math.rad(-40)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.5, 0) * angles(math.rad(0), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.95 + 0.05 * math.cos(u270 / 8), -0.2 + 0.05 * math.cos(u270 / 8)) * angles(math.rad(-10 + 1 * math.cos(u270 / 8)), math.rad(25 * math.cos(u270 / 16)), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.95 + 0.05 * math.cos(u270 / 8), 0) * angles(math.rad(1 + 1 * math.cos(u270 / 8)), math.rad(0), math.rad(0)),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+u275 = false
+end
+if v697 == 'g' and (u274 == true and u273 == true) then
+u274 = false
+end
+if v697 == 'q' then
+u678 = not u678
+
+game:GetService('StarterGui'):SetCore('SendNotification', {
+Title = '',
+Text = 'attack mode turn to' .. (u678 and 'on' or 'off'),
+Icon = '',
+})
+
+Duration = 1.4
+end
+if v697 == 'g' and (u275 == false and (u273 == false and u272 == true)) then
+u275 = true
+u274 = true
+
+_LocalPlayer2:GetMouse()
+
+local v698 = getmousetarget()
+
+if v698.Parent == nil then
+end
+
+local _HumanoidRootPart = v698.Parent:FindFirstChild('HumanoidRootPart')
+local _Humanoid6 = v698.Parent:FindFirstChildOfClass('Humanoid')
+
+if _HumanoidRootPart == nil then
+_HumanoidRootPart = v698.Parent:FindFirstChild('Torso')
+end
+
+print(_HumanoidRootPart, _Humanoid6)
+
+if _HumanoidRootPart == nil or _Humanoid6 == nil then
+u275 = false
+end
+if _HumanoidRootPart == nil or _Humanoid6 == nil then
+end
+
+local _CFrame4 = _HumanoidRootPart.CFrame
+local _CFrame5 = RootPart.CFrame
+
+_HumanoidRootPart.Anchored = true
+_HumanoidRootPart.CFrame = _HumanoidRootPart.CFrame * CFrame.new(0, -2.5, 0) * angles(math.rad(90), 0, 0)
+
+local _Part9 = Instance.new('Part')
+local _ParticleEmitter3 = Instance.new('ParticleEmitter')
+
+_Part9.Parent = _LocalPlayer2.Character
+_Part9.CFrame = CFrame.new(51.1425285, 1.88000441, -7.34444237, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+_Part9.Position = Vector3.new(51.1425285, 1.88000441, -7.34444237)
+_Part9.Transparency = 1
+_Part9.Size = Vector3.new(5.54000139, 3.71999788, 4.06999826)
+_Part9.BottomSurface = Enum.SurfaceType.Smooth
+_Part9.TopSurface = Enum.SurfaceType.Smooth
+_Part9.CanCollide = false
+_Part9.Anchored = true
+_ParticleEmitter3.Parent = _Part9
+_ParticleEmitter3.Speed = NumberRange.new(0.5, 0.5)
+_ParticleEmitter3.Rotation = NumberRange.new(0, 360)
+_ParticleEmitter3.Enabled = true
+_ParticleEmitter3.Texture = 'rbxassetid://244221440'
+_ParticleEmitter3.Transparency = NumberSequence.new(0.89999997615814, 0.89999997615814)
+_ParticleEmitter3.ZOffset = 5
+_ParticleEmitter3.Size = NumberSequence.new(3.7200000286102, 3.7200000286102)
+_ParticleEmitter3.Acceleration = Vector3.new(0, 1, 0)
+_ParticleEmitter3.Lifetime = NumberRange.new(0.10000000149012, 0.20000000298023)
+_ParticleEmitter3.Rate = 20000
+_ParticleEmitter3.RotSpeed = NumberRange.new(-30, 30)
+_ParticleEmitter3.SpreadAngle = Vector2.new(360, 360)
+_ParticleEmitter3.VelocitySpread = 360
+_Part9.CFrame = _HumanoidRootPart.CFrame * CFrame.Angles(0, 0, math.rad(90))
+_Part9.CFrame = _Part9.CFrame * CFrame.new(0, 0, -2)
+RootPart.Anchored = true
+RootPart.CFrame = _HumanoidRootPart.CFrame * CFrame.new(0, -0.2, 0) * angles(math.rad(-90), 0, 0)
+RootPart.CFrame = RootPart.CFrame * CFrame.new(0, 1.5, 0) * angles(0, math.rad(180), 0)
+
+coroutine.resume(coroutine.create(function()
+wait(0.3)
+
+_ParticleEmitter3.Enabled = false
+end))
+
+local _Model5 = Instance.new('Model')
+local _Part10 = Instance.new('Part')
+local _SpecialMesh = Instance.new('SpecialMesh')
+local _Weld4 = Instance.new('Weld')
+
+Instance.new('Part')
+Instance.new('Weld')
+
+local _Part11 = Instance.new('Part')
+local _Weld5 = Instance.new('Weld')
+
+_Model5.Name = 'D'
+_Model5.Parent = v698.Parent
+_Part10.Parent = _Model5
+_Part10.CFrame = CFrame.new(60.5641861, 1.69272184, -20.9960651, 0.000150388281, 0.0221676175, 0.999754369, -0.000016669499, 0.999754369, -0.0221676137, -1, -0.0000133316544, 0.000150720865)
+_Part10.Orientation = Vector3.new(1.26999998, 89.9899979, 0)
+_Part10.Position = Vector3.new(60.5641861, 1.69272184, -20.9960651)
+_Part10.Rotation = Vector3.new(89.6100006, 88.7300034, -89.6100006)
+_Part10.Color = Color3.new(0.745098, 0.407843, 0.384314)
+_Part10.Size = Vector3.new(0.0600000024, 0.950895786, 0.220896259)
+_Part10.BottomSurface = Enum.SurfaceType.Smooth
+_Part10.BrickColor = BrickColor.new('Terra Cotta')
+_Part10.CanCollide = false
+_Part10.Material = Enum.Material.SmoothPlastic
+_Part10.TopSurface = Enum.SurfaceType.Smooth
+_Part10.brickColor = BrickColor.new('Terra Cotta')
+_SpecialMesh.Parent = _Part10
+_SpecialMesh.Scale = Vector3.new(0.910000026, 0.300000012, 0.910000026)
+_SpecialMesh.MeshType = Enum.MeshType.Sphere
+_Weld4.Name = 'Part'
+_Weld4.Parent = _Part10
+_Weld4.C0 = CFrame.new(-0.000057220459, -0.414992213, 0.0000305175781, 3.2002631700000004e-7, -1, 5.29796484e-11, -1, -3.2002631700000004e-7, -1.69109037e-15, 1.70804522e-15, -5.29796484e-11, -1)
+_Weld4.Part0 = _Part10
+_Weld4.Part1 = _Part11
+_Weld4.part1 = _Part11
+_Part11.Parent = _Model5
+_Part11.CFrame = CFrame.new(60.5550156, 1.27783084, -20.9960022, -0.0221676175, -0.000150395441, -0.999754369, -0.999754369, 0.0000163495533, 0.0221676137, 0.0000130116277, 1, -0.000150720924)
+_Part11.Orientation = Vector3.new(-1.26999998, -90.0100021, -90)
+_Part11.Position = Vector3.new(60.5550156, 1.27783084, -20.9960022)
+_Part11.Rotation = Vector3.new(-90.3899994, -88.7300034, 179.610001)
+_Part11.Color = Color3.new(1, 0.8, 0.6)
+_Part11.Size = Vector3.new(0.789999664, 0.315000653, 0.315000653)
+_Part11.BottomSurface = Enum.SurfaceType.Smooth
+_Part11.BrickColor = BrickColor.new('Pastel brown')
+_Part11.Material = Enum.Material.SmoothPlastic
+_Part11.TopSurface = Enum.SurfaceType.Smooth
+_Part11.brickColor = BrickColor.new('Pastel brown')
+_Part11.Shape = Enum.PartType.Cylinder
+
+if _HumanoidRootPart.Name ~= 'Torso' then
+if _HumanoidRootPart.Name ~= 'Torso' then
+local _BodyColors = _HumanoidRootPart.Parent:FindFirstChildOfClass('BodyColors')
+
+if _BodyColors ~= nil then
+_Part11.BrickColor = _BodyColors.TorsoColor
+end
+end
+else
+_Part11.BrickColor = _HumanoidRootPart.BrickColor
+end
+
+_Part11.CanCollide = false
+_Weld5.Name = 'Torso'
+_Weld5.Parent = _Part11
+_Weld5.C0 = CFrame.new(0.749751091, -0.000104904175, -1.27482605, -0.0000130116277, -0.0221676175, 0.999754369, -1, -0.000150395441, -0.0000163495533, 0.000150720924, -0.999754369, -0.0221676137)
+_Weld5.Part0 = _Part11
+_Weld5.Part1 = _HumanoidRootPart
+_Weld5.part1 = _HumanoidRootPart
+
+wait(0.2)
+
+local u712 = _ParticleEmitter3
+
+for _ = 0, 0.1, 0.1 do
+local v713 = {C0 = u279}
+
+SetTween(u635, v713, 'Quad', 'InOut', 0.1)
+end
+
+local v714 = 0
+
+u273 = true
+eyes.Texture = 'http://www.roblox.com/asset/?id=2801605712'
+mouth.Texture = 'http://www.roblox.com/asset/?id=2801768094'
+brows.Texture = 'http://www.roblox.com/asset/?id=2801716156'
+blush.Texture = 'http://www.roblox.com/asset/?id=2801785860'
+extra.Texture = 'http://www.roblox.com/asset/?id=2801786177'
+
+while true do
+v714 = v714 + 1
+
+for _ = 0, 0.8, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-2.9, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(30), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(30), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+for _ = 0, 0.8, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-3.05, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(45), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(45), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(100), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(100), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+local __836796971 = CreateSound2('836796971', Torso, 10, 1, false)
+
+game:GetService('Debris'):AddItem(__836796971, 2)
+wait(0.5)
+
+if v714 > 20 or u274 == false then
+eyes.Texture = 'http://www.roblox.com/asset/?id=2801605473'
+mouth.Texture = 'http://www.roblox.com/asset/?id=2801778896'
+brows.Texture = 'http://www.roblox.com/asset/?id=3523931787'
+blush.Texture = 'http://www.roblox.com/asset/?id=3523974768'
+extra.Texture = 'http://www.roblox.com/asset/?id=2801786177'
+
+while true do
+v714 = v714 + 1
+
+for _ = 0, 0.5, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-2.9, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(30), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(30), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+local __8367969712 = CreateSound2('836796971', Torso, 10, 1, false)
+
+game:GetService('Debris'):AddItem(__8367969712, 2)
+
+for _ = 0, 0.5, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-3.05, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(45), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(45), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(100), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(100), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+wait(0.2)
+
+if v714 > 35 or u274 == false then
+eyes.Texture = 'http://www.roblox.com/asset/?id=2818165600'
+mouth.Texture = 'http://www.roblox.com/asset/?id=2813765960'
+brows.Texture = 'http://www.roblox.com/asset/?id=3523931344'
+blush.Texture = 'http://www.roblox.com/asset/?id=3523974768'
+extra.Texture = 'http://www.roblox.com/asset/?id=3523959919'
+
+while true do
+wait()
+
+for _ = 0, 0.1, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-3, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(35), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(35), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+local __8367969713 = CreateSound2('836796971', Torso, 10, 1, false)
+
+game:GetService('Debris'):AddItem(__8367969713, 5)
+
+for _ = 0, 0.1, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-2.7, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(10), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(10), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(75), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(75), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+wait(0.1)
+
+if u274 == false then
+eyes.Texture = 'http://www.roblox.com/asset/?id=2818165600'
+mouth.Texture = 'http://www.roblox.com/asset/?id=2813765960'
+brows.Texture = 'http://www.roblox.com/asset/?id=3523931344'
+blush.Texture = 'http://www.roblox.com/asset/?id=3523974768'
+extra.Texture = 'http://www.roblox.com/asset/?id=3523959919'
+
+for _ = 0, 0.4, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-3, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(35), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(35), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+wait(0.5)
+
+for _ = 0, 0.4, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-2.65, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(8), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(8), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(72), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(72), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+local __1430568042 = CreateSound2('1430568042', Torso, 10, 1, false)
+
+game:GetService('Debris'):AddItem(__1430568042, 5)
+wait(0.5)
+
+for _ = 0, 0.4, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-3, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(35), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(35), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+wait(0.5)
+
+for _ = 0, 0.4, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-2.65, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(8), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(8), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(72), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(72), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+local __14305680422 = CreateSound2('1430568042', Torso, 10, 1, false)
+
+game:GetService('Debris'):AddItem(__14305680422, 5)
+wait(0.5)
+
+for _ = 0, 0.4, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-3, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(35), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(35), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(90), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+wait(0.5)
+
+for _ = 0, 0.4, 0.1 do
+SetTween(u634, {
+C0 = CFrame.fromEulerAnglesXYZ(-2.65, 0, 3.14),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u639, {
+C0 = CFrame.new(-0.5, -0.8999999999999999, 0) * angles(math.rad(8), 0, math.rad(-25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u638, {
+C0 = CFrame.new(0.5, -0.8999999999999999, 0) * angles(math.rad(8), 0, math.rad(25)),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u637, {
+C0 = CFrame.new(-1.5, 0.4, 0) * angles(math.rad(72), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+SetTween(u636, {
+C0 = CFrame.new(1.5, 0.4, 0) * angles(math.rad(72), 0, 0),
+}, 'Quad', 'InOut', 0.1)
+Swait()
+end
+
+local __14305680423 = CreateSound2('1430568042', Torso, 10, 1, false)
+
+game:GetService('Debris'):AddItem(__14305680423, 5)
+wait(0.5)
+
+u275 = false
+u712.Enabled = true
+RootPart.CFrame = _CFrame5
+RootPart.Anchored = false
+
+coroutine.resume(coroutine.create(function()
+wait(0.3)
+
+u712.Enabled = false
+
+game:GetService('Debris'):AddItem(u712, 2)
+end))
+_Model5:Destroy()
+
+_HumanoidRootPart.CFrame = _CFrame4
+_HumanoidRootPart.Anchored = false
+u273 = false
+eyes.Texture = 'http://www.roblox.com/asset/?id=2801594656'
+mouth.Texture = 'http://www.roblox.com/asset/?id=2801759987'
+brows.Texture = 'http://www.roblox.com/asset/?id=2801716156'
+blush.Texture = 'http://www.roblox.com/asset/?id=2801785860'
+extra.Texture = 'http://www.roblox.com/asset/?id=0'
+end
+end
+end
+end
+end
+end
+else
+if v697 == 'p' and (u275 == false and _LocalPlayer2.Name == 'roblox5') then
+if mememode ~= false then
+mememode = false
+u286 = u286 - 1
+
+KeyDownF('n')
+else
+mememode = true
+u284 = 'http://www.roblox.com/asset/?id=836590183'
+lastsongpos = 0
+_Sound.TimePosition = lastsongpos
+end
+end
+if v697 == '0' and isruning == false then
+isruning = true
+end
+if v697 == 'm' then
+if playsong ~= true then
+if playsong == false then
+playsong = true
+
+_Sound:resume()
+end
+else
+playsong = false
+
+_Sound:pause()
+end
+end
+if v697 == 'n' and mememode == false then
+u286 = u286 + 1
+
+if u286 > 6 then
+u286 = 1
+end
+
+warn('now playing song Nr' .. u286)
+
+if u286 ~= 1 then
+if u286 ~= 2 then
+if u286 ~= 3 then
+if u286 ~= 4 then
+if u286 ~= 5 then
+if u286 == 6 then
+u284 = 'http://www.roblox.com/asset/?id=3547074406'
+end
+else
+u284 = 'http://www.roblox.com/asset/?id=2984966954'
+end
+else
+u284 = 'http://www.roblox.com/asset/?id=493674525'
+end
+else
+u284 = 'http://www.roblox.com/asset/?id=198665867'
+end
+else
+u284 = 'http://www.roblox.com/asset/?id=3464477488'
+end
+else
+u284 = 'http://www.roblox.com/asset/?id=617334987'
+end
+
+lastsongpos = 0
+_Sound.TimePosition = lastsongpos
+end
+
+return
+end
+end
+
+local u721 = game:GetService('UserInputService').InputBegan:Connect(function(p695, p696)
+_BindableEvent2.Event:Connect(function() end)
+
+if p696 then
+return
+end
+
+local v697 = game:GetService('UserInputService'):GetStringForKeyCode(p695.KeyCode):lower()
+keys(v697)
+end)
+
+if game:GetService('UserInputService').TouchEnabled then
+local player = game.Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "KeyGui"
+gui.ResetOnSpawn = true
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local main = Instance.new("Frame")
+main.AnchorPoint = Vector2.new(0.5, 1)
+main.Position = UDim2.new(0.81, 0, 0.25, 0)
+main.Size = UDim2.new(0.6, 0, 0.25, 0)
+main.BackgroundColor3 = Color3.fromRGB(20,20,20)
+main.BackgroundTransparency = 0.1
+main.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0.08,0)
+corner.Parent = main
+
+local stroke = Instance.new("UIStroke")
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(60,60,60)
+stroke.Parent = main
+
+local padding = Instance.new("UIPadding")
+padding.PaddingTop = UDim.new(0.05,0)
+padding.PaddingBottom = UDim.new(0.05,0)
+padding.PaddingLeft = UDim.new(0.05,0)
+padding.PaddingRight = UDim.new(0.05,0)
+padding.Parent = main
+
+local layout = Instance.new("UIGridLayout")
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.VerticalAlignment = Enum.VerticalAlignment.Center
+layout.CellSize = UDim2.new(0.15,0,0.35,0)
+layout.CellPadding = UDim2.new(0.04,0,0.08,0)
+layout.Parent = main
+
+local aspect = Instance.new("UIAspectRatioConstraint")
+aspect.AspectRatio = 3
+aspect.Parent = main
+
+local keysx = {
+"F","R","Z","X","C","V",
+"T","Y","G","Q","M","N"
+}
+
+for _,key in ipairs(keysx) do
+local button = Instance.new("TextButton")
+button.Text = key
+button.BackgroundColor3 = Color3.fromRGB(35,35,35)
+button.TextColor3 = Color3.new(1,1,1)
+button.AutoButtonColor = false
+button.Parent = main
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0.25,0)
+btnCorner.Parent = button
+
+local btnStroke = Instance.new("UIStroke")
+btnStroke.Thickness = 1.5
+btnStroke.Color = Color3.fromRGB(80,80,80)
+btnStroke.Parent = button
+
+local textScale = Instance.new("UITextSizeConstraint")
+textScale.MaxTextSize = 60
+textScale.Parent = button
+
+button.TextScaled = true
+
+button.MouseButton1Click:Connect(function()
+keys(key:lower())
+end)
+
+button.MouseEnter:Connect(function()
+button.BackgroundColor3 = Color3.fromRGB(60,60,60)
+end)
+
+button.MouseLeave:Connect(function()
+button.BackgroundColor3 = Color3.fromRGB(35,35,35)
+end)
+end
+end
+
+
+game.Players.LocalPlayer.Character.Humanoid.Died:Connect(function()
+_BindableEvent2:Fire()
+u679:Disconnect()
+u680:Disconnect()
+u721:Disconnect()
+end)
+
+function getmousetarget()
+return game.Players.LocalPlayer:GetMouse().Target
+end
+
+return
+end
+
+v154 = v155
+
+if v156.ClassName == 'Script' and table.find(v93, v156.Name) then
+local _Parent4 = v156.Parent
+
+if _Parent4:IsA('BasePart') then
+local v723, v724, v725 = pairs(_Character:GetDescendants())
+
+while true do
+local v726, v727 = v723(v724, v725)
+
+if v726 == nil then
+break
+end
+
+v725 = v726
+
+if v727.ClassName == 'Script' and (v727.Name == v156.Name and not v727:IsDescendantOf(_Model)) then
+local _Parent5 = v727.Parent
+
+if _Parent5.ClassName == _Parent4.ClassName and _Parent5.Name == _Parent4.Name then
+v55(_Parent4, _Parent5)
+v156:Destroy()
+v727:Destroy()
+
+break
+end
+end
+end
+end
+end
+end
