@@ -1,0 +1,2851 @@
+--[[
+  _____  _     _          _ _       __ 
+ |  __ \(_)   | |        | (_)     / _|
+ | |  | |_ ___| |__   ___| |_  ___| |_ 
+ | |  | | / __| '_ \ / _ \ | |/ _ \  _|
+ | |__| | \__ \ |_) |  __/ | |  __/ |  
+ |_____/|_|___/_.__/ \___|_|_|\___|_|  
+                                       
+░▒▓███████▓▒░░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░░▒▓███████▓▒░ 
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        
+░▒▓███████▓▒░░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░  
+░▒▓█▓▒░      ░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░ 
+░▒▓█▓▒░      ░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░ 
+░▒▓█▓▒░      ░▒▓████████▓▒░▒▓██████▓▒░░▒▓███████▓▒░  
+]]--
+
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local ContextActionService = game:GetService("ContextActionService")
+local InsertService = game:GetService("InsertService")
+local CoreGui = game:GetService("CoreGui")
+local StarterGui = game:GetService("StarterGui")
+
+local SendNotification = function(Text, Description)
+StarterGui:SetCore("SendNotification",{
+	Title = Text,
+	Text = Description,
+	Icon = "rbxassetid://1234567890",
+    Duration = 2,
+})
+end
+
+-- tables
+local ScrambleCharacters = {"#", "@", "%", "&", "?", "!", "$", "*", "+", "="}
+local ActiveEffects = {}
+local AnimatorModule = {}
+local ActiveNotifications = {}
+local StoredMotors = {}
+local TrashBin = {}
+local Settings = {
+	AnimationBlending = 0.65;
+	AnimationSpeed = 1.25;
+	Taunts = true;
+	Props = true;
+	CameraEffects = true;
+	InfiniteJump = false;
+	Spin = false;
+	RigSize = 1;
+	Ragdoll = false;
+	Music = true;
+	FOVEffects = true;
+}
+
+local Directories = {
+	Main = "FEVerse/",
+	RBXMs ="FEVerse/RBXMs/",
+	Sounds = "FEVerse/Sounds/",
+	Songs = "FEVerse/Songs/",
+}
+
+local Reanimate_Settings = {
+	Frequency = 6, -- this is basically how fast the oscillation goes
+	Amplification = 6, -- this is how far the oscillation goes
+	FrontOffset = 2.5, -- this is how much youre in front of the player during prediction
+}
+local FEManager = loadstring(game:HttpGet("https://gist.githubusercontent.com/MelonsStuff/a003ea305dd302eab1f8d372daed38b4/raw/9db59962b28555fd699a7c29891efb85d45677ab/gistfile1.txt"))()
+SendNotification("Disbelief +", "please wait while assets download (skips if you already have them downloaded)")
+for i, v in pairs(Directories) do FEManager.EnsureFolder(v) end
+FEManager.DownloadFile(Directories.RBXMs, "DisbeliefPlus.rbxm", "https://raw.githubusercontent.com/MelonsStuff/FEVerse/refs/heads/main/RBXMs/DisbeliefPlus.rbxm")
+
+SendNotification("Disbelief +", "please wait while assets load")
+local script = InsertService:LoadLocalAsset(getcustomasset(Directories.RBXMs.."DisbeliefPlus.rbxm"))
+
+do
+	local Accessories = {}
+	local Aligns = {}
+	local Attachments = {}
+	local BindableEvent = nil
+	local Blacklist = {}
+	local CFrame = CFrame
+	local CFrameidentity = CFrame.identity
+	local CFramelookAt = CFrame.lookAt
+	local CFramenew = CFrame.new
+	local Character = nil
+	local CurrentCamera = nil
+	local Enum = Enum
+	local Custom = Enum.CameraType.Custom
+	local Health = Enum.CoreGuiType.Health
+	local HumanoidRigType = Enum.HumanoidRigType
+	local R6 = HumanoidRigType.R6
+	local Dead = Enum.HumanoidStateType.Dead
+	local LockCenter = Enum.MouseBehavior.LockCenter
+	local UserInputType = Enum.UserInputType
+	local MouseButton1 = UserInputType.MouseButton1
+	local Touch = UserInputType.Touch
+	local Exceptions = {}
+	local game = game
+	local Clone = game.Clone
+	local Close = game.Close
+	local Connect = Close.Connect
+	local Disconnect = Connect(Close, function() end).Disconnect
+	local Wait = Close.Wait
+	local Destroy = game.Destroy
+	local FindFirstAncestorOfClass = game.FindFirstAncestorOfClass
+	local FindFirstAncestorWhichIsA = game.FindFirstAncestorWhichIsA
+	local FindFirstChild = game.FindFirstChild
+	local FindFirstChildOfClass = game.FindFirstChildOfClass
+	local Players = FindFirstChildOfClass(game, "Players")
+	local CreateHumanoidModelFromDescription = Players.CreateHumanoidModelFromDescription
+	local GetPlayers = Players.GetPlayers
+	local LocalPlayer = Players.LocalPlayer
+	local CharacterAdded = LocalPlayer.CharacterAdded
+	local Mouse = LocalPlayer:GetMouse()
+	local Kill = LocalPlayer.Kill
+	local RunService = FindFirstChildOfClass(game, "RunService")
+	local PostSimulation = RunService.PostSimulation
+	local PreRender = RunService.PreRender
+	local PreSimulation = RunService.PreSimulation
+	local StarterGui = FindFirstChildOfClass(game, "StarterGui")
+	local GetCoreGuiEnabled = StarterGui.GetCoreGuiEnabled
+	local SetCore = StarterGui.SetCore
+	local SetCoreGuiEnabled = StarterGui.SetCoreGuiEnabled
+	local Workspace = FindFirstChildOfClass(game, "Workspace")
+	local FallenPartsDestroyHeight = Workspace.FallenPartsDestroyHeight
+	local HatDropY = FallenPartsDestroyHeight - 0.7
+	local FindFirstChildWhichIsA = game.FindFirstChildWhichIsA
+	local UserInputService = FindFirstChildOfClass(game, "UserInputService")
+	local InputBegan = UserInputService.InputBegan
+	local IsMouseButtonPressed = UserInputService.IsMouseButtonPressed
+	local GetChildren = game.GetChildren
+	local GetDescendants = game.GetDescendants
+	local GetPropertyChangedSignal = game.GetPropertyChangedSignal
+	local CurrentCameraChanged = GetPropertyChangedSignal(Workspace, "CurrentCamera")
+	local MouseBehaviorChanged = GetPropertyChangedSignal(UserInputService, "MouseBehavior")
+	local IsA = game.IsA
+	local IsDescendantOf = game.IsDescendantOf
+
+	local Highlights = {}
+
+	local Instancenew = Instance.new
+	local R15Animation = Instancenew("Animation")
+	local R6Animation = Instancenew("Animation")
+	local HumanoidDescription = Instancenew("HumanoidDescription")
+	local HumanoidModel = CreateHumanoidModelFromDescription(Players, HumanoidDescription, R6)
+	local R15HumanoidModel = CreateHumanoidModelFromDescription(Players, HumanoidDescription, HumanoidRigType.R15)
+	local SetAccessories = HumanoidDescription.SetAccessories
+	local ModelBreakJoints = HumanoidModel.BreakJoints
+	local Head = HumanoidModel.Head
+	local BasePartBreakJoints = Head.BreakJoints
+	local GetJoints = Head.GetJoints
+	local IsGrounded = Head.IsGrounded
+	local Humanoid = HumanoidModel.Humanoid
+	local ApplyDescription = Humanoid.ApplyDescription
+	local ChangeState = Humanoid.ChangeState
+	local EquipTool = Humanoid.EquipTool
+	local GetAppliedDescription = Humanoid.GetAppliedDescription
+	local GetPlayingAnimationTracks = Humanoid.GetPlayingAnimationTracks
+	local LoadAnimation = Humanoid.LoadAnimation
+	local Move = Humanoid.Move
+	local UnequipTools = Humanoid.UnequipTools
+	local ScaleTo = HumanoidModel.ScaleTo
+
+	local IsFirst = false
+	local IsHealthEnabled = nil
+	local IsLockCenter = false
+	local IsRegistered = false
+	local IsRunning = false
+
+	local LastTime = nil
+
+	local math = math
+	local mathrandom = math.random
+	local mathsin = math.sin
+	local mathpi = math.pi
+
+	local nan = 0 / 0
+
+	local next = next
+
+	local OptionsAccessories = nil
+	local OptionsApplyDescription = nil
+	local OptionsBreakJointsDelay = nil
+	local OptionsClickFling = nil
+	local OptionsDisableCharacterCollisions = nil
+	local OptionsDisableHealthBar = nil
+	local OptionsDisableRigCollisions = nil
+	local OptionsDefaultFlingOptions = nil
+	local OptionsHatDrop = nil
+	local OptionsHideCharacter = nil
+	local OptionsParentCharacter = nil
+	local OptionsRigTransparency = nil
+	local OptionsSetCameraSubject = nil
+	local OptionsSetCameraType = nil
+	local OptionsSetCharacter = nil
+	local OptionsSetCollisionGroup = nil
+	local OptionsSimulationRadius = nil
+	local OptionsTeleportRadius = nil
+	local OptionsUseServerBreakJoints
+
+	local osclock = os.clock
+
+	local PreRenderConnection = nil
+
+	local RBXScriptConnections = {}
+
+	local replicatesignal = replicatesignal
+
+	local Rig = nil
+	local RigHumanoid = nil
+	local RigHumanoidRootPart = nil
+
+	local sethiddenproperty = sethiddenproperty
+	local setscriptable = setscriptable
+
+	local stringfind = string.find
+
+	local table = table
+	local tableclear = table.clear
+	local tablefind = table.find
+	local tableinsert = table.insert
+	local tableremove = table.remove
+
+	local Targets = {}
+
+	local task = task
+	local taskdefer = task.defer
+	local taskspawn = task.spawn
+	local taskwait = task.wait
+
+	local Time = nil
+
+	local Tools = {}
+
+	local Vector3 = Vector3
+	local Vector3new = Vector3.new
+	local FlingVelocity = Vector3new(16384, 16384, 16384)
+	local HatDropLinearVelocity = Vector3new(0, 27, 0)
+	local HideCharacterOffset = Vector3new(0, - 30, 0)
+	local Vector3one = Vector3.one
+	local Vector3xzAxis = Vector3new(1, 0, 1)
+	local Vector3zero = Vector3.zero
+	local AntiSleep = Vector3zero
+
+	local Color3fromRGB = Color3.fromRGB
+
+	R15Animation.AnimationId = "rbxassetid://507767968"
+	R6Animation.AnimationId = "rbxassetid://180436148"
+
+	Humanoid = nil
+
+	Destroy(HumanoidDescription)
+	HumanoidDescription = nil
+
+	local FindFirstChildOfClassAndName = function(Parent, ClassName, Name)
+		for Index, Child in next, GetChildren(Parent) do
+			if IsA(Child, ClassName) and Child.Name == Name then
+				return Child
+			end
+		end
+	end
+
+	local GetHandleFromTable = function(Table)
+		for Index, Child in GetChildren(Character) do
+			if IsA(Child, "Accoutrement") then
+				local Handle = FindFirstChildOfClassAndName(Child, "BasePart", "Handle")
+
+				if Handle then
+					local MeshId = nil
+					local TextureId = nil
+
+					if IsA(Handle, "MeshPart") then
+						MeshId = Handle.MeshId
+						TextureId = Handle.TextureID
+					else
+						local SpecialMesh = FindFirstChildOfClass(Handle, "SpecialMesh")
+
+						if SpecialMesh then
+							MeshId = SpecialMesh.MeshId
+							TextureId = SpecialMesh.TextureId
+						end
+					end
+
+					if MeshId then
+						if stringfind(MeshId, Table.MeshId) and stringfind(TextureId, Table.TextureId) then
+							return Handle
+						end
+					end
+				end
+			end
+		end
+	end
+
+	local NewIndex = function(self, Index, Value)
+		self[Index] = Value
+	end
+
+	local DescendantAdded = function(Descendant)
+		if IsA(Descendant, "Accoutrement") and OptionsHatDrop then
+			if not pcall(NewIndex, Descendant, "BackendAccoutrementState", 0) then
+				if sethiddenproperty then
+					sethiddenproperty(Descendant, "BackendAccoutrementState", 0)
+				elseif setscriptable then
+					setscriptable(Descendant, "BackendAccoutrementState", true)
+					Descendant.BackendAccoutrementState = 0
+				end
+			end
+		elseif IsA(Descendant, "Attachment") then
+			local Attachment = Attachments[Descendant.Name]
+
+			if Attachment then
+				local Parent = Descendant.Parent
+
+				if IsA(Parent, "BasePart") then
+					local MeshId = nil
+					local TextureId = nil
+
+					if IsA(Parent, "MeshPart") then
+						MeshId = Parent.MeshId
+						TextureId = Parent.TextureID
+					else
+						local SpecialMesh = FindFirstChildOfClass(Parent, "SpecialMesh")
+
+						if SpecialMesh then
+							MeshId = SpecialMesh.MeshId
+							TextureId = SpecialMesh.TextureId
+						end
+					end
+
+					if MeshId then
+						for Index, Table in next, Accessories do
+							if Table.MeshId == MeshId and Table.TextureId == TextureId then
+								local Handle = Table.Handle
+
+								tableinsert(Aligns, {
+									LastPosition = Handle.Position,
+									Offset = CFrameidentity,
+									Part0 = Parent,
+									Part1 = Handle
+								})
+
+								return
+							end
+						end
+
+						for Index, Table in next, OptionsAccessories do
+							if stringfind(MeshId, Table.MeshId) and stringfind(TextureId, Table.TextureId) then
+								local Instance = nil
+								local TableName = Table.Name
+								local TableNames = Table.Names
+
+								if TableName then
+									Instance = FindFirstChildOfClassAndName(Rig, "BasePart", TableName)
+								else
+									for Index, TableName in next, TableNames do
+										local Child = FindFirstChildOfClassAndName(Rig, "BasePart", TableName)
+
+										if not ( TableNames[Index + 1] and Blacklist[Child] ) then
+											Instance = Child
+											break
+										end
+									end
+								end
+
+								if Instance then
+									local Blacklisted = Blacklist[Instance]
+
+									if not ( Blacklisted and Blacklisted.MeshId == MeshId and Blacklisted.TextureId == TextureId ) then
+										tableinsert(Aligns, {
+											Offset = Table.Offset,
+											Part0 = Parent,
+											Part1 = Instance
+										})
+
+										Blacklist[Instance] = { MeshId = MeshId, TextureId = TextureId }
+
+										return
+									end
+								end
+							end
+						end
+
+						local Accoutrement = FindFirstAncestorWhichIsA(Parent, "Accoutrement")
+
+						if Accoutrement and IsA(Accoutrement, "Accoutrement") then
+							local AccoutrementClone = Clone(Accoutrement)
+
+							local HandleClone = FindFirstChildOfClassAndName(AccoutrementClone, "BasePart", "Handle")
+							HandleClone.Transparency = OptionsRigTransparency
+
+							for Index, Descendant in next, GetDescendants(HandleClone) do
+								if IsA(Descendant, "JointInstance") then
+									Destroy(Descendant)
+								end
+							end
+
+							local AccessoryWeld = Instancenew("Weld")
+							AccessoryWeld.C0 = Descendant.CFrame
+							AccessoryWeld.C1 = Attachment.CFrame
+							AccessoryWeld.Name = "AccessoryWeld"
+							AccessoryWeld.Part0 = HandleClone
+							AccessoryWeld.Part1 = Attachment.Parent
+							AccessoryWeld.Parent = HandleClone
+
+							AccoutrementClone.Parent = Rig
+
+							tableinsert(Accessories, {
+								Handle = HandleClone,
+								MeshId = MeshId,
+								TextureId = TextureId
+							})
+							tableinsert(Aligns, {
+								Offset = CFrameidentity,
+								Part0 = Parent,
+								Part1 = HandleClone
+							})
+						end
+					end
+				end
+			end
+		end
+	end
+
+	local SetCameraSubject = function()
+		local CameraCFrame = CurrentCamera.CFrame
+		local Position = RigHumanoidRootPart.CFrame.Position
+
+		CurrentCamera.CameraSubject = RigHumanoid
+		Wait(PreRender)
+		CurrentCamera.CFrame = CameraCFrame + RigHumanoidRootPart.CFrame.Position - Position
+	end
+
+	local OnCameraSubjectChanged = function()
+		if CurrentCamera.CameraSubject ~= RigHumanoid then
+			taskdefer(SetCameraSubject)
+		end
+	end
+
+	local OnCameraTypeChanged = function()
+		if CurrentCamera.CameraType ~= Custom then
+			CurrentCamera.CameraType = Custom
+		end
+	end
+
+	local OnCurrentCameraChanged = function()
+		local Camera = Workspace.CurrentCamera
+
+		if Camera and OptionsSetCameraSubject then
+			CurrentCamera = Workspace.CurrentCamera
+
+			taskspawn(SetCameraSubject)
+
+			OnCameraSubjectChanged()
+			tableinsert(RBXScriptConnections, Connect(GetPropertyChangedSignal(CurrentCamera, "CameraSubject"), OnCameraSubjectChanged))
+
+			if OptionsSetCameraType then
+				OnCameraTypeChanged()
+				tableinsert(RBXScriptConnections, Connect(GetPropertyChangedSignal(CurrentCamera, "CameraType"), OnCameraTypeChanged))
+			end
+		end
+	end
+
+	local SetCharacter = function()
+		LocalPlayer.Character = Rig
+	end
+
+	local SetSimulationRadius = function()
+		LocalPlayer.SimulationRadius = OptionsSimulationRadius
+	end
+
+	local WaitForChildOfClass = function(Parent, ClassName)
+		local Child = FindFirstChildOfClass(Parent, ClassName)
+
+		while not Child do
+			Wait(Parent.ChildAdded)
+			Child = FindFirstChildOfClass(Parent, ClassName)
+		end
+
+		return Child
+	end
+
+	local WaitForChildOfClassAndName = function(Parent, ...)
+		local Child = FindFirstChildOfClassAndName(Parent, ...)
+
+		while not Child do
+			Wait(Parent.ChildAdded)
+			Child = FindFirstChildOfClassAndName(Parent, ...)
+		end
+
+		return Child
+	end
+
+	local Fling = function(Target, Options)
+		if Target then
+			local Highlight = Options.Highlight
+
+			if IsA(Target, "Humanoid") then
+				Target = Target.Parent
+			end
+			if IsA(Target, "Model") then
+				Target = FindFirstChildOfClassAndName(Target, "BasePart", "HumanoidRootPart") or FindFirstChildWhichIsA(Character, "BasePart")
+			end
+
+			if not tablefind(Targets, Target) and IsA(Target, "BasePart") and not Target.Anchored and not IsDescendantOf(Character, Target) and not IsDescendantOf(Rig, Target) then
+				local Model = FindFirstAncestorOfClass(Target, "Model")
+
+				if Model and FindFirstChildOfClass(Model, "Humanoid") then
+					Target = FindFirstChildOfClassAndName(Model, "BasePart", "HumanoidRootPart") or FindFirstChildWhichIsA(Character, "BasePart") or Target	
+				else
+					Model = Target
+				end
+
+				if Highlight then
+					local HighlightObject = type(Highlight) == "boolean" and Highlight and Instancenew("Highlight") or Clone(Highlight)
+					HighlightObject.Adornee = Model
+					HighlightObject.Parent = Model
+					HighlightObject.OutlineColor = Color3fromRGB(255, 0, 0)
+					HighlightObject.FillColor = Color3fromRGB(0, 0, 0)
+
+					Options.HighlightObject = HighlightObject
+					tableinsert(Highlights, HighlightObject)
+				end
+
+				Targets[Target] = Options
+			end
+		end
+	end
+
+	local OnCharacterAdded = function(NewCharacter)
+ 
+		if NewCharacter ~= Rig then
+			tableclear(Aligns)
+			tableclear(Blacklist)
+
+			Character = NewCharacter
+
+			if OptionsSetCameraSubject then
+				taskspawn(SetCameraSubject)
+			end
+
+			if OptionsSetCharacter then
+				taskdefer(SetCharacter)
+			end
+
+			if OptionsParentCharacter then
+				Character.Parent = Rig
+			end
+
+			for Index, Descendant in next, GetDescendants(Character) do
+				taskspawn(DescendantAdded, Descendant)
+			end
+
+			tableinsert(RBXScriptConnections, Connect(Character.DescendantAdded, DescendantAdded))
+
+			Humanoid = WaitForChildOfClass(Character, "Humanoid")
+			local HumanoidRootPart = WaitForChildOfClassAndName(Character, "BasePart", "HumanoidRootPart")
+
+			if IsFirst then
+				if OptionsApplyDescription and Humanoid then
+					local AppliedDescription = GetAppliedDescription(Humanoid)
+					SetAccessories(AppliedDescription, {}, true)
+					taskspawn(ApplyDescription, RigHumanoid, AppliedDescription)
+				end
+
+				if HumanoidRootPart then
+					RigHumanoidRootPart.CFrame = HumanoidRootPart.CFrame
+
+					if OptionsSetCollisionGroup then
+						local CollisionGroup = HumanoidRootPart.CollisionGroup
+
+						for Index, Descendant in next, GetDescendants(Rig) do
+							if IsA(Descendant, "BasePart") then
+								Descendant.CollisionGroup = CollisionGroup
+							end
+						end
+					end
+				end
+
+				IsFirst = false
+			end
+
+			local IsAlive = true
+
+			if HumanoidRootPart then
+				for Target, Options in next, Targets do
+					if IsDescendantOf(Target, Workspace) then
+						local FirstPosition = Target.Position
+						local PredictionFling = Options.PredictionFling
+						local LastPosition = FirstPosition
+						local Timeout = osclock() + Options.Timeout or 1
+
+						if HumanoidRootPart then
+							while IsDescendantOf(Target, Workspace) and osclock() < Timeout do
+								local DeltaTime = taskwait()
+								local Position = Target.Position
+
+								if ( Position - FirstPosition ).Magnitude > 100 then
+									break
+								end
+
+								local Offset = Vector3zero
+
+								if PredictionFling then
+									local BaseOffset = (Position - LastPosition) / DeltaTime * 0.13
+									local Frequency = Reanimate_Settings.Frequency
+									local Amplification = Reanimate_Settings.Amplification
+									local Time = tick()
+									local TargetFace = Target.CFrame.LookVector
+									local Oscillation = mathsin(Time * mathpi * 2 * Frequency) * Amplification
+									local OscillatedOffset = TargetFace * Oscillation
+									local FrontFaceOffset = TargetFace * Reanimate_Settings.FrontOffset
+									Offset = BaseOffset + OscillatedOffset + FrontFaceOffset
+								end
+
+								HumanoidRootPart.AssemblyAngularVelocity = FlingVelocity
+								HumanoidRootPart.AssemblyLinearVelocity = FlingVelocity
+
+								HumanoidRootPart.CFrame = CFrame.new(Target.Position + Offset) * CFrame.Angles(0, Target.Orientation.Y, 0)
+								LastPosition = Position
+							end
+						end
+					end
+
+					local HighlightObject = Options.HighlightObject
+
+					if HighlightObject then
+						Destroy(HighlightObject)
+					end
+
+					Targets[Target] = nil
+				end
+
+				HumanoidRootPart.AssemblyAngularVelocity = Vector3zero
+				HumanoidRootPart.AssemblyLinearVelocity = Vector3zero
+
+				if OptionsHatDrop then
+					taskspawn(function()
+						WaitForChildOfClassAndName(Character, "LocalScript", "Animate").Enabled = false
+
+						for Index, AnimationTrack in next, GetPlayingAnimationTracks(Humanoid) do
+							AnimationTrack:Stop()
+						end
+
+						LoadAnimation(Humanoid, Humanoid.RigType == R6 and R6Animation or R15Animation):Play(0)
+
+						pcall(NewIndex, Workspace, "FallenPartsDestroyHeight", nan)
+
+						local RootPartCFrame = RigHumanoidRootPart.CFrame
+						RootPartCFrame = CFramenew(RootPartCFrame.X, HatDropY, RootPartCFrame.Z)
+
+						while IsAlive do
+							HumanoidRootPart.AssemblyAngularVelocity = Vector3zero
+							HumanoidRootPart.AssemblyLinearVelocity = HatDropLinearVelocity
+							HumanoidRootPart.CFrame = RootPartCFrame
+
+							taskwait()
+						end
+					end)
+				elseif OptionsHideCharacter then
+					local HideCharacterOffset = typeof(OptionsHideCharacter) == "Vector3" and OptionsHideCharacter or HideCharacterOffset
+					local RootPartCFrame = RigHumanoidRootPart.CFrame + HideCharacterOffset
+
+					taskspawn(function()
+						while IsAlive do
+							HumanoidRootPart.AssemblyAngularVelocity = Vector3zero
+							HumanoidRootPart.AssemblyLinearVelocity = Vector3zero
+							HumanoidRootPart.CFrame = RootPartCFrame
+
+							taskwait()
+						end
+					end)
+				elseif OptionsTeleportRadius then
+					HumanoidRootPart.CFrame = RigHumanoidRootPart.CFrame + Vector3new(mathrandom(- OptionsTeleportRadius, OptionsTeleportRadius), 0, mathrandom(- OptionsTeleportRadius, OptionsTeleportRadius))
+				end
+			end
+
+			local ToolFling = OptionsDefaultFlingOptions.ToolFling
+			local Tools2 = {}
+
+			if ToolFling then
+				local Backpack = FindFirstChildOfClass(LocalPlayer, "Backpack")
+
+				tableclear(Tools)
+
+				if type(ToolFling) == "string" then
+					local Tool = FindFirstChildOfClassAndName(Backpack, "Tool", ToolFling)
+
+					if Tool then
+						Tool.Parent = Character
+						tableinsert(Tools2, Tool)
+					end
+				else
+					for Index, Tool in GetChildren(Backpack) do
+						if IsA(Tool, "Tool") then
+							Tool.Parent = Character
+							tableinsert(Tools2, Tool)
+						end
+					end
+				end
+
+				UnequipTools(Humanoid)
+			end
+ 
+      		taskwait(OptionsBreakJointsDelay)
+
+			ModelBreakJoints(Character)
+
+			if replicatesignal and OptionsUseServerBreakJoints then
+				replicatesignal(Humanoid.ServerBreakJoints)
+			end
+
+			ChangeState(Humanoid, Dead)
+			Wait(Humanoid.Died)
+
+			for Index, Tool in Tools2 do
+				local Handle = FindFirstChildOfClassAndName(Tool, "BasePart", "Handle")
+
+				if Handle then
+					Tool.Parent = Character
+				else
+					tableremove(Tools2, Index)
+				end
+			end
+
+			Tools = Tools2
+			UnequipTools(Humanoid)
+
+			IsAlive = false
+
+			if OptionsHatDrop then
+				pcall(NewIndex, Workspace, "FallenPartsDestroyHeight", FallenPartsDestroyHeight)
+			end
+		end
+	end
+
+	local OnInputBegan = function(InputObject)
+		local UserInputType = InputObject.UserInputType
+
+		if UserInputType == MouseButton1 or UserInputType == Touch then
+			local Target = Mouse.Target
+
+			local HatFling = OptionsDefaultFlingOptions.HatFling
+			local ToolFling = OptionsDefaultFlingOptions.ToolFling
+
+			if HatFling and OptionsHatDrop then
+				local Part = type(HatFling) == "table" and GetHandleFromTable(HatFling)
+
+				if not Part then
+					for Index, Child in GetChildren(Character) do
+						if IsA(Child, "Accoutrement") then
+							local Handle = FindFirstChildOfClassAndName(Child, "BasePart", "Handle")
+
+							if Handle then
+								Part = Handle
+								break
+							end
+						end
+					end
+				end
+
+				if Part then
+					Exceptions[Part] = true
+
+					while IsMouseButtonPressed(UserInputService, MouseButton1) do
+						if Part.ReceiveAge == 0 then
+							Part.AssemblyAngularVelocity = FlingVelocity
+							Part.AssemblyLinearVelocity = FlingVelocity
+							Part.CFrame = Mouse.Hit + AntiSleep
+						end
+
+						taskwait()
+					end
+
+					Exceptions[Part] = nil
+				end
+			elseif ToolFling then
+				local Backpack = FindFirstChildOfClass(LocalPlayer, "Backpack")
+				local Tool = nil
+
+				if type(ToolFling) == "string" then
+					Tool = FindFirstChild(Backpack, ToolFling) or FindFirstChild(Character, ToolFling)
+				end
+
+				if not Tool then
+					Tool = FindFirstChildOfClass(Backpack, "Tool") or FindFirstChildOfClass(Character, "Tool")
+				end
+
+				if Tool then
+					local Handle = FindFirstChildOfClassAndName(Tool, "BasePart", "Handle") or FindFirstChildWhichIsA(Tool, "BasePart")
+
+					if Handle then
+						Tool.Parent = Character
+
+						while IsMouseButtonPressed(UserInputService, MouseButton1) do
+							if Handle.ReceiveAge == 0 then
+								Handle.AssemblyAngularVelocity = FlingVelocity
+								Handle.AssemblyLinearVelocity = FlingVelocity
+								Handle.CFrame = Mouse.Hit + AntiSleep
+							end
+
+							taskwait()
+						end
+
+						UnequipTools(Humanoid)
+
+						Handle.AssemblyAngularVelocity = Vector3zero
+						Handle.AssemblyLinearVelocity = Vector3zero
+						Handle.CFrame = RigHumanoidRootPart.CFrame
+					end
+				end
+			else
+				Fling(Target, OptionsDefaultFlingOptions)
+			end
+		end
+	end
+
+	local OnPostSimulation = function()
+		Time = osclock()
+		local DeltaTime = Time - LastTime
+		LastTime = Time
+
+		if not OptionsSetCharacter and IsLockCenter then
+			local Position = RigHumanoidRootPart.Position
+			RigHumanoidRootPart.CFrame = CFramelookAt(Position, Position + CurrentCamera.CFrame.LookVector * Vector3xzAxis)
+		end
+
+		if OptionsSimulationRadius then
+			pcall(SetSimulationRadius)
+		end
+
+		AntiSleep = mathsin(Time * 15) * 0.0015 * Vector3one
+		local Axis = 27 + mathsin(Time)
+
+		for Index, Table in next, Aligns do
+			local Part0 = Table.Part0
+
+			if not Exceptions[Part0] then
+				if Part0.ReceiveAge == 0 then
+					if IsDescendantOf(Part0, Workspace) and not GetJoints(Part0)[1] and not IsGrounded(Part0) then
+						local Part1 = Table.Part1
+
+						Part0.AssemblyAngularVelocity = Vector3zero
+
+						local LinearVelocity = Part1.AssemblyLinearVelocity * Axis
+						Part0.AssemblyLinearVelocity = Vector3new(LinearVelocity.X, Axis, LinearVelocity.Z)
+
+						Part0.CFrame = Part1.CFrame * Table.Offset + AntiSleep
+					end
+				else
+					local Frames = Table.Frames or - 1
+					Frames = Frames + 1
+					Table.Frames = Frames
+				end
+			end
+		end
+
+		if not OptionsSetCharacter and Humanoid then
+			Move(RigHumanoid, Humanoid.MoveDirection)
+			RigHumanoid.Jump = Humanoid.Jump
+		end
+	end
+
+	local OnPreRender = function()
+		local Position = RigHumanoidRootPart.Position
+		RigHumanoidRootPart.CFrame = CFramelookAt(Position, Position + CurrentCamera.CFrame.LookVector * Vector3xzAxis)
+
+		for Index, Table in next, Aligns do
+			local Part0 = Table.Part0
+
+			if Part0.ReceiveAge == 0 and IsDescendantOf(Part0, Workspace) and not GetJoints(Part0)[1] and not IsGrounded(Part0) then
+				Part0.CFrame = Table.Part1.CFrame * Table.Offset
+			end
+		end
+	end
+
+	local OnMouseBehaviorChanged = function()
+		IsLockCenter = UserInputService.MouseBehavior == LockCenter
+
+		if IsLockCenter then
+			PreRenderConnection = Connect(PreRender, OnPreRender)
+			tableinsert(RBXScriptConnections, PreRenderConnection)
+		elseif PreRenderConnection then
+			Disconnect(PreRenderConnection)
+			tableremove(RBXScriptConnections, tablefind(RBXScriptConnections, PreRenderConnection))
+		end
+	end
+
+	local OnPreSimulation = function()
+		if OptionsDisableCharacterCollisions and Character then
+			for Index, Descendant in next, GetDescendants(Character) do
+				if IsA(Descendant, "BasePart") then
+					Descendant.CanCollide = false
+				end
+			end
+		end
+		if not Settings.Ragdoll then
+			for Index, Descendant in next, GetChildren(Rig) do
+				if IsA(Descendant, "BasePart") then
+					Descendant.CanCollide = false
+				end
+			end
+        else
+            for Index, Descendant in next, GetChildren(Rig) do
+				if IsA(Descendant, "BasePart") and Descendant.Name ~= "HumanoidRootPart" then
+					Descendant.CanCollide = true
+				end
+			end
+		end
+	end
+
+	local Register = function()
+		repeat
+			IsRegistered = pcall(SetCore, StarterGui, "ResetButtonCallback", BindableEvent)
+			taskwait()
+		until IsRegistered
+	end
+
+	Start = function(Options)
+		if not IsRunning then
+			IsFirst = true
+			IsRunning = true
+
+			Options = Options or {}
+			OptionsAccessories = Options.Accessories or {}
+			OptionsApplyDescription = Options.ApplyDescription
+			OptionsBreakJointsDelay = Options.BreakJointsDelay or 0
+			OptionsClickFling = Options.ClickFling
+			OptionsDisableCharacterCollisions = Options.DisableCharacterCollisions
+			OptionsDisableHealthBar = Options.DisableHealthBar
+			OptionsDisableRigCollisions = Options.DisableRigCollisions
+			OptionsDefaultFlingOptions = Options.DefaultFlingOptions or {}
+			OptionsHatDrop = Options.HatDrop
+			OptionsHideCharacter = Options.HideCharacter
+			OptionsParentCharacter = Options.ParentCharacter
+			local OptionsRigSize = Options.RigSize
+			OptionsRigTransparency = Options.RigTransparency or 1
+			OptionsSetCameraSubject = Options.SetCameraSubject
+			OptionsSetCameraType = Options.SetCameraType
+			OptionsSetCharacter = Options.SetCharacter
+			OptionsSetCollisionGroup = Options.SetCollisionGroup
+			OptionsSimulationRadius = Options.SimulationRadius
+			OptionsTeleportRadius = Options.TeleportRadius
+			OptionsUseServerBreakJoints = Options.UseServerBreakJoints
+
+			if OptionsDisableHealthBar then
+				IsHealthEnabled = GetCoreGuiEnabled(StarterGui, Health)
+				SetCoreGuiEnabled(StarterGui, Health, false)
+			end
+
+			BindableEvent = Instancenew("BindableEvent")
+			tableinsert(RBXScriptConnections, Connect(BindableEvent.Event, Stop))
+
+			Rig = Options.R15 and Clone(R15HumanoidModel) or Clone(HumanoidModel)
+			Rig.Name = "non"
+			RigHumanoid = Rig.Humanoid
+			RigHumanoidRootPart = Rig.HumanoidRootPart
+			Rig.Parent = Workspace
+
+			local CreateObject = function(Name)
+				local Part = Instance.new("Part")
+				Part.Name = Name
+				Part.Massless = true
+				Part.CanCollide = true
+				Part.Transparency = 1
+				Part.Size = Vector3new(0.1, 0.1, 0.1)
+				Part.Anchored = true
+				Part.Parent = Rig
+				return Part
+			end
+            
+ 			for Index, Descendant in next, GetDescendants(Rig) do
+				if IsA(Descendant, "Attachment") then
+					Attachments[Descendant.Name] = Descendant
+				elseif IsA(Descendant, "BasePart") or IsA(Descendant, "Decal") then
+					Descendant.Transparency = OptionsRigTransparency
+				end
+			end
+
+			if OptionsRigSize then
+				ScaleTo(Rig, OptionsRigSize)
+
+				RigHumanoid.JumpPower = 50
+				RigHumanoid.WalkSpeed = 16
+			end
+
+			OnCurrentCameraChanged()
+			tableinsert(RBXScriptConnections, Connect(CurrentCameraChanged, OnCurrentCameraChanged))
+
+			if OptionsClickFling then
+				tableinsert(RBXScriptConnections, Connect(InputBegan, OnInputBegan))
+			end
+
+			local Character = LocalPlayer.Character
+
+			if Character then
+				OnCharacterAdded(Character)
+ 			end
+
+			tableinsert(RBXScriptConnections, Connect(CharacterAdded, OnCharacterAdded))
+
+			LastTime = osclock()
+			tableinsert(RBXScriptConnections, Connect(PostSimulation, OnPostSimulation))
+
+			if not OptionsSetCharacter then
+				OnMouseBehaviorChanged()
+				tableinsert(RBXScriptConnections, Connect(MouseBehaviorChanged, OnMouseBehaviorChanged))
+			end
+
+			if OptionsDisableCharacterCollisions or OptionsDisableRigCollisions then
+				OnPreSimulation()
+				tableinsert(RBXScriptConnections, Connect(PreSimulation, OnPreSimulation))
+			end
+
+			IsRegistered = pcall(SetCore, StarterGui, "ResetButtonCallback", BindableEvent)
+
+			if not IsRegistered then
+				taskspawn(Register)
+			end
+
+			return {
+				BindableEvent = BindableEvent,
+				Fling = Fling,
+				Rig = Rig
+			}
+		end
+	end
+
+	Stop = function()
+		if IsRunning then
+			IsFirst = false
+			IsRunning = false
+
+			for Index, Highlight in Highlights do
+				Destroy(Highlight)
+			end
+
+			tableclear(Highlights)
+
+			for Index, RBXScriptConnection in next, RBXScriptConnections do
+				Disconnect(RBXScriptConnection)
+			end
+
+			tableclear(RBXScriptConnections)
+
+			Destroy(BindableEvent)
+
+			if Character.Parent == Rig then
+				Character.Parent = Workspace
+			end
+
+			if Humanoid then
+				ChangeState(Humanoid, Dead)
+			end
+
+			Destroy(Rig)
+
+			if OptionsDisableHealthBar and not GetCoreGuiEnabled(StarterGui, Health) then
+				SetCoreGuiEnabled(StarterGui, Health, IsHealthEnabled)
+			end
+
+			if IsRegistered then
+				pcall(SetCore, StarterGui, "ResetButtonCallback", true)
+			else
+				IsRegistered = pcall(SetCore, StarterGui, "ResetButtonCallback", true)
+			end
+		end
+	end
+end
+
+local Rad = math.rad
+
+Empyrean = Start({
+    Accessories = {
+        -- 2x Rig
+        { Name = "Head", MeshId = "92572400594624",  TextureId = "117484156735788", Offset = CFrame.new(0, 2.15, 0) * CFrame.Angles(0, Rad(180), 0) },
+        { Name = "Torso", MeshId = "111946216585470",  TextureId = "85260593368362", Offset = CFrame.new(0, 1.5, 0.25) },
+        { Name = "Right Arm", MeshId = "93749227415046", TextureId = "103757531289975", Offset = CFrame.new(1, 0.85, 0) },
+        { Name = "Left Arm", MeshId = "117649985156221", TextureId = "103757531289975", Offset = CFrame.new(-1, 0.85, 0) },
+        { Name = "Right Leg",MeshId = "76010149115685",  TextureId = "103160995675216", Offset = CFrame.new(-0.55, 1, 0) },
+        { Name = "Left Leg", MeshId = "137156465227879", TextureId = "103160995675216", Offset = CFrame.new(0.55, 1, 0) },
+        -- Tords Rig
+	 	{ Name = "Torso", MeshId = "97772676424430",  TextureId = "96282018871478", Offset = CFrame.identity },
+ 	    { Name = "Right Arm", MeshId = "128839203893104",  TextureId = "100542973447024", Offset = CFrame.identity },
+ 	    { Name = "Left Arm", MeshId = "113944263422349",  TextureId = "79061753792604", Offset = CFrame.identity },
+		-- Hammer Head Rig
+	 	{ Name = "Torso", MeshId = "139792224823925",  TextureId = "89183204903931", Offset = CFrame.Angles(0, 0, Rad(90)) },
+ 	    { Name = "Right Arm", MeshId = "105263225400272",  TextureId = "111402858657243", Offset = CFrame.Angles(0, 0, Rad(90)) },
+ 	    { Name = "Left Arm", MeshId = "105263225400272",  TextureId = "111402858657243", Offset = CFrame.Angles(0, 0, Rad(90)) },
+    	-- Glitchy Limbs (Monochrome)
+		{ Name = "Torso", MeshId = "94838871645327",  TextureId = "108681181592495", Offset = CFrame.identity },
+		{ Name = "Right Arm", MeshId = "18885728798", TextureId = "18885728798", Offset = CFrame.identity },
+		{ Name = "Left Arm", MeshId = "18885728798", TextureId = "18885728798", Offset = CFrame.identity },
+		{ Name = "Right Leg",MeshId = "100080236046620",  TextureId = "78703116520529", Offset = CFrame.identity },
+		{ Name = "Left Leg", MeshId = "91790195871679", TextureId = "108681181592495", Offset = CFrame.identity },
+		-- Gojo Rig
+		{ Name = "Torso", MeshId = "113465334594272",  TextureId = "94020114074172", Offset = CFrame.identity },
+		{ Name = "Right Arm",MeshId = "82030652840870",  TextureId = "137595219926625", Offset = CFrame.identity },
+		{ Name = "Left Arm", MeshId = "91244322746029", TextureId = "137595219926625", Offset = CFrame.identity },
+		{ Name = "Right Leg", MeshId = "132187752780278", TextureId = "97394845862368", Offset = CFrame.Angles(3.15, 0, 0) },
+		{ Name = "Left Leg", MeshId = "131967977780088", TextureId = "97394845862368", Offset =  CFrame.Angles(3.15, 0, 0) },
+		-- New Free Hair Limbs
+		{ MeshId = "319354652", Name = "Left Arm", Offset = CFrame.new(0.15, 0, 0) *  CFrame.Angles(0, -1.57, 0), TextureId = "376186990" },
+		{ MeshId = "319354652", Name = "Right Arm", Offset = CFrame.new(-0.15, 0, 0) * CFrame.Angles(0, 1.57, 0), TextureId = "304117018" },
+		{ MeshId = "81642452", Name = "Left Leg", Offset = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, Rad(180)), TextureId = "6858317942" },
+		{ MeshId = "81642452", Name = "Right Leg", Offset = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, Rad(180)), TextureId = "6858318826" },
+		-- New Free Rig
+		{ MeshId = "4819720316", Name = "Torso", Offset = CFrame.Angles(0, 0, -0.25), TextureId = "4819722776" },
+		{ MeshId = "3030546036", Name = "Left Arm", Offset = CFrame.new(0.15, 0, 0) *  CFrame.Angles(-1.57, 0, 1.57), TextureId = "3033903209" },
+		{ MeshId = "3030546036", Name = "Right Arm", Offset = CFrame.new(-0.15, 0, 0) * CFrame.Angles(-1.57, 0, -1.57), TextureId = "3360978739" },
+		{ MeshId = "3030546036", Name = "Left Leg", Offset = CFrame.new(0.15, 0, 0) * CFrame.Angles(-1.57, 0, 1.57), TextureId = "3033898741" },
+		{ MeshId = "3030546036", Name = "Right Leg", Offset = CFrame.new(0.15, 0, 0) *  CFrame.Angles(-1.57, 0, -1.57), TextureId = "3409604993" },
+		-- Snake Banisher Rig
+		{ MeshId = "125443585075666", Name = "Torso", Offset = CFrame.Angles(0, 3.15, 0), TextureId = "121023324229475" },
+		{ MeshId = "121342985816617", Name = "Left Arm", Offset = CFrame.Angles(0, 0, 1.57), TextureId = "129264637819824" },
+		{ MeshId = "121342985816617", Name = "Right Arm", Offset = CFrame.Angles(0, 3.15, 1.57), TextureId = "129264637819824" },
+		{ MeshId = "83395427313429", Names = { "Left Leg", "Right Leg" }, Offset = CFrame.Angles(0, 0, 1.57), TextureId = "97148121718581" },--18641142410
+		-- Prosthetics (Furnace Rig)
+		{ MeshId = "117554824897780", Name = "Right Leg", Offset = CFrame.Angles(0, -1.57, 0), TextureId = "99077561039115" },
+		{ MeshId = "123388937940630", Name = "Left Leg", Offset = CFrame.Angles(0, 1.57, 0), TextureId = "99077561039115" },
+		{ MeshId = "117554824897780", Name = "Right Leg", Offset = CFrame.Angles(0, -1.57, 0), TextureId = "84429400539007" },
+		{ MeshId = "123388937940630", Name = "Left Leg", Offset = CFrame.Angles(0, 1.57, 0), TextureId = "84429400539007" },
+		-- Classic Cheap Rig
+		{ MeshId = "12344206657", Name = "Left Arm", Offset = CFrame.new(0.05, 0.05, -0.075) * CFrame.Angles(-2, 0, 0), TextureId = "12344206675" },
+		{ MeshId = "12344207333", Name = "Right Arm", Offset = CFrame.new(-0.05, 0.05, -0.075) * CFrame.Angles(-1.95, 0, 0), TextureId = "12344207341" },
+		{ MeshId = "11159370334", Name = "Left Leg", Offset = CFrame.Angles(1.57, 1.57, 0), TextureId = "11159284657" },
+		{ MeshId = "11263221350", Name = "Right Leg", Offset = CFrame.Angles(1.57, -1.57, 0), TextureId = "11263219250" },
+		-- Grey Mesh Rig 
+		{ MeshId = "127552124837034", Names = {"Torso"}, Offset = CFrame.Angles(0, 0, 0), TextureId = "131014325980101" },--14255556501
+		{ MeshId = "117287001096396", Names = { "Left Arm", "Right Arm"}, Offset = CFrame.Angles(0, 0, 0), TextureId = "120169691545791" },--14255556501
+		{ MeshId = "121304376791439", Names = { "Left Leg", "Right Leg" }, Offset = CFrame.Angles(0, 0, 0), TextureId = "131014325980101" },--18641142410
+		-- Classical Products rig (white/black arms)
+		{ MeshId = "14241018198", Names = {"Torso"}, Offset = CFrame.Angles(0, 0, 1.57), TextureId = "14251599953" },
+		{ MeshId = "17374767929", Names = { "Left Arm", "Right Arm"}, Offset = CFrame.Angles(0, 0, 1.57), TextureId = "17374768001" },
+		{ MeshId = "17387586286", Names = { "Left Leg", "Right Leg" }, Offset = CFrame.Angles(0, 0, 1.57), TextureId = "17387586304" },
+		{ MeshId = "14255522247", Names = { "Left Arm", "Right Arm"}, Offset = CFrame.Angles(0, 0, 1.57), TextureId = "14255543546" },
+		-- Noob Rig
+		{ MeshId = "18640899369", Name = "Torso", Offset = CFrame.Angles(0, 0, 0), TextureId = "18640899481" },
+		{ MeshId = "18640914129", Names = { "Left Arm", "Right Arm"}, Offset = CFrame.Angles(0, 0, 0), TextureId = "18640914168" },
+		{ MeshId = "18640901641", Names = { "Left Leg", "Right Leg"}, Offset = CFrame.Angles(0, 0, 0), TextureId = "18640901676" },
+		-- Genesis Black Rig
+		{ MeshId = "110684113028749", Name = "Torso", Offset = CFrame.identity, TextureId = "70661572547971" },
+		{ MeshId = "125405780718494", Name = "Left Arm", Offset = CFrame.Angles(0, 0,  Rad(90)), TextureId = "136752500636691" },
+		{ MeshId = "125405780718494", Name = "Right Arm", Offset = CFrame.Angles(0, 0,  Rad(90)), TextureId = "136752500636691" },
+		{ MeshId = "125405780718494", Name = "Left Leg", Offset = CFrame.Angles(0, 0, Rad(90)), TextureId = "136752500636691" },
+		{ MeshId = "125405780718494", Name = "Right Leg", Offset = CFrame.Angles(0, 0,  Rad(90)), TextureId = "136752500636691" },
+		-- Genesis White Rig
+		{ MeshId = "126825022897778", Name = "Torso", Offset = CFrame.identity, TextureId = "130689541138804" },
+		{ MeshId = "99608462237958", Name = "Left Arm", Offset = CFrame.Angles(0, 0,  Rad(90)), TextureId = "130809869695496" },
+		{ MeshId = "139733645770094", Name = "Right Arm", Offset = CFrame.Angles(0, 0,  Rad(90)), TextureId = "130809869695496" },
+		{ MeshId = "105141400603933", Name = "Left Leg", Offset = CFrame.Angles(0, 0, Rad(90)), TextureId = "71060417496309" },
+		{ MeshId = "90736849096372", Name = "Right Leg", Offset = CFrame.Angles(0, 0,  Rad(90)), TextureId = "79186624401216" },
+		-- request
+		{ MeshId = "14768666349", Name = "Torso", Offset = CFrame.Angles(0, 0, 0), TextureId = "14768664565" },
+		{ MeshId = "14768684979", Names = { "Left Arm", "Right Arm"}, Offset = CFrame.Angles(0, 0, 1.57), TextureId = "14768683674" },
+    },
+	ApplyDescription = true,
+	BreakJointsDelay = 0.225,
+	ClickFling = true,
+	DefaultFlingOptions = {
+		HatFling = false,
+		Highlight = false,
+		PredictionFling = true,
+		Timeout = 0.125,
+		ToolFling = false,
+	},
+	DisableCharacterCollisions = true,
+	DisableHealthBar = true,
+	DisableRigCollisions = true,
+	HatDrop = false,
+	HideCharacter = Vector3.new(0, -30, 0),
+	ParentCharacter = true,
+	RigSize = 1,
+	RigTransparency = 1,
+	R15 = false,
+	SetCameraSubject = true,
+	SetCameraType = true,
+	SetCharacter = false,
+	SetCollisionGroup = true,
+	SimulationRadius = 2147483647,
+	TeleportRadius = 12,
+	UseServerBreakJoints = true,
+})
+
+-- animator module
+local GetAnimDefaults = function()
+	return {
+		["Neck"] = CFrame.new(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 1, -0),
+		["RootJoint"] = CFrame.new(0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 1, -0),
+		["Right Shoulder"] = CFrame.new(1, 0.5, 0, 0, 0, 1, 0, 1, -0, -1, 0, 0),
+		["Left Shoulder"] = CFrame.new(-1, 0.5, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+		["Right Hip"] = CFrame.new(1, -1, 0, 0, 0, 1, 0, 1, -0, -1, 0, 0),
+		["Left Hip"] = CFrame.new(-1, -1, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+		["Head"] = CFrame.new(0, Settings.RigSize, 0, -1, 0, 0, 0, 0, 1, 0, 1, -0),
+		["Torso"] = CFrame.new(0, Settings.RigSize-1, 0, -1, 0, 0, 0, 0, 1, 0, 1, -0),
+		["Right Arm"] = CFrame.new(Settings.RigSize, Settings.RigSize-0.5, 0, 0, 0, 1, 0, 1, -0, -1, 0, 0),
+		["Left Arm"] = CFrame.new(-Settings.RigSize, Settings.RigSize-0.5, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+		["Right Leg"] = CFrame.new(Settings.RigSize, -Settings.RigSize, 0, 0, 0, 1, 0, 1, -0, -1, 0, 0),
+		["Left Leg"] = CFrame.new(-Settings.RigSize, -Settings.RigSize, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0)
+	}
+end
+
+local Edit = function(Joint, TargetCFrame, Duration, Style, Direction, Blend) -- edited because a little SOMEONE made the fricking thing stuck on cubic
+	if typeof(Style) == "EnumItem" and Style.Name == "Constant" then
+		Joint.C0 = TargetCFrame
+		return
+	end 
+	Style = Enum.EasingStyle[Style.Name]
+	Direction = Enum.EasingDirection[Direction.Name]
+	local StartCFrame = Joint.C0
+	local Tween = TweenService:Create(Joint, TweenInfo.new(Duration, Style, Direction), { C0 = StartCFrame:Lerp(TargetCFrame, Settings.AnimationBlending)})
+	Tween:Play()
+	return Tween
+end
+
+function AnimatorModule:LoadAnimation(Rig, KeyframeSequence)
+	local Sequence = KeyframeSequence
+	local RigHumanoid = Rig:FindFirstChildOfClass("Humanoid")
+	if RigHumanoid.RigType ~= Enum.HumanoidRigType.R6 then
+		return error("Rig Humanoid is not R6!")
+	end
+	local Joints = {
+		["Head"] = Rig.Torso["Neck"],
+		["Torso"] = Rig.HumanoidRootPart:FindFirstChild("RootJoint") or Rig.HumanoidRootPart:FindFirstChild("Root Joint"),
+		["Left Arm"] = Rig.Torso["Left Shoulder"],
+		["Right Arm"] = Rig.Torso["Right Shoulder"],
+		["Left Leg"] = Rig.Torso["Left Hip"],
+		["Right Leg"] = Rig.Torso["Right Hip"],
+	}
+	local Class = {}
+	Class.Speed = 1
+	Class.KeepLast = 0
+	local Keyframes = Sequence:GetKeyframes()
+	table.sort(Keyframes, function(a, b) return a.Time < b.Time end)
+	Class.Length = Keyframes[#Keyframes].Time
+	local function Yield(Seconds)
+		local TargetFrames = math.max(1, math.floor(Seconds * 60 * Settings.AnimationSpeed / Class.Speed))
+		for i = 1, TargetFrames do
+			RunService.Heartbeat:Wait()
+		end
+	end
+	for i, v in ipairs(Sequence:GetDescendants()) do
+		if v:IsA("IntValue") or v:IsA("StringValue") or v:IsA("Folder") then
+			v:Destroy()
+		elseif v:IsA("Pose") and not Rig:FindFirstChild(v.Name, true) then
+			v:Destroy()
+		end
+	end
+	Class.Stopped = true
+	Class.IsPlaying = false
+	Class.TimePosition = 0
+	Class.Looped = Sequence.Loop
+	local Completion = Instance.new("BindableEvent")
+	local Reached = Instance.new("BindableEvent")
+	Class.Completed = Completion.Event
+	Class.KeyframeReached = Reached.Event
+	function Class:Play(Speed)
+		if Speed and Speed < 0 then
+			Speed = math.abs(Speed)
+		end
+		Class.Speed = math.clamp(Speed or 180, 1, 180)
+		Class.Stopped = false
+		Class.IsPlaying = true
+		task.spawn(function()
+			Class.Completed:Connect(function()
+				if Class.Looped then
+					Class.TimePosition = 0
+				end
+			end)
+			local Connection
+			Connection = RunService.Heartbeat:Connect(function(dt)
+				if Class.IsPlaying and not Class.Stopped and RigHumanoid.Health > 0 then
+					Class.TimePosition += math.min(dt * Class.Speed / 60, 1)
+				else
+					Connection:Disconnect()
+				end
+			end)
+		end)
+		task.spawn(function()
+			repeat
+				for K = 1, #Keyframes do
+					local K0, K1, K2 = Keyframes[K-1], Keyframes[K], Keyframes[K+1]
+					if not Class.Stopped and RigHumanoid.Health > 0 then
+						if K0 then
+							Yield(K1.Time - K0.Time)
+						end
+						task.spawn(function()
+							for _, Pose in ipairs(K1:GetDescendants()) do
+								if Joints[Pose.Name] then
+									local AnimDefaults = GetAnimDefaults()
+									local Duration = K2 and (K2.Time - K1.Time) / Class.Speed or 0.5
+									Edit(Joints[Pose.Name], AnimDefaults[Pose.Name] * Pose.CFrame, Duration, Pose.EasingStyle, Pose.EasingDirection, Settings.AnimationBlending)
+								end
+							end
+						end)
+						if K == #Keyframes and Class.KeepLast > 0 then
+							Yield(Class.KeepLast)
+						end
+						Reached:Fire(K1.Name)
+					else
+						break
+					end
+				end
+				Completion:Fire()
+			until not Class.Looped or Class.Stopped or RigHumanoid.Health == 0
+			Class.IsPlaying = false
+		end)
+	end
+	function Class:Stop()
+		Class.Stopped = true
+	end
+	function Class:AdjustSpeed(Speed)
+		if Speed < 0 then
+			Speed = math.abs(Speed)
+		end
+		Class.Speed = math.clamp(Speed or Class.Speed, 1, 180)
+	end
+	return Class
+end
+
+-- booleans, values + tables
+local Idle, Walking, Running = false, false, false
+local Debounce, Shift = false, false
+local LastRagdoll = Settings.Ragdoll
+local ActiveDance = nil
+local ActiveTrack = nil
+local ActiveEvent = nil
+local Message = nil
+local UsesKeyframeSync = false
+local DanceMode = 1
+ 
+-- character setup
+local Player = Players.LocalPlayer
+local Character = Empyrean.Rig
+local Head = Character:WaitForChild("Head")
+local Torso = Character:WaitForChild("Torso")
+local RootPart = Character:WaitForChild("HumanoidRootPart")
+local Humanoid = Character:WaitForChild("Humanoid")
+local CharacterTable = {
+	Head = Character:WaitForChild("Head"),
+	Torso = Character:WaitForChild("Torso"),
+	RightArm = Character:WaitForChild("Right Arm"),
+	LeftArm = Character:WaitForChild("Left Arm"),
+	RightLeg = Character:WaitForChild("Right Leg"),
+	LeftLeg = Character:WaitForChild("Left Leg"),
+}
+pcall(function()
+	Character:FindFirstChild("Animate"):Destroy()
+	Humanoid:FindFirstChild("Animator"):Destroy()
+end)
+
+-- idk script setup??
+local Camera = workspace.CurrentCamera
+local function SetWalkSpeed(Speed) Humanoid.WalkSpeed = Speed end
+local function SetRootPartAnchor(Bool) RootPart.Anchored = Bool end
+local Animations = script:WaitForChild("Animations")
+local Objects = script:WaitForChild("Objects")
+local IdleAnim = Animations:WaitForChild("PlayerAnimations"):WaitForChild("Idle")
+local WalkAnim = Animations:WaitForChild("PlayerAnimations"):WaitForChild("Walk")
+local SprintAnim = Animations:WaitForChild("PlayerAnimations"):WaitForChild("Sprint")
+
+-- animation functions
+local PlayAnim = function(Rig, Animation, AnimSpeed)
+	if not AnimatorModule[Rig] then
+		AnimatorModule[Rig] = {}
+	end
+	if not AnimatorModule[Rig][Animation.Name] then
+		AnimatorModule[Rig][Animation.Name] = AnimatorModule:LoadAnimation(Rig, Animation)
+	end
+	for Name, Track in pairs(AnimatorModule[Rig]) do
+		if Name ~= Animation.Name then
+			Track:Stop()
+		end
+	end
+	local AnimInstance = AnimatorModule[Rig][Animation.Name]
+	if not AnimInstance.IsPlaying then
+		AnimInstance:Play(AnimSpeed or 1)
+	end
+	return AnimInstance
+end
+
+local StopAnim = function(Rig, Anim)
+	if not AnimatorModule[Rig] then
+		AnimatorModule[Rig] = {}
+	end
+	if not AnimatorModule[Rig][Anim.Name] then
+		AnimatorModule[Rig][Anim.Name] = AnimatorModule:LoadAnimation(Rig, Anim)
+	end
+	AnimatorModule[Rig][Anim.Name]:Stop()
+end
+
+local UpdatePositions = function()
+	for i, v in ipairs(ActiveNotifications) do
+		local TargetY = 0.05 + (i - 1) * (0.15 + (10 / workspace.CurrentCamera.ViewportSize.Y))
+		TweenService:Create(v.Frame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0.98, 0, TargetY, 0)}):Play()
+	end
+end
+
+local ShowNotification = function(SongTitle, ArtistName, CoverImage)
+  	local ScreenGui = Instance.new("ScreenGui", CoreGui)
+	ScreenGui.Name = "NotificationInstance"
+	ScreenGui.IgnoreGuiInset = true
+	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	ScreenGui.ResetOnSpawn = false
+	local SongNotification = Instance.new("Frame")
+	SongNotification.Name = "Song-Notification"
+	SongNotification.Parent = ScreenGui
+	SongNotification.AnchorPoint = Vector2.new(1, 0)
+	SongNotification.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SongNotification.BorderColor3 = Color3.fromRGB(255, 255, 255)
+	SongNotification.BorderSizePixel = 0
+	SongNotification.Position = UDim2.new(1.05, 0, 0.05, 0)
+	SongNotification.Size = UDim2.new(0.35, 0, 0.15, 0)
+	SongNotification.ClipsDescendants = true
+	local UIStroke = Instance.new("UIStroke")
+	UIStroke.Parent = SongNotification
+	UIStroke.Color = Color3.fromRGB(255, 255, 255)
+	UIStroke.Thickness = 2
+	local UIGradient_2 = Instance.new("UIGradient")
+	UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+	UIGradient_2.Rotation = -90
+	UIGradient_2.Parent = SongNotification
+	local Cover = Instance.new("ImageLabel")
+	Cover.Name = "Cover"
+	Cover.Parent = SongNotification
+	Cover.BackgroundTransparency = 1
+	Cover.Position = UDim2.new(0.018, 0, 0.042, 0)
+	Cover.Size = UDim2.new(0.25, 0, 0.9, 0)
+	Cover.Image = CoverImage or "rbxassetid://731317867"
+	Cover.ScaleType = Enum.ScaleType.Crop
+	local CoverGradient = Instance.new("UIGradient")
+	CoverGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+	CoverGradient.Parent = Cover
+	task.spawn(function()
+		local Sine = 0
+		while task.wait() and Cover.Parent do
+			Sine += 1
+			CoverGradient.Rotation = Sine * 5
+		end
+	end)
+	local Song = Instance.new("TextLabel")
+	Song.Parent = SongNotification
+	Song.BackgroundTransparency = 1
+	Song.Position = UDim2.new(0.29, 0, 0.11, 0)
+	Song.Size = UDim2.new(0.68, 0, 0.38, 0)
+	Song.Font = Enum.Font.Arcade
+	Song.Text = SongTitle or "Now playing:"
+	Song.TextColor3 = Color3.fromRGB(0, 0, 0)
+	Song.TextScaled = true
+	Song.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+	Song.TextStrokeTransparency = 0
+	Song.TextXAlignment = Enum.TextXAlignment.Left
+	Song.TextWrapped = true
+	local Artist = Instance.new("TextLabel")
+	Artist.Parent = SongNotification
+	Artist.BackgroundTransparency = 1
+	Artist.Position = UDim2.new(0.29, 0, 0.54, 0)
+	Artist.Size = UDim2.new(0.68, 0, 0.31, 0)
+	Artist.Font = Enum.Font.Arcade
+	Artist.Text = ArtistName or "By:"
+	Artist.TextColor3 = Color3.fromRGB(0, 0, 0)
+	Artist.TextScaled = true
+	Artist.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+	Artist.TextStrokeTransparency = 0
+	Artist.TextXAlignment = Enum.TextXAlignment.Left
+	Artist.TextWrapped = true
+	local UIStroke_2 = Instance.new("UIStroke")
+	UIStroke_2.Parent = SongNotification
+	UIStroke_2.Color = Color3.fromRGB(255, 255, 255)
+	UIStroke_2.Thickness = 2
+	local Aspect = Instance.new("UIAspectRatioConstraint")
+	Aspect.AspectRatio = 3.65
+	Aspect.Parent = SongNotification
+ 	table.insert(ActiveNotifications, 1, { Frame = SongNotification })
+    local ExtraNotifications = #ActiveNotifications - 3
+	if ExtraNotifications > 0 then
+		for i = 1, ExtraNotifications do
+			local Old = table.remove(ActiveNotifications)
+			if Old and Old.Frame then
+				Old.Frame:Destroy()
+			end
+		end
+	end
+	UpdatePositions()
+	coroutine.wrap(function()
+		local TweenIn = TweenService:Create(SongNotification, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = SongNotification.Position - UDim2.new(0.07, 0, 0, 0)})
+		TweenIn:Play()
+		TweenIn.Completed:Wait()
+		task.wait(3)
+ 		local TweenOut = TweenService:Create(SongNotification, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Position = UDim2.new(1.1, 0, SongNotification.Position.Y.Scale, 0)})
+		TweenOut:Play()
+		TweenOut.Completed:Wait()
+		for i, v in ipairs(ActiveNotifications) do
+			if v.Frame == SongNotification then
+				table.remove(ActiveNotifications, i)
+				break
+			end
+		end
+		UpdatePositions()
+		ScreenGui:Destroy()
+	end)()
+end
+ 
+-- extra functions
+local RestoreMovement = function()
+	if RootPart.Velocity.Magnitude < 1 and workspace:FindPartOnRay(Ray.new(RootPart.Position, (CFrame.new(RootPart.Position, RootPart.Position + Vector3.new(0, -1, 0))).LookVector * 4), Character) then
+		Idle = true
+		Walking = false
+		Running = false
+		PlayAnim(Character, IdleAnim, 1)
+	elseif RootPart.Velocity.Magnitude > 1 and workspace:FindPartOnRay(Ray.new(RootPart.Position, (CFrame.new(RootPart.Position, RootPart.Position + Vector3.new(0, -1, 0))).LookVector * 4), Character) then
+		Idle = false
+		Walking = true
+		Running = false
+		PlayAnim(Character, WalkAnim, 1)
+	end
+end
+
+local PlaySound = function(Audio, Volume)
+	local Sound = Instance.new("Sound", RootPart)
+	Sound.SoundId = "rbxassetid://" .. Audio
+	Sound.PlayOnRemove = true
+	Sound.Volume = Volume or 1
+	Sound:Destroy()
+end
+
+-- emote effects
+local Song = Instance.new("Sound", RootPart)
+Song.SoundId = getcustomasset(Directories.Songs.."General/Theme.mp3")
+Song.Looped = true
+Song.Volume = 0.5
+Song:Play()
+
+local WallyEffects = function()
+	if not Settings.Props then return end
+	local Particles = Objects:FindFirstChild("Wally West")
+	if not Particles then return end
+	local ParticlesTemplate = Particles:Clone()
+	for i, v in pairs(CharacterTable) do
+		local ParticlesClone = ParticlesTemplate.Limb:Clone()
+		ParticlesClone.Parent = v
+		table.insert(ActiveEffects, ParticlesClone)
+	end
+	local Lightning = ParticlesTemplate.Main
+	Lightning.Parent = RootPart
+	table.insert(ActiveEffects, Lightning)
+end
+
+local PartyRockAnthemEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Party Rock Anthem")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Lightning = Effects.Main
+	Lightning.Parent = RootPart
+	table.insert(ActiveEffects, Lightning)
+	local Speaker = Effects.Speaker
+	Speaker.Parent = RootPart
+	local SpeakerWeld = Instance.new("Weld", Speaker)
+	SpeakerWeld.Part0 = Speaker.Main
+	SpeakerWeld.Part1 = RootPart
+	SpeakerWeld.C0 = CFrame.new(0, 0.25, -5) * CFrame.Angles(0, 0, 0)
+	table.insert(ActiveEffects, Speaker)
+end
+
+local CommercialBreakEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Commercial Break")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local TV = Effects.TV
+	TV.Parent = workspace
+	ActiveEvent = RunService.Heartbeat:Connect(function()
+		TV.Main.CFrame = RootPart.CFrame * CFrame.new(3, 0.45, 3.5) * CFrame.Angles(0, math.rad(25), math.rad(15))
+		for i, v in pairs(TV:GetChildren()) do
+			if v:IsA("BasePart") then
+				v.CanCollide = false
+			end
+		end
+	end)
+	local Microphone = Effects.Microphone
+	Microphone.Parent = CharacterTable.RightArm
+	local MicrophoneWeld = Instance.new("Weld", Microphone)
+	MicrophoneWeld.Part0 = Microphone
+	MicrophoneWeld.Part1 = CharacterTable.RightArm
+	MicrophoneWeld.C0 = CFrame.new(0, -0.25, 1) * CFrame.Angles(math.rad(90), 0, 0)
+	table.insert(ActiveEffects, Microphone)
+	table.insert(ActiveEffects, TV)
+end
+
+local ReleaseTheGhoulsEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Release The Ghouls")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Main = Effects.Main
+	Main.Parent = RootPart
+	table.insert(ActiveEffects, Main)
+	local Dancer = Effects:FindFirstChild("Boy")
+	Dancer.Parent = workspace
+	table.insert(ActiveEffects, Dancer)
+	local DancerAnim = PlayAnim(Dancer, Animations:FindFirstChild("Page1")["Release The Ghouls"])
+	ActiveEvent = RunService.Heartbeat:Connect(function()
+		Dancer.HumanoidRootPart.CFrame = RootPart.CFrame * CFrame.new(5, 0, 0)
+		for i, v in pairs(Dancer:GetChildren()) do
+			if v:IsA("BasePart") then
+				v.CanCollide = false
+			end
+		end
+		DancerAnim.TimePosition = ActiveTrack.TimePosition
+	end)
+	local Trash = Effects.Junk
+	Trash.Parent = Head
+	local TrashWeld = Instance.new("Weld", Head)
+	TrashWeld.Part0 = Head
+	TrashWeld.Part1 = Trash
+	TrashWeld.C0 = CFrame.new(0, -0.25, -0.9) * CFrame.Angles(0, math.rad(-90), 0)
+	table.insert(ActiveEffects, Trash)
+end
+
+local ReleaseTheGhoulsRetakeEffects = function(Track)
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Release The Ghouls")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Main = Effects.Main
+	Main.Parent = RootPart
+	table.insert(ActiveEffects, Main)
+	local Dancer = Effects:FindFirstChild("Boy")
+	Dancer.Parent = workspace
+	table.insert(ActiveEffects, Dancer)
+	local DancerAnim = PlayAnim(Dancer, Animations:FindFirstChild("Page4")["Release The Ghouls Retake Right"])
+	if Track then
+	ActiveEvent = RunService.Heartbeat:Connect(function()
+		Dancer.HumanoidRootPart.CFrame = RootPart.CFrame * CFrame.new(5, 0, 0)
+		for i, v in pairs(Dancer:GetChildren()) do
+			if v:IsA("BasePart") then
+				v.CanCollide = false
+			end
+		end
+		local ActiveTrackTime = Track.TimePosition
+		DancerAnim.TimePosition = ActiveTrackTime
+ 	end)
+	end	
+	local Trash = Effects.Junk
+	Trash.Parent = Head
+	local TrashWeld = Instance.new("Weld", Head)
+	TrashWeld.Part0 = Head
+	TrashWeld.Part1 = Trash
+	TrashWeld.C0 = CFrame.new(0, -0.25, -0.9) * CFrame.Angles(0, math.rad(-90), 0)
+	table.insert(ActiveEffects, Trash)
+end
+
+local DareEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Dare")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	for i, v in pairs(Effects:GetChildren()) do
+		v.Parent = RootPart
+		table.insert(ActiveEffects, v)
+	end
+end
+
+local MissTheQuietEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Miss The Quiet")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Main = Effects.Main
+	Main.Parent = RootPart
+	table.insert(ActiveEffects, Main)
+end
+
+local TwentyFourHourCinderellaEffects = function(Track)
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("24 Hour Cinderella")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Main = Effects.Main
+	Main.Parent = RootPart
+	table.insert(ActiveEffects, Main)
+	local LeftArmEffects = Effects:FindFirstChild("LeftArmEffects")
+	if LeftArmEffects then
+		for i, v in pairs(LeftArmEffects:GetChildren()) do
+			v.Parent = CharacterTable.LeftArm
+			table.insert(ActiveEffects, v)
+		end
+	end
+	local RightArmEffects = Effects:FindFirstChild("RightArmEffects")
+	if RightArmEffects then
+		for i, v in pairs(RightArmEffects:GetChildren()) do
+			v.Parent = CharacterTable.RightArm
+			table.insert(ActiveEffects, v)
+		end
+	end
+	if Track then
+		CurrentKeyframeReached = Track.KeyframeReached:Connect(function(Keyframe)
+			if Keyframe == "Land" then
+				for i, v in pairs(Main:GetChildren()) do
+					if v:IsA("ParticleEmitter") then
+						v:Emit(v:GetAttribute("EmitCount") or 1)
+					end
+				end
+			elseif Keyframe == "LowerL" or Keyframe == "RaiseL" or Keyframe == "LowerInL" or Keyframe == "PunchL" then
+				for i, v in pairs(CharacterTable.LeftArm:GetDescendants()) do
+					if v:IsA("ParticleEmitter") then
+						v:Emit(v:GetAttribute("EmitAmount") or 1)
+					end
+				end
+			elseif Keyframe == "LowerR" or Keyframe == "RaiseR" or Keyframe == "LowerInR" or Keyframe == "PunchR" then
+				for i, v in pairs(CharacterTable.RightArm:GetDescendants()) do
+					if v:IsA("ParticleEmitter") then
+						v:Emit(v:GetAttribute("EmitAmount") or 1)
+					end
+				end
+			end
+		end)
+	end
+end
+
+local MysticalMagicalEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Mystical Magical")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local IceMagic = Effects:FindFirstChild("IceMagicEffects")
+	if not IceMagic then return end
+	IceMagic.Parent = workspace
+	local Icons = {}
+	for i = 1, 8 do
+		local Icon = IceMagic:FindFirstChild("Icon"..i)
+		if Icon then
+			Icon.Parent = workspace
+			table.insert(ActiveEffects, Icon)
+			local RandomOffset = Vector3.new(math.random(-3, 3), math.random(0, 4), math.random(-3, 3))
+			table.insert(Icons, {Part = Icon, Offset = RandomOffset})
+		end
+	end
+	local t = 0
+	ActiveEvent = RunService.Heartbeat:Connect(function(dt)
+		t = t + dt
+		for i, data in pairs(Icons) do
+			local Icon = data.Part
+			local Base = data.Offset
+			if Icon and Icon.Parent then
+				local Height = 0.5
+				local Speed = 2.5
+				local BounceHeight = i / #Icons * math.pi * 2
+				local Bounce = math.sin(t * Speed + BounceHeight) * Height
+				local Angle = math.rad(t * 60 + i * 45)
+				Icon.CFrame = RootPart.CFrame * CFrame.new(Base + Vector3.new(0, Bounce, 0)) * CFrame.Angles(0, Angle, 0)
+			end
+		end
+	end)
+end
+
+local CrissCrossToprockEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Criss Cross Toprock")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Main = Effects:FindFirstChild("Main")
+	Main.Parent = Torso
+	table.insert(ActiveEffects, Main)
+	local Cooldown = 0.15
+	local Timer = 0
+	ActiveEvent = RunService.Heartbeat:Connect(function(dt)
+		Timer += dt
+		if Timer >= Cooldown then
+			Timer = 0
+			if math.random() < 0.15 then
+				for i, v in pairs(Main:GetDescendants()) do
+					if v:IsA("ParticleEmitter") then
+						v:Emit(v:GetAttribute("EmitCount") or 1)
+					end
+				end
+				PlaySound(134947109312227)
+			end
+		end
+	end)
+end
+
+local SkeletalWarCryEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Skeletal WarCry")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Shield = Effects:FindFirstChild("Shield")
+	Shield.Parent = CharacterTable.LeftArm
+	table.insert(ActiveEffects, Shield)
+	local LeftArmWeld = Instance.new("Weld")
+	LeftArmWeld.Part0 = CharacterTable.LeftArm
+	LeftArmWeld.Part1 = Shield
+	LeftArmWeld.C0 = CFrame.new(-0.25, 0, 0) * CFrame.Angles(0, math.rad(90), math.rad(90))
+	LeftArmWeld.Parent = Shield
+	local Sword = Effects:FindFirstChild("Sword")
+	Sword.Parent = CharacterTable.RightArm
+	table.insert(ActiveEffects, Sword)
+	local LeftArmWeld = Instance.new("Weld")
+	LeftArmWeld.Part0 = CharacterTable.RightArm
+	LeftArmWeld.Part1 = Sword
+	LeftArmWeld.C0 = CFrame.new(0, -0.75, -1.65) * CFrame.Angles(math.rad(-90), 0, 0)
+	LeftArmWeld.Parent = Sword
+end
+
+local PickUpThePhoneEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Pick Up The Phone")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Main = Effects:FindFirstChild("Phone")
+	Main.Parent = Character
+	Main.Model.Weld.Part0 = RootPart
+	table.insert(ActiveEffects, Main)
+end
+
+local MonsterEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Monster")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Main = Effects:FindFirstChild("Main")
+	Main.Parent = CharacterTable.RightArm
+	table.insert(ActiveEffects, Main)
+	local Fire = Effects:FindFirstChild("Fire"):Clone()
+	Fire.Parent = CharacterTable.RightLeg
+	local Sparks = Effects:FindFirstChild("Sparks"):Clone()
+	Sparks.Parent = CharacterTable.RightLeg
+	table.insert(ActiveEffects, Sparks)
+	table.insert(ActiveEffects, Fire)
+	local Fire2 = Effects:FindFirstChild("Fire")
+	Fire2.Parent = CharacterTable.LeftLeg
+	local Sparks2 = Effects:FindFirstChild("Sparks")
+	Sparks2.Parent = CharacterTable.LeftLeg
+	table.insert(ActiveEffects, Sparks2)
+	table.insert(ActiveEffects, Fire2)
+end
+
+local SolidLightningCannonEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Solid Lightning Cannon")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Cannon = Effects:FindFirstChild("Cannon")
+	Cannon.Parent = CharacterTable.RightArm
+	table.insert(ActiveEffects, Cannon)
+	Cannon.Joint.Weld.Part0 = CharacterTable.RightArm
+	Cannon.Joint.Weld.C0 = CFrame.new(0, -1, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+	ActiveEvent = RunService.Heartbeat:Connect(function()
+		Cannon.NeonParts.BrickColor = BrickColor.Random()
+	end)
+end
+
+local ShucksEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("Shucks")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	Effects.Parent = workspace
+	local Module = Effects:FindFirstChild("CameraKeyframes")
+	if not Module then return end
+	local CameraKeyframes = require(Module).Keyframes
+	local StartTime = tick()
+	Camera.CameraType = Enum.CameraType.Scriptable
+	Camera.CameraSubject = nil
+	local Marvin = Effects:FindFirstChild("Marvin")
+ 	Marvin.Parent = workspace
+ 	table.insert(ActiveEffects, Marvin)
+	local MarvinAnim = PlayAnim(Marvin, Animations:FindFirstChild("Page3")["Shucks Victim"])
+	local Index = 1
+	ActiveEvent = RunService.RenderStepped:Connect(function()
+		if not RootPart then return end
+		if Index >= #CameraKeyframes then
+			StartTime = tick()
+			Index = 1
+		end
+		MarvinAnim.TimePosition = ActiveTrack.TimePosition
+		Marvin.HumanoidRootPart.CFrame = RootPart.CFrame
+		for i, v in pairs(Marvin:GetChildren()) do
+			if v:IsA("BasePart") then
+				v.CanCollide = false
+			end
+		end
+		local CurrentTime = tick() - StartTime
+		local KF1 = CameraKeyframes[Index]
+		local KF2 = CameraKeyframes[Index + 1]
+		if not KF1 or not KF2 then return end
+		local DeltaTime = KF2.Time - KF1.Time
+		local Alpha = DeltaTime == 0 and 1 or math.clamp((CurrentTime - KF1.Time) / DeltaTime, 0, 1)
+		local CF1 = KF1.CFrames.MainCFrame
+		local CF2 = KF2.CFrames.MainCFrame
+		local OffsetCFrame = CF1:Lerp(CF2, Alpha)
+		Camera.CFrame = RootPart.CFrame * CFrame.new(0, -3, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)) * OffsetCFrame
+		if CurrentTime >= KF2.Time then
+			Index += 1
+		end
+	end)
+end
+
+local BHopEffects = function()
+	if not Settings.Props then return end
+	local Folder = Objects:FindFirstChild("BHop")
+	if not Folder then return end
+	local Effects = Folder:Clone()
+	local Knife = Effects:FindFirstChild("Knife")
+	Knife.Parent = CharacterTable.RightArm
+	table.insert(ActiveEffects, Knife)
+	local KnifeWeld = Instance.new("Weld", Knife)
+	KnifeWeld.Part0 = CharacterTable.RightArm
+	KnifeWeld.Part1 = Knife
+	KnifeWeld.C0 = CFrame.new(0, -1, -1) * CFrame.Angles(math.rad(-90), 0, 0)
+end
+
+-- extra effects
+local Caption = function(Text, Duration)
+	task.spawn(function()
+	local Display = ""
+	if Head:FindFirstChild("CaptionGui") then
+		Head.CaptionGui:Destroy()
+	end
+	local Gui = Instance.new("BillboardGui")
+	Gui.Name = "CaptionGui"
+	Gui.Size = UDim2.fromScale(10, 2.5)
+	Gui.StudsOffset = Vector3.new(0, 3.5, 0)
+ 	Gui.AlwaysOnTop = true
+	Gui.Parent = Head
+	local Label = Instance.new("TextLabel")
+	Label.Size = UDim2.new(1,0,1,0)
+	Label.BackgroundTransparency = 1
+	Label.TextScaled = true
+	Label.Font = Enum.Font.Code
+	Label.TextColor3 = Color3.new(1, 1, 1)
+	Label.TextStrokeTransparency = 0
+	Label.Text = ""
+	Label.Parent = Gui
+	for i = 1, #Text do
+		Display = string.sub(Text, 1, i)
+		Label.Text = Display
+		task.wait(0.03)
+		PlaySound(927634408, 0.75)
+	end
+	task.wait(Duration or 1)
+	local Tick = 0
+	local ScrambleConnection
+	ScrambleConnection = RunService.RenderStepped:Connect(function(dt)
+		Tick += dt
+		local Alpha = math.clamp(Tick / 0.6, 0, 1)
+		local NewText = ""
+		for i = 1, #Text do
+			local Char = Text:sub(i,i)
+			if math.random() < Alpha then
+				Char = ScrambleCharacters[math.random(1, #ScrambleCharacters)]
+			end
+			NewText ..= Char
+		end
+		Label.Text = NewText
+		Label.Position = UDim2.new(0, math.random(-5, 5), 0, math.random(-5, 5))
+		Label.TextTransparency = Alpha
+		Label.TextStrokeTransparency = Alpha
+		if Alpha >= 1 then
+			ScrambleConnection:Disconnect()
+			Gui:Destroy()
+		end
+	end)
+	PlaySound(749189256, 0.25)
+	end)
+end
+
+-- emote table
+local DanceModes = {
+	[1] = {
+		Q = {
+			Name = "Crank Dat",
+			Animation = Animations:FindFirstChild("Page1")["Crank Dat"],
+			Song = "/Page 1/Crank Dat.mp3",
+		};
+		E = {
+			Name = "Assumptions",
+			Animation = Animations:FindFirstChild("Page1")["Assumptions"],
+			Song = "/Page 1/Assumptions.mp3",
+		};
+		R = {
+			Name = "Gangnam Style",
+			Animation = Animations:FindFirstChild("Page1")["Gangnam Style"],
+			Song = "/Page 1/Gangnam Style.mp3",
+			TimePosition = 1.75
+		};
+		T = {
+			Name = "Party Rock Anthem",
+			Animation = Animations:FindFirstChild("Page1")["Party Rock Anthem"],
+			Song = "/Page 1/Party Rock Anthem.mp3",
+			Effects = PartyRockAnthemEffects,
+		};
+		Y = {
+			Name = "Commercial Break",
+			Animation = Animations:FindFirstChild("Page1")["Commercial Break"],
+			Song = "/Page 1/Commercial Break.mp3",
+			Effects = CommercialBreakEffects,
+		};
+		U = {
+			Name = "Wally West",
+			Animation = Animations:FindFirstChild("Page1")["Wally West"],
+			Song = "/Page 1/Wally West.mp3",
+			Effects = WallyEffects,
+		};
+		I = {
+			Name = "All Your Fault",
+			Animation = Animations:FindFirstChild("Page1")["All Your Fault"],
+			Song = "/Page 1/All Your Fault.mp3",
+			HasTaunt = true,
+			Taunts = {"keep up."}
+		};
+		O = {
+			Name = "Legal Reasons",
+			Animation = Animations:FindFirstChild("Page1")["Legal Reasons"],
+			Song = "/Page 1/Legal Reasons.mp3",
+		};
+		P = {
+			Name = "PoPiPo",
+			Animation = Animations:FindFirstChild("Page1")["PoPiPo"],
+			Song = "/Page 1/PoPiPo.mp3",
+		};
+		F = {
+			Name = "Prince Of Egypt",
+			Animation = Animations:FindFirstChild("Page1")["Prince Of Egypt"],
+			Song = "/Page 1/Prince Of Egypt.mp3",
+		};
+		G = {
+			Name = "Scenario",
+			Animation = Animations:FindFirstChild("Page1")["Scenario"],
+			Song = "/Page 1/Scenario.mp3",
+		};
+		H = {
+			Name = "BloodPop",
+			Animation = Animations:FindFirstChild("Page1")["BloodPop"],
+			Song = "/Page 1/BloodPop.mp3",
+		};
+		J = {
+			Name = "Bomb Monkey",
+			Animation = Animations:FindFirstChild("Page1")["Bomb Monkey"],
+			Song = "/Page 1/Bomb Monkey.mp3",
+		};
+		K = {
+			Name = "ChronoShift",
+			Animation = Animations:FindFirstChild("Page1")["ChronoShift"],
+			Song = "/Page 1/ChronoShift.mp3",
+		};
+		L = {
+			Name = "Black And Yellow",
+			Animation = Animations:FindFirstChild("Page1")["Black And Yellow"],
+			Song = "/Page 1/Black And Yellow.mp3",
+		};
+		Z = {
+			Name = "Eggrolled",
+			Animation = Animations:FindFirstChild("Page1")["Eggrolled"],
+			Song = "/Page 1/Eggrolled.mp3",
+		};
+		X = {
+			Name = "Two",
+			Animation = Animations:FindFirstChild("Page1")["Two"],
+			Song = "/Page 1/Two.mp3",
+		};
+		C = {
+			Name = "Kazotsky Kick",
+			Animation = Animations:FindFirstChild("Page1")["Kazotsky Kick"],
+			Song = "/Page 1/Kazotsky Kick.mp3",
+		};
+
+		V = {
+			Name = "Release The Ghouls",
+			Animation = Animations:FindFirstChild("Page1")["Release The Ghouls"],
+			Song = "/Page 1/Release The Ghouls.mp3",
+			Effects = ReleaseTheGhoulsEffects,
+			HasConnection = true,
+			HasTaunt = true,
+			Taunts = {"smokersare in for a scare", "top 10 moves smokers HATE!"}
+
+		};
+		B = {
+			Name = "Aint No Lovin My Man",
+			Animation = Animations:FindFirstChild("Page1")["Aint No Lovin My Man"],
+			Song = "/Page 1/Aint No Lovin My Man.mp3",
+			HasTaunt = true,
+			Taunts = {"shoo wop", "aint no lovin my maaan"}
+
+ 		};
+		N = {
+			Name = "Thriller",
+			Animation = Animations:FindFirstChild("Page1")["Thriller"],
+			Song = "/Page 1/Thriller.mp3",
+			HasTaunt = true,
+			Taunts = {"ah", "hee hee"}
+
+		};
+	};
+	[2] = {
+		Q = {
+			Name = "Mr Douchebag",
+			Animation = Animations:FindFirstChild("Page2")["Mr Douchebag"],
+			Song = "/Page 2/Mr Douchebag.mp3",
+		};
+		E = {
+			Name = "Da Ge Mei",
+			Animation = Animations:FindFirstChild("Page2")["Da Ge Mei"],
+			Song = "/Page 2/Da Ge Mei.mp3",
+		};
+		R = {
+			Name = "Macarena",
+			Animation = Animations:FindFirstChild("Page2")["Macarena"],
+			Song = "/Page 2/Macarena.mp3",
+		};
+		T = {
+			Name = "Rat Dance",
+			Animation = Animations:FindFirstChild("Page2")["Rat Dance"],
+			Song = "/Page 2/Rat Dance.mp3",
+		};
+		Y = {
+			Name = "Smile RMX",
+			Animation = Animations:FindFirstChild("Page2")["Smile RMX"],
+			Song = "/Page 2/Smile RMX.mp3",
+		};
+		U = {
+			Name = "CupCakes",
+			Animation = Animations:FindFirstChild("Page2")["CupCakes"],
+			Song = "/Page 2/CupCakes.mp3",
+		};
+		I = {
+			Name = "Criss Cross Toprock",
+			Animation = Animations:FindFirstChild("Page2")["Criss Cross Toprock"],
+			Song = "/Page 2/Criss Cross Toprock.mp3",
+			Effects = CrissCrossToprockEffects,
+			HasConnection = true,
+		};
+		O = {
+			Name = "OneyPlays",
+			Animation = Animations:FindFirstChild("Page2")["OneyPlays"],
+			Song = "/Page 2/OneyPlays.mp3",
+		};
+		P = {
+			Name = "Dare",
+			Animation = Animations:FindFirstChild("Page2")["Dare"],
+			Song = "/Page 2/Dare.mp3",
+			Effects = DareEffects,
+		};
+		F = {
+			Name = "Birdbrain",
+			Animation = Animations:FindFirstChild("Page2")["Birdbrain"],
+			Song = "/Page 2/Birdbrain.mp3",
+		};
+		G = {
+			Name = "Miss Me",
+			Animation = Animations:FindFirstChild("Page2")["Miss Me"],
+			Song = "/Page 2/Miss Me.mp3",
+			
+		};
+		H = {
+			Name = "Miss The Quiet",
+			Animation = Animations:FindFirstChild("Page2")["Miss The Quiet"],
+			Song = "/Page 2/Miss The Quiet.mp3",
+			Effects = MissTheQuietEffects,
+			HasTaunt = true,
+			Taunts = {"defining silver lining", "does it stop your heart?", "does your hair turn grayer?"}
+
+		};
+		J = {
+			Name = "Skeletal WarCry",
+			Animation = Animations:FindFirstChild("Page2")["Skeletal WarCry"],
+			Song = "/Page 2/Skeletal WarCry.mp3",
+			Effects = SkeletalWarCryEffects,
+			HasTaunt = true,
+			Taunts = {"RAargRghhh!!!!!!!!!!", "RRRAAAARRGHHHHHHH!"}
+
+		};
+		K = {
+			Name = "24 Hour Cinderella",
+			Animation = Animations:FindFirstChild("Page2")["24 Hour Cinderella"],
+			Song = "/Page 2/24 Hour Cinderella.mp3",
+			UsesKeyframeSync = true,
+			Effects = TwentyFourHourCinderellaEffects
+		};
+		L = {
+			Name = "Sparta RMX",
+			Animation = Animations:FindFirstChild("Page2")["Sparta RMX"],
+			Song = "/Page 2/Sparta RMX.mp3",
+			HasTaunt = true,
+			Taunts = {"this is SPARTA!!!!!!"}
+
+		};
+		Z = {
+			Name = "Mystical Magical",
+			Animation = Animations:FindFirstChild("Page2")["Mystical Magical"],
+			Song = "/Page 2/Mystical Magical.mp3",
+			Effects = MysticalMagicalEffects,
+		};
+		X = {
+			Name = "Pick Up The Phone",
+			Animation = Animations:FindFirstChild("Page2")["Pick Up The Phone"],
+			Song = "/Page 2/Pick Up The Phone.mp3",
+			Effects = PickUpThePhoneEffects,
+			HasTaunt = true,
+			Taunts = {"piece by piece there goes my marriage."}
+
+		};
+		C = {
+			Name = "Monster",
+			Animation = Animations:FindFirstChild("Page2")["Monster"],
+			Song = "/Page 2/Monster.mp3",
+			Effects = MonsterEffects,
+		};
+		V = {
+			Name = "Solid Lightning Cannon",
+			Animation = Animations:FindFirstChild("Page2")["Solid Lightning Cannon"],
+			Song = "/Page 2/Solid Lightning Cannon.mp3",
+			Effects = SolidLightningCannonEffects,
+		};
+		B = {
+			Name = "Freddy",
+			Animation = Animations:FindFirstChild("Page2")["Freddy"],
+			Song = "/Page 2/Freddy.mp3",
+ 		};
+		N = {
+			Name = "Tuff Asf",
+			Animation = Animations:FindFirstChild("Page2")["TuffAsf"],
+			Song = "/Page 2/TuffAsf.mp3",
+			HasTaunt = true,
+			Taunts = {"ts so tuff on von", "hella tuff gng"}
+ 		};
+	};
+	[3] = {
+		Q = {
+			Name = "The Mechanism",
+			Animation = Animations:FindFirstChild("Page3")["The Mechanism"],
+			Song = "/Page 3/The Mechanism.mp3",
+			HasTaunt = true,
+			Taunts = {"brother noah", "kevin durant"}
+		};
+		E = {
+			Name = "I Need Iron Blocks",
+			Animation = Animations:FindFirstChild("Page3")["I Need Iron Blocks"],
+			Song = "/Page 3/I Need Iron Blocks.mp3",	
+		};
+		R = {
+			Name = "Bird",
+			Animation = Animations:FindFirstChild("Page3")["Bird"],
+			Song = "/Page 3/Bird.mp3",	
+		};
+		T = {
+			Name = "Shucks",
+			Animation = Animations:FindFirstChild("Page3")["Shucks Main"],
+			Song = "/Page 3/Shucks.mp3",
+			Effects = ShucksEffects,
+			HasConnection = true,
+		};
+		Y = {
+			Name = "No More Games",
+			Animation = Animations:FindFirstChild("Page3")["No More Games"],
+			Song = "/Page 3/No More Games.mp3",
+			Taunts = {"totally not subterfuge"},
+			HasTaunt = true,
+  		};
+		U = {
+			Name = "NightMail",
+			Animation = Animations:FindFirstChild("Page3")["NightMail"],
+			Song = "/Page 3/NightMail.mp3",
+		};
+		I = {
+			Name = "BreakDance",
+			Animation = Animations:FindFirstChild("Page3")["BreakDance"],
+			Song = "/Page 3/BreakDance.mp3",
+		};
+		O = {
+			Name = "Chicken Dance",
+			Animation = Animations:FindFirstChild("Page3")["Chicken Dance"],
+			Song = "/Page 3/Chicken Dance.mp3",
+		};
+		P = {
+			Name = "You're Mine",
+			Animation = Animations:FindFirstChild("Page3")["You're Mine"],
+			Song = "/Page 3/You're Mine.mp3",
+			HasTaunt = true,
+			Taunts = {"lets go camping!", "oh hi!"}
+		};
+		F = {
+			Name = "Too Excited",
+			Animation = Animations:FindFirstChild("Page3")["Too Excited"],
+			Song = "/Page 3/Too Excited.mp3",
+			HasTaunt = true,
+			Taunts = {"T$RGFwtrgt3rg4rtg34", "oiwrEHFwruiehfnjnfiwr"}
+
+		};
+		G = {
+			Name = "Otsukare Summer",
+			Animation = Animations:FindFirstChild("Page3")["Otsukare Summer"],
+			Song = "/Page 3/Otsukare Summer.mp3",
+		};
+		H = {
+			Name = "Unemployed",
+			Animation = Animations:FindFirstChild("Page3")["Unemployed"],
+			Song = "/Page 3/Unemployed.mp3",
+			HasTaunt = true,
+			Taunts = {"YES i use xeno", "YES i play forsaken"}
+		};
+		J = {
+			Name = "Wa Wa Wa",
+			Animation = Animations:FindFirstChild("Page3")["Wa Wa Wa"],
+			Song = "/Page 3/Wa Wa Wa.mp3",
+			HasTaunt = true,
+			Taunts = {"ironmullet", "rappers who can sing vs rappers who cant sing"}
+
+		};
+		K = {
+			Name = "Shikanoko",
+			Animation = Animations:FindFirstChild("Page3")["Shikanoko"],
+			Song = "/Page 3/Shikanoko.mp3",
+		};
+		L = {
+			Name = "Shucks V2",
+			Animation = Animations:FindFirstChild("Page3")["Shucks V2"],
+			Song = "/Page 3/Shucks V2.mp3",
+		};
+		Z = {
+			Name = "Atom Phonk",
+			Animation = Animations:FindFirstChild("Page3")["Atom Phonk"],
+			Song = "/Page 3/Atom Phonk.mp3",
+		};
+		X = {
+			Name = "GleeCo",
+			Animation = Animations:FindFirstChild("Page3")["GleeCo"],
+			Song = "/Page 3/GleeCo.mp3",
+		};
+		C = {
+			Name = "With Friends",
+			Animation = Animations:FindFirstChild("Page3")["With Friends"],
+			Song = "/Page 3/With Friends.mp3",
+		};
+		V = {
+			Name = "Rambunctious",
+			Animation = Animations:FindFirstChild("Page3")["Rambunctious"],
+			Song = "/Page 3/Rambunctious.mp3",
+		};
+		B = {
+			Name = "Subterfuge",
+			Animation = Animations:FindFirstChild("Page3")["Subterfuge"],
+			Song = "/Page 3/Subterfuge.mp3",
+			HasTaunt = true,
+			Taunts = {"cold.. so cold...", "i am SONIC!"}
+		};
+		N = {
+			Name = "Mannrobics",
+			Animation = Animations:FindFirstChild("Page3")["Mannrobics"],
+			Song = "/Page 3/Mannrobics.mp3",
+		};
+	};
+	[4] = {
+		Q = {
+			Name = "Number",
+			Animation = Animations:FindFirstChild("Page4")["Number"],
+			Song = "/Page 4/Number.mp3",
+		};
+		E = {
+			Name = "Oh When The Saints",
+			Animation = Animations:FindFirstChild("Page4")["Oh When The Saints"],
+			Song = "/Page 4/Oh When The Saints.mp3",
+			HasTaunt = true,
+			Taunts = {"this will never die.", "in the big 2026 btw"}
+		};
+		R = {
+			Name = "Bendy Dude",
+			Animation = Animations:FindFirstChild("Page4")["Bendy Dude"],
+			Song = "/Page 4/Bendy Dude.mp3",
+		};
+		T = {
+			Name = "Peacemaker",
+			Animation = Animations:FindFirstChild("Page4")["Peacemaker"],
+			Song = "/Page 4/Peacemaker.mp3",
+		};
+		Y = {
+			Name = "Eggman And Gerald",
+			Animation = Animations:FindFirstChild("Page4")["Eggman And Gerald"],
+			Song = "/Page 4/Eggman And Gerald.mp3",
+		};
+		U = {
+			Name = "Zesty Macarena",
+			Animation = Animations:FindFirstChild("Page4")["Zesty Macarena"],
+			Song = "/Page 4/Zesty Macarena.mp3",
+		};
+		I = {
+			Name = "Zesty Sturdy",
+			Animation = Animations:FindFirstChild("Page4")["Zesty Sturdy"],
+			Song = "/Page 4/Zesty Sturdy.mp3",
+		}; 
+		O = {
+			Name = "BHop",
+			Animation = Animations:FindFirstChild("Page4")["BHop"],
+			Song = "/Page 4/BHop.mp3",
+			Effects = BHopEffects,
+		};
+		P = {
+			Name = "No",
+			Animation = Animations:FindFirstChild("Page4")["No"],
+			Song = "/General/Theme.mp3",
+			Message = "This emote has no audio, it has been replaced.",
+		}; 
+		F = {
+			Name = "Sturdy",
+			Animation = Animations:FindFirstChild("Page4")["Sturdy"],
+			Song = "/Page 4/Sturdy.mp3",
+		};
+		G = {
+			Name = "Jester",
+			Animation = Animations:FindFirstChild("Page4")["Jester"],
+			Song = "/Page 4/Jester.mp3",
+		};
+		H = {
+			Name = "Monkey Tap Dance",
+			Animation = Animations:FindFirstChild("Page4")["Monkey Tap Dance"],
+			Song = "/Page 4/Monkey Tap Dance.mp3",
+		};
+		J = {
+			Name = "Release The Ghouls Retake",
+			Animation = Animations:FindFirstChild("Page4")["Release The Ghouls Retake"],
+			Song = "/Page 4/Release The Ghouls Retake.mp3",
+ 		};
+		K = {
+			Name = "Miss Me Retake",
+			Animation = Animations:FindFirstChild("Page4")["Miss Me Retake"],
+			Song = "/Page 4/Miss Me Retake.mp3",
+		};
+		L = {
+			Name = "Doomer",
+			Animation = Animations:FindFirstChild("Page4")["Doomer"],
+			Song = "/Page 4/Doomer.mp3",
+		};
+		Z = {
+			Name = "Shuba Duck",
+			Animation = Animations:FindFirstChild("Page4")["Shuba Duck"],
+			Song = "/Page 4/Shuba Duck.mp3",
+		};
+		X = {
+			Name = "Insanity",
+			Animation = Animations:FindFirstChild("Page4")["Insanity"],
+			Song = "/Page 4/Insanity.mp3",
+		};
+		C = {
+			Name = "Onion",
+			Animation = Animations:FindFirstChild("Page4")["Onion"],
+			Song = "/Page 4/Onion.mp3",
+		};
+		V = {
+			Name = "I Just Hit The Jackpot",
+			Animation = Animations:FindFirstChild("Page4")["I Just Hit The Jackpot"],
+			Song = "/Page 4/I Just Hit The Jackpot.mp3",
+		};
+		B = {
+			Name = "Get Up Get Down",
+			Animation = Animations:FindFirstChild("Page4")["Get Up Get Down"],
+			Song = "/Page 4/Get Up Get Down.mp3",
+		};
+		N = {
+			Name = "Check",
+			Animation = Animations:FindFirstChild("Page4")["Check"],
+			Song = "/Page 4/Check.mp3",
+		};
+	
+	};
+	[5] = {
+		Q = {
+			Name = "Goopie",
+			Animation = Animations:FindFirstChild("Page5")["Goopie"],
+			Song = "/Page 5/Goopie.mp3",
+		};
+		E = {
+			Name = "Mio Honda",
+			Animation = Animations:FindFirstChild("Page5")["Mio Honda"],
+			Song = "/Page 5/Mio Honda.mp3",
+		};
+		R = {
+			Name = "Marsh Walk",
+			Animation = Animations:FindFirstChild("Page5")["Marsh Walk"],
+			Song = "/Page 5/Marsh Walk.mp3",
+		};
+		T = {
+			Name = "Golden Dandelion",
+			Animation = Animations:FindFirstChild("Page5")["Golden Dandelion"],
+			Song = "/Page 5/Golden Dandelion.mp3",
+		};
+	}	
+	
+	
+}
+
+-- emote handler
+local StopDance = function()
+	if not Debounce then return end
+	Debounce = false
+	RestoreMovement()
+	ActiveDance = nil
+	if ActiveTrack then
+		ActiveTrack:Stop()
+		ActiveTrack = nil
+	end
+	if ActiveEffects then
+		for i, v in pairs(ActiveEffects) do
+			v:Destroy()
+		end
+		ActiveEffects = {}
+	end
+	if ActiveEvent then
+		ActiveEvent:Disconnect()
+		ActiveEvent = nil
+	end
+	if CurrentKeyframeReached then
+		CurrentKeyframeReached:Disconnect()
+		CurrentKeyframeReached = nil
+	end
+	Camera.CameraType = Enum.CameraType.Custom
+	Song:Stop()
+    Song.SoundId = getcustomasset(Directories.Songs.."General/Theme.mp3")
+	Song:Play()
+end
+
+local GetDanceForKey = function(Key)
+	local Mode = DanceModes[DanceMode]
+	if not Mode then return nil end
+	return Mode[Key]
+end
+
+local PlayDance = function(Key)
+	local Dance = GetDanceForKey(Key)
+	if not Dance then return end
+	if ActiveDance == Key then
+		StopDance()
+		return
+	end
+	if Debounce then
+		StopDance()
+	end
+	ActiveEffects = {}
+	if Dance.HasTaunt and Settings.Taunts then
+		local RandomIndex = math.random(1, #Dance.Taunts)
+		Caption(Dance.Taunts[RandomIndex], 0.5)
+ 	end
+	if not Dance then return end
+	Debounce = true
+	ActiveDance = Key
+    Song.SoundId = getcustomasset(Directories.Songs.."DisbeliefPlus/"..Dance.Song)
+	Song.TimePosition = Dance.TimePosition or 0
+	Song:Play()
+	ShowNotification(Dance.Name, "Disbelief +", "rbxassetid://16355171168")
+	ActiveTrack = PlayAnim(Character, Dance.Animation, 1)
+	task.wait()
+	if Dance.Effects and not Dance.UsesKeyframeSync then
+		Dance.Effects()
+	end
+	if Dance.UsesKeyframeSync then
+		Dance.Effects(ActiveTrack)
+	end
+	if Dance.Message then -- i was thinking of doing something like Dance.HasMessage and calling Dance.Message but NO im lazy!!!!!!!!!!!!!!
+		ShowNotification(Dance.Message, "Disbelief +", "rbxassetid://16355171168")
+	end
+	PlaySound(17767069818)
+end
+
+local SwitchMode = function()
+	DanceMode += 1
+	if not DanceModes[DanceMode] then
+		DanceMode = 1
+	end
+	ShowNotification("Page "..DanceMode, "Disbelief +", "rbxassetid://82097518743037")
+	PlaySound(17767112842)
+	if Debounce then
+		StopDance()
+	end
+end
+
+-- player input + setup
+pcall(function()
+	ContextActionService:UnbindAction("BaseCameraKeyboardZoom")
+	ContextActionService:BindActionAtPriority("I", function() return Enum.ContextActionResult.Sink end, false, 3000, Enum.KeyCode.I)
+	ContextActionService:BindActionAtPriority("O", function() return Enum.ContextActionResult.Sink end, false, 3000, Enum.KeyCode.O)
+	local ShitlockController = Player.PlayerScripts:WaitForChild("PlayerModule"):WaitForChild("CameraModule"):WaitForChild("MouseLockController")
+	ShitlockController:FindFirstChild("BoundKeys").Value = "LeftControl, RightControl"
+end)
+
+local KeyDown = UserInputService.InputBegan:Connect(function(Key, GPE)
+	local Keydown = Key.KeyCode.Name
+	if GetDanceForKey(Keydown) then
+		PlayDance(Keydown)
+		return
+	end
+	if GPE then return end
+	if Key.KeyCode == Enum.KeyCode.M then
+		SwitchMode()
+		return
+	end
+	if Key.KeyCode == Enum.KeyCode.LeftShift or Key.KeyCode == Enum.KeyCode.RightShift then
+		if Debounce then return end
+		Shift = true
+ 	end
+end)
+
+local KeyUp = UserInputService.InputEnded:Connect(function(Key)
+	if Key.KeyCode == Enum.KeyCode.LeftShift or Key.KeyCode == Enum.KeyCode.RightShift then
+		Shift = false
+ 	end
+end)
+
+-- ragdoll setup
+local CreateConstraint = function(Motor)
+	local Part0 = Motor.Part0
+	local Part1 = Motor.Part1
+	if not Part0 or not Part1 then return end
+	local Attach0 = Instance.new("Attachment")
+	local Attach1 = Instance.new("Attachment")
+	Attach0.CFrame = Motor.C0
+	Attach1.CFrame = Motor.C1
+	Attach0.Parent = Part0
+	Attach1.Parent = Part1
+	local BallSocketConstraint = Instance.new("BallSocketConstraint")
+	BallSocketConstraint.Attachment0 = Attach0
+	BallSocketConstraint.Attachment1 = Attach1
+	BallSocketConstraint.LimitsEnabled = true
+	BallSocketConstraint.TwistLimitsEnabled = true
+	BallSocketConstraint.Parent = Part0
+	return {Motor = Motor, Attachment0 = Attach0, attachment1 = Attach1, Socket = BallSocketConstraint}
+end
+
+local EnableRagdoll = function()
+	if #StoredMotors > 0 then return end
+	Settings.Ragdoll = true
+	Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+	Humanoid.AutoRotate = false
+	for i, v in pairs(Character:GetDescendants()) do
+		if v:IsA("Motor6D") then
+			local Data = CreateConstraint(v)
+			if Data then
+				table.insert(StoredMotors, Data)
+				v.Enabled = false
+			end
+		elseif v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+			v.CanCollide = true
+		end
+	end
+end
+
+local DisableRagdoll = function()
+	if #StoredMotors == 0 then return end
+	Settings.Ragdoll = false
+	Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+	RootPart.CFrame = RootPart.CFrame + Vector3.new(0, 5, 0)
+	Humanoid.AutoRotate = true
+	for i, v in pairs(Character:GetDescendants()) do
+		if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+			v.CanCollide = false
+		end
+	end
+	for i, v in pairs(StoredMotors) do
+		if v.Motor then
+			v.Motor.Enabled = true
+		end
+		if v.BallSocketConstraint then
+			v.BallSocketConstraint:Destroy()
+		end
+		if v.Attachment0 then
+			v.Attachment0:Destroy()
+		end
+		if v.Attachment1 then
+			v.Attachment1:Destroy()
+		end
+	end
+	table.clear(StoredMotors)
+end
+
+-- settings ui
+local MainGUI = script.UIs:WaitForChild("MainGUI")
+MainGUI.Parent = CoreGui
+table.insert(TrashBin, MainGUI)
+
+local SettingsFrame = MainGUI:WaitForChild("SettingsFrame")
+local SettingsHolder = SettingsFrame:WaitForChild("SettingsHolder")
+
+local SetupToggle = function(Setting)
+	local Object = SettingsHolder:FindFirstChild(Setting)
+	if not Object then return end
+	local Button = Object:FindFirstChildWhichIsA("TextButton")
+	if not Button then return end
+	Button.BackgroundColor3 = Settings[Setting] and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
+	Button.MouseButton1Click:Connect(function()
+		Settings[Setting] = not Settings[Setting]
+		Button.BackgroundColor3 = Settings[Setting] and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
+	end)
+end
+
+local SetupTextBox = function(Setting)
+	local Object = SettingsHolder:FindFirstChild(Setting)
+	if not Object then return end
+	local TextBox = Object:FindFirstChildWhichIsA("TextBox")
+	if not TextBox then return end
+	TextBox.Text = tostring(Settings[Setting])
+	TextBox.FocusLost:Connect(function()
+		local Value = tonumber(TextBox.Text)
+		if Value then
+			Settings[Setting] = math.clamp(Value, 0.5, 10)
+		else
+			TextBox.Text = tonumber(Settings[Setting])
+		end
+	end)
+end
+
+for i, v in pairs(Settings) do
+	local Object = SettingsHolder:FindFirstChild(i)
+	if Object then
+		if Object:FindFirstChild("Button") then
+			SetupToggle(i)
+		elseif Object:FindFirstChild("Value") then
+			SetupTextBox(i)
+		end
+	end
+end
+
+local FloatingButton = MainGUI:WaitForChild("FloatingButton")
+FloatingButton.Draggable = true
+FloatingButton.AnchorPoint = Vector2.new(0.5, 0.5)
+FloatingButton.Position = UDim2.new(0.5, 0, 0.5, 0)
+FloatingButton.MouseButton1Click:Connect(function()
+	SettingsFrame.Visible = not SettingsFrame.Visible
+end)
+
+UserInputService.JumpRequest:Connect(function()
+	if Settings.InfiniteJump and Humanoid then
+		Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+	end
+end)
+
+SettingsHolder.TPToNearestSpawn.Button.MouseButton1Click:Connect(function()
+	local RootPart = Character:FindFirstChild("HumanoidRootPart")
+	local GetClosestSpawn = function()
+		local ClosestSpawn, ClosestDistance = nil, math.huge
+		for i, v in pairs(workspace:GetDescendants()) do
+			if v:IsA("SpawnLocation") then
+				local Distance = (RootPart.Position - v.Position).Magnitude
+				if Distance < ClosestDistance then
+					ClosestSpawn = v
+					ClosestDistance = Distance
+				end
+			end
+		end
+		return ClosestSpawn
+	end
+	local Spawn = GetClosestSpawn()
+	if Spawn then
+		RootPart.CFrame = Spawn.CFrame + Vector3.new(0, 5, 0)
+	end
+end)
+ 
+-- runservice stuff
+local RunServiceConnection = RunService.Heartbeat:Connect(function(dt) -- dont look at this too much
+	if Settings.CameraEffects then
+		Humanoid.CameraOffset = Humanoid.CameraOffset:Lerp((RootPart.CFrame * CFrame.new(0, 1.5, 0)):PointToObjectSpace(Head.Position), math.clamp(8 * 60 * 60, 0, 1))
+	else
+		Humanoid.CameraOffset = Vector3.new(0, 0, 0)
+	end
+	if Settings.FOVEffects then
+		Camera.FieldOfView = 70 + math.floor(Song.PlaybackLoudness) / 150
+	else
+		Camera.FieldOfView = 70
+	end
+	if Settings.Music then
+		Song.Playing = true
+	else
+		Song.Playing = false
+	end
+	if Settings.Ragdoll ~= LastRagdoll then
+		LastRagdoll = Settings.Ragdoll
+		if Settings.Ragdoll then
+			EnableRagdoll()
+		else
+			DisableRagdoll()
+		end
+	end
+	if Settings.Spin and Character.PrimaryPart then
+		Character:SetPrimaryPartCFrame(Character.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(5), 0))
+	end
+	if Settings.Ragdoll then return end
+	if Debounce then
+		StopAnim(Character, IdleAnim)
+		StopAnim(Character, WalkAnim)
+		StopAnim(Character, SprintAnim)
+	end
+	if not Debounce then
+		if Shift then
+			SetWalkSpeed(24)
+		else
+			SetWalkSpeed(15)
+		end
+	end
+	local RootPartOrigin = RootPart.Position
+	local Direction = Vector3.new(0, -1, 0) * 4
+	local Params = RaycastParams.new()
+	Params.FilterDescendantsInstances = {Character}
+	Params.FilterType = Enum.RaycastFilterType.Blacklist -- better than ray.new() apparently
+	Params.IgnoreWater = true
+	local Result = workspace:Raycast(RootPartOrigin, Direction, Params)
+	local HitFloor = Result and Result.Instance
+	local HitPosition = Result and Result.Position
+	local TorsoVelocity = (RootPart.Velocity).Magnitude
+	local TorsoVerticalVelocity = RootPart.Velocity.Y
+	if TorsoVelocity < 1 and HitFloor ~= nil and Debounce == false then
+		if Idle == false then
+			Idle = true
+			PlayAnim(Character, IdleAnim, 1)
+		end
+		Walking = false
+		Running = false
+		StopAnim(Character, SprintAnim)
+		StopAnim(Character, WalkAnim)
+	elseif TorsoVelocity > 1 and HitFloor ~= nil and Debounce == false and Shift == true then
+		if Running == false then
+			Running = true
+			PlayAnim(Character, SprintAnim, 1)
+		end
+		Idle = false
+		Walking = false
+		StopAnim(Character, WalkAnim)
+		StopAnim(Character, IdleAnim)
+	elseif TorsoVelocity > 1 and HitFloor ~= nil and Debounce == false then
+		if Walking == false then
+			Walking = true
+			PlayAnim(Character, WalkAnim, 1)
+		end
+		Idle = false
+		Running = false
+		StopAnim(Character, SprintAnim)
+		StopAnim(Character, IdleAnim)
+	end
+end)
+
+Empyrean.BindableEvent.Event:Once(function()
+    print("Resetting.")
+    for i, v in ActiveEffects do
+        v:Destroy()
+    end
+     for i, v in TrashBin do
+        v:Destroy()
+    end
+ 	RunServiceConnection:Disconnect()
+	KeyDown:Disconnect()
+	KeyUp:Disconnect()
+end)
