@@ -49,32 +49,7 @@ if not WindUI then
 else
     print("WindUI berhasil dimuat")
 end
-local successJunkie, JunkieLib = pcall(function()
-    return loadstring(
-        game:HttpGet("https://jnkie.com/sdk/library.lua")
-    )()
-end)
 
-local Junkie = false
-
-if successJunkie and JunkieLib then
-    Junkie = JunkieLib
-    print("FORKTHUB SYSTEM Berhasil Di Muat")
-else
-    warn("Gagal memuat Junkie API")
-
-    pcall(function()
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Warning",
-            Text = "niggJunkie API gagal dimuat."
-        })
-    end)
-end
-
--- KEY SYSTEM
-Junkie.service = ""           -- Nama service / Service ID kamu
-Junkie.identifier = ""        -- User ID kamu dari dashboard (GANTI INI!)
-Junkie.provider = ""    -- Atau gunakan "Mixed" jika kamu pakai banyak layanan
 ---------------------------------------------------------------
 -- ESP COLORS (Pengganti Config Manual)
 ----------------------------------------------------------------
@@ -2128,7 +2103,7 @@ local Window = WindUI:CreateWindow({
         
         KeyValidator = function(key)
             local success, result = pcall(function()
-                return Junkie.check_key(key)
+                return success
             end)
             
             if success and result and result.valid then
