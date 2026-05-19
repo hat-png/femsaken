@@ -534,7 +534,8 @@ task.spawn(function()
         end)
     end
 end)
--- // UI MOBILE (FORKT-STYLE)
+
+-- UI MOBILE (FORKT-STYLE)
 local MoonwalkUI = Instance.new("ScreenGui")
 local MoonwalkBtn = Instance.new("TextButton")
 local UICorner = Instance.new("UICorner")
@@ -566,7 +567,7 @@ UIStroke.Color = Color3.fromRGB(100, 100, 100)
 UIStroke.Thickness = 2
 UIStroke.Parent = MoonwalkBtn
 
--- // CORE FUNCTION: TOGGLE
+-- CORE FUNCTION: TOGGLE
 local function ToggleMoonwalk()
     getgenv().MoonwalkEnabled = not getgenv().MoonwalkEnabled
     
@@ -587,7 +588,7 @@ local function ToggleMoonwalk()
     end
 end
 
--- // INPUT LISTENERS
+-- INPUT LISTENERS
 MoonwalkBtn.MouseButton1Click:Connect(ToggleMoonwalk)
 
 -- Gunakan UserInputService yang sudah didefinisikan sebelumnya
@@ -712,7 +713,8 @@ local function CreateBillboardTag(text, color, size, textSize)
     
     return billboard
 end
---// Variabel Helper (Taruh di bagian atas skrip jika belum ada)
+
+-- Variabel Helper
 local CurrentYaw = 0
 local CurrentSway = 0
 
@@ -797,6 +799,7 @@ if not ESP_3D_Folder then
     ESP_3D_Folder.Name = "FORKT_ESP_3D"
     ESP_3D_Folder.Parent = workspace.CurrentCamera
 end
+
 local isFPP = false
 
 local fppHideConn = nil 
@@ -877,6 +880,7 @@ local function SwitchCameraMode(toFPP)
         end
     end
 end
+
 local function ApplyHighlight(object, color)
     local h = object:FindFirstChild("H")
     
@@ -983,6 +987,7 @@ local function CreatePlayerESP(player, isKiller)
             statusText = "IDLE"
         end
     end
+
     -- 4. FORMAT ULANG TEKS (Hanya jika lolos cache)
     if isKiller then
         bottomText = s_format('<font color="#DDDDDD">%dm</font> | <font color="#%s">[%s]</font>', dist, color:ToHex(), string.upper(statusText))
@@ -996,9 +1001,4 @@ local function CreatePlayerESP(player, isKiller)
 
     -- Simpan data terbaru ke cache
     ESP_PlayerCache[player.UserId] = {dist = dist, status = statusText}
-end
-
-print("FORKT-HUB Loaded Successfully!")
-if WindUI then
-    WindUI:Notify({ Title = "FORKT-HUB", Content = "✅ VIP/Premium Unlocked!", Icon = "lucide:star" })
 end
