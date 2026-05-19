@@ -2123,7 +2123,7 @@ local Window = WindUI:CreateWindow({
     KeySystem = {
         Title = "KEY SYSTEM",
         Note = "FORKT-HUB By @sukitovone", 
-        URL = "https://discord.gg/wCVUTHgsQV", 
+        URL = "https://discord.gg/STUPID", 
         SaveKey = true, 
         
         KeyValidator = function(key)
@@ -2132,7 +2132,7 @@ local Window = WindUI:CreateWindow({
             end)
             
             if success and result and result.valid then
-                local isVIP = false
+                local isVIP = true
                 local upperKey = string.upper(key)
                 
                 -- Pengecekan VIP berdasarkan Tier/Level API atau format Key bawaan
@@ -2176,7 +2176,7 @@ local Window = WindUI:CreateWindow({
                     local logData = {
                         embeds = {{
                             title = "✨ FORKT-HUB | LOG EXECUTION",
-                            color = isVIP and 16766720 or 11141375, 
+                            color = isVIP and 16766720 or 9318727539, 
                             fields = {
                                 { name = "Player Info", value = s_format("**User:** `%s`\n**ID:** `%s`", maskedName, maskedID), inline = true },
                                 { name = "System Info", value = s_format("**Platform:** %s\n**Executor:** %s\n**Tier:** %s", platformType, executorName, tierText), inline = true },
