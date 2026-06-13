@@ -1167,7 +1167,7 @@ Accessories = {
 { Name = "LeftSword", MeshId = "116045584178656",  TextureId = "85294451310881", Offset = CFrame.new(0, 0, 1.75) * CFrame.Angles(Rad(-90), 0, Rad(135)) },
 -- 1x1x1x1 Swords (70853356022704, 107622409967624) 
 { Name = "RightSword", MeshId = "135808007671052",  TextureId = "129165992031838", Offset = CFrame.new(-0.1, -0.15, 1.65) * CFrame.Angles(Rad(90), Rad(90), 0) },
-{ Name = "LeftSword", MeshId = "125501940751001",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 2) * CFrame.Angles(Rad(-90), 0, Rad(-45)) },
+{ Name = "LeftSword", MeshId = "125501940751001",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(135)) },
 },
 ApplyDescription = true,
 BreakJointsDelay = 0.225, -- dont modify
