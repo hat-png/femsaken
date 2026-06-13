@@ -1151,8 +1151,8 @@ Accessories = {
 { MeshId = "14768666349", Name = "Torso", Offset = CFrame.Angles(0, 0, 0), TextureId = "14768664565" },
 { MeshId = "14768684979", Names = { "Left Arm", "Right Arm"}, Offset = CFrame.Angles(0, 0, 1.57), TextureId = "14768683674" },
 -- Pursuer Swords (120095227086693, 79973033119759)
-{ Name = "LeftSword", MeshId = "135808007671052",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(135)) },
-{ Name = "RightSword", MeshId = "125501940751001",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(135)) },
+{ Name = "RightSword", MeshId = "71903417346210",  TextureId = "107739922507680", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(135)) },
+{ Name = "LeftSword", MeshId = "115003779345247",  TextureId = "123170803748316", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(135)) },
 -- Free Swords (11702906576, 7548993875)
 { Name = "RightSword", MeshId = "7547179386",  TextureId = "7547152243", Offset = CFrame.new(-0.5, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(-135)) },
 { Name = "LeftSword", MeshId = "11524268570",  TextureId = "11524268595", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(0), Rad(-35), Rad(90)) },
@@ -1166,8 +1166,8 @@ Accessories = {
 { Name = "RightSword", MeshId = "116045584178656",  TextureId = "78542750221272", Offset = CFrame.new(-0.1, -0.15, 1.45) * CFrame.Angles(Rad(90), 0, Rad(-45)) },
 { Name = "LeftSword", MeshId = "116045584178656",  TextureId = "85294451310881", Offset = CFrame.new(0, 0, 1.75) * CFrame.Angles(Rad(-90), 0, Rad(135)) },
 -- 1x1x1x1 Swords (70853356022704, 107622409967624) 
-{ Name = "RightSword", MeshId = "95053678425313",  TextureId = "88753338346360", Offset = CFrame.new(-0.1, -0.15, 1.65) * CFrame.Angles(Rad(90), Rad(90), 0) },
-{ Name = "LeftSword", MeshId = "80099408559509",  TextureId = "89046147359206", Offset = CFrame.new(0, 0, 2) * CFrame.Angles(Rad(-90), 0, Rad(-45)) },
+{ Name = "RightSword", MeshId = "135808007671052",  TextureId = "129165992031838", Offset = CFrame.new(-0.1, -0.15, 1.65) * CFrame.Angles(Rad(90), Rad(90), 0) },
+{ Name = "LeftSword", MeshId = "125501940751001",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 2) * CFrame.Angles(Rad(-90), 0, Rad(-45)) },
 },
 ApplyDescription = true,
 BreakJointsDelay = 0.225, -- dont modify
