@@ -1154,7 +1154,7 @@ Accessories = {
 { Name = "RightSword", MeshId = "135808007671052",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(135)) },
 { Name = "LeftSword", MeshId = "125501940751001",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 1) * CFrame.Angles(Rad(90), 0, Rad(135)) },
 -- Free Swords (11702906576, 7548993875)
-{ Name = "RightSword", MeshId = "7547179386",  TextureId = "7547152243", Offset = CFrame.new(-0.5, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(-135)) },
+{ Name = "RightSword", MeshId = "7547179386",  TextureId = "7547152243", Offset = CFrame.new(0.5, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(-135)) },
 { Name = "LeftSword", MeshId = "11524268570",  TextureId = "11524268595", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(0), Rad(-35), Rad(90)) },
 -- Blue Swords (16315420250, 16315451703) 
 { Name = "RightSword", MeshId = "16314704074",  TextureId = "16315327972", Offset = CFrame.new(-0.25, -0.25, 1.75) * CFrame.Angles(Rad(90), 0, Rad(115)) },
