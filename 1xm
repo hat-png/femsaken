@@ -1133,7 +1133,7 @@ Accessories = {
 -- Noob Rig
 { MeshId = "18640899369", Name = "Torso", Offset = CFrame.Angles(0, 0, 0), TextureId = "18640899481" },
 { MeshId = "18640914129", Names = { "Left Arm", "Right Arm"}, Offset = CFrame.Angles(0, 0, 0), TextureId = "18640914168" },
-{ MeshId = "18640901641", Names = { "Left Leg", "Right Leg"}, Offset = CFrame.Angles(0, 0, 0), TextureId = "18640901676" },
+{ MeshId = "18640901641", Names = { "Left Leg", "Right Leg"}, Offset = CFrame.Angles(0, 0, 1), TextureId = "18640901676" },
 -- Genesis Black Rig
 { MeshId = "110684113028749", Name = "Torso", Offset = CFrame.identity, TextureId = "70661572547971" },
 { MeshId = "125405780718494", Name = "Left Arm", Offset = CFrame.Angles(0, 0,  Rad(90)), TextureId = "136752500636691" },
@@ -1151,8 +1151,8 @@ Accessories = {
 { MeshId = "14768666349", Name = "Torso", Offset = CFrame.Angles(0, 0, 0), TextureId = "14768664565" },
 { MeshId = "14768684979", Names = { "Left Arm", "Right Arm"}, Offset = CFrame.Angles(0, 0, 1.57), TextureId = "14768683674" },
 -- Pursuer Swords (120095227086693, 79973033119759)
-{ Name = "RightSword", MeshId = "135808007671052",  TextureId = "129165992031838", Offset = CFrame.new(-0.5, 0, 0.8) * CFrame.Angles(Rad(90), 0, Rad(135)) },
-{ Name = "LeftSword", MeshId = "125501940751001",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 1) * CFrame.Angles(Rad(90), 0, Rad(135)) },
+{ Name = "RightSword", MeshId = "135808007671052",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 0) * CFrame.Angles(Rad(90), 0, Rad(135)) },
+{ Name = "LeftSword", MeshId = "125501940751001",  TextureId = "129165992031838", Offset = CFrame.new(0, 0, 0) * CFrame.Angles(Rad(90), 0, Rad(135)) },
 -- Free Swords (11702906576, 7548993875)
 { Name = "RightSword", MeshId = "7547179386",  TextureId = "7547152243", Offset = CFrame.new(0.5, 0, 1.5) * CFrame.Angles(Rad(90), 0, Rad(-135)) },
 { Name = "LeftSword", MeshId = "11524268570",  TextureId = "11524268595", Offset = CFrame.new(0, 0, 1.5) * CFrame.Angles(Rad(0), Rad(-35), Rad(90)) },
